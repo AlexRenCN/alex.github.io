@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>缓存可能产生的问题及解决方案 | Alex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="#缓存问题  在设计和使用缓存的时候，我们必须要考虑到缓存系统的可用性，避免因使用缓存出现的问题，本文涉及到的内容是在整个架构体系正常运行的情况下可能会出现的致命问题，适合使用缓存做具体业务的开发人员进行查看  ##缓存击穿  如果我们对于某一个热点数据进行了缓存，在缓存失效的一瞬间有大量的请求进来，这个时候所有的请求都会被系统推到数据库，瞬间的请求完全可以把数据库压垮  根据缓存击穿的发生条件，">
+<meta name="keywords" content="redis,缓存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="缓存可能产生的问题及解决方案">
+<meta property="og:url" content="https://alexrencn.github.io/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存可能产生的问题及解决方案/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="#缓存问题  在设计和使用缓存的时候，我们必须要考虑到缓存系统的可用性，避免因使用缓存出现的问题，本文涉及到的内容是在整个架构体系正常运行的情况下可能会出现的致命问题，适合使用缓存做具体业务的开发人员进行查看  ##缓存击穿  如果我们对于某一个热点数据进行了缓存，在缓存失效的一瞬间有大量的请求进来，这个时候所有的请求都会被系统推到数据库，瞬间的请求完全可以把数据库压垮  根据缓存击穿的发生条件，">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-08-18T13:00:39.572Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="缓存可能产生的问题及解决方案">
+<meta name="twitter:description" content="#缓存问题  在设计和使用缓存的时候，我们必须要考虑到缓存系统的可用性，避免因使用缓存出现的问题，本文涉及到的内容是在整个架构体系正常运行的情况下可能会出现的致命问题，适合使用缓存做具体业务的开发人员进行查看  ##缓存击穿  如果我们对于某一个热点数据进行了缓存，在缓存失效的一瞬间有大量的请求进来，这个时候所有的请求都会被系统推到数据库，瞬间的请求完全可以把数据库压垮  根据缓存击穿的发生条件，">
+  
+    <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/alex.github.io/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/alex.github.io/" id="logo">Alex</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/alex.github.io/" id="subtitle">不积小流无以成江海 不积跬步无以至千里</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/alex.github.io/">Home</a>
+        
+          <a class="main-nav-link" href="/alex.github.io/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/alex.github.io/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://alexrencn.github.io/alex.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2018-08-18-REDIS-缓存可能产生的问题及解决方案" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存可能产生的问题及解决方案/" class="article-date">
+  <time datetime="2018-08-18T13:00:39.572Z" itemprop="datePublished">2018-08-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      缓存可能产生的问题及解决方案
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#缓存问题</p>
+<blockquote>
+<p>在设计和使用缓存的时候，我们必须要考虑到缓存系统的可用性，避免因使用缓存出现的问题，本文涉及到的内容是在整个架构体系正常运行的情况下可能会出现的致命问题，适合使用缓存做具体业务的开发人员进行查看</p>
+</blockquote>
+<p>##缓存击穿</p>
+<blockquote>
+<p>如果我们对于某一个热点数据进行了缓存，在缓存失效的一瞬间有大量的请求进来，这个时候所有的请求都会被系统推到数据库，瞬间的请求完全可以把数据库压垮</p>
+</blockquote>
+<p>根据缓存击穿的发生条件，<strong>频繁</strong>、<strong>失效</strong>和**大量请求共同造成了这个问题，而可以产生缓存击穿的数据必然是极大的热点数据，我们不可能把访问频繁的问题通过任何方式处理掉，只需要考虑剩下两个问题即可</p>
+<ul>
+<li>使用互斥量，如果缓存未能命中，不是直接去访问数据库，而是先去争夺一个锁资源，通过Redis的SetNX或者Memcached的Add操作，都可以保证有一个唯一的请求可以争夺到锁，争夺到锁的线程就可以去访问数据库并且更新缓存，而其他线程没有得到该锁，就应该继续尝试获取缓存内容，做一个自旋锁，这个自旋锁会在其他线程更新缓存失败或者完成数据缓存之后结束，虽然占用了无用的CPU但是实际上自旋的时间很短</li>
+<li>提前更新，还是使用互斥量去争夺更新缓存的锁，不过更新的时间不再是失效时，而是在失效之前，通过在缓存中存储一个预计时效的时间，来判断是否需要更新缓存，而且可以灵活的根据实际场景选择没有得到更新锁的线程是自旋等待还是直接取当前缓存</li>
+<li>修改过期时间，如果业务要求并不严格而且缓存更新实在是屈指可数，我们可以不设定Redis的过期，而是由一个定时任务去定时更新缓存内容，这样可以减少上述因为缓存更新造成的CPU空跑现象和频繁校验，不过一定需要确定，在更新缓存的定时任务挂掉的情况下，业务功能是可以接受缓存不更新的<br>##缓存穿透<blockquote>
+<p>如果有不怀好意的人员针对某个接口进行攻击，不断的查询一个不可能存在的数据，这个时候我们即使使用了缓存，也不会在缓存里完成任何一次命中，这个请求就会到数据访问层进行数据库交互并查询出空结果集，或者发生异常，如果到数据库的查询过多，很可能会使数据库崩溃</p>
+</blockquote>
+</li>
+</ul>
+<p>根据缓存穿透的发生条件，<strong>频繁</strong>和<strong>不可能存在的键</strong>是两个触发此问题的根源，我们只需要限制这两个条件就会使该问题得到缓解<br></p>
+<ul>
+<li>使用限流，任何方式的限流都可以有效的解决这个问题，无论是针对DDOS攻击而购买的高防IP，或者是主流RPC框架提供的限流都会让这个问题得到缓解，进行查询的接口如果有了上线，那么只需要考虑在访问上限的情况下数据库能否承受就好了</li>
+<li>Key值过滤，我们在使用缓存的时候，key值的选择一般是有着一定的命名规范的，比如：系统名-业务名-KEY,这样能够做到避免key值冲突引发的惨案，而我们可以根据我们已知的命名规则，把不可能存在的key值做直接过滤也可以解决这个问题，常见的做法是使用布隆过滤器（一个超大的hashMap），或者直接把结果为空进行缓存，让下一个请求在缓存里命中，但是缓存时间不宜过长，因为我们并没有去考虑这个键是不会存在还是暂时不存在<br>##缓存雪崩<blockquote>
+<p>针对某种业务需要缓存大量的数据，如果这些数据时同时放入的，由于业务规则的一致性，这些缓存将会在某个时刻同时失效，在失效的这一时刻，大量的请求会发生缓存未命中的情况，同时请求数据库而把数据库压垮</p>
+</blockquote>
+</li>
+</ul>
+<p>根据缓存雪崩发生的条件，<strong>大量缓存</strong>和<strong>同时</strong>失效是产生问题的原因</p>
+<ul>
+<li>使用随机失效时间，在预估的失效时间之上做一个分散，比如之前的缓存希望存放60s，我们可以改为40S+随机数的模式，让缓存失效的时间分散在一个时间范围内，这样数据库的访问会得到一定的缓解</li>
+</ul>
+<p>##缓存并发</p>
+<blockquote>
+<p>在访问高并发数据的缓存副本时，如果缓存失效，无法保证设置缓存和更新数据库是同一个线程，可能会造成数据不一致的情况</p>
+</blockquote>
+<p>根据缓存并发发生的条件，<strong>并发更新</strong>和<strong>设置缓存</strong>是产生问题的原因，我们只需要保证这两个操作的原子性即可</p>
+<ul>
+<li>使用互斥量，由争取到分布式更新锁的线程去更新缓存，其他线程自旋等待，只要更新线程能够设置缓存和及时释放更新锁就能达到效果</li>
+</ul>
+<p>##缓存预热</p>
+<blockquote>
+<p>此场景发生在功能上线的时候，如果有大量的请求访问进来，但是刚刚上线的系统还没有任何缓存，这个时候所有请求又会到数据库中进行查询</p>
+</blockquote>
+<p>根据缓存预热发生的条件，<strong>大量请求</strong>和<strong>还未缓存</strong>是产生问题的原因，和此问题的名字一样，我们需要制定一些策略在上线之前对缓存进行预热</p>
+<ul>
+<li>使用预热程序，在系统上线之前先启动预热程序，将可能产生的缓存进行尽可能的放入缓存中，然后再进行部署</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存可能产生的问题及解决方案/" data-id="cjkzjinrz0009xzbbpsadmlzj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/redis-缓存/">redis,缓存</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存一致性问题/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          缓存一致性问题
+        
+      </div>
+    </a>
+  
+  
+    <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JVM内存模型</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/JAVA锁/">JAVA锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/redis-缓存/">redis,缓存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/事务/">事务</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/alex.github.io/tags/JAVA锁/" style="font-size: 10px;">JAVA锁</a> <a href="/alex.github.io/tags/JVM/" style="font-size: 20px;">JVM</a> <a href="/alex.github.io/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/alex.github.io/tags/redis-缓存/" style="font-size: 20px;">redis,缓存</a> <a href="/alex.github.io/tags/事务/" style="font-size: 10px;">事务</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/alex.github.io/archives/2018/08/">August 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存一致性问题/">缓存一致性问题</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/">JVM内存模型</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/">JVM内存模型</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/18/2018-08-18-JAVA-JAVA的对象锁/">JAVA的对象锁</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Alex Ren<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/alex.github.io/" class="mobile-nav-link">Home</a>
+  
+    <a href="/alex.github.io/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/alex.github.io/fancybox/jquery.fancybox.css">
+  <script src="/alex.github.io/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/alex.github.io/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
