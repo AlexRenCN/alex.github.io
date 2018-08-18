@@ -70,10 +70,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2018-08-17-DB-数据库事务" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2018-08-18-JAVA-JAVA的对象锁" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/alex.github.io/2018/08/17/2018-08-17-DB-数据库事务/" class="article-date">
-  <time datetime="2018-08-16T16:00:00.000Z" itemprop="datePublished">2018-08-17</time>
+    <a href="/alex.github.io/2018/08/18/2018-08-18-JAVA-JAVA的对象锁/" class="article-date">
+  <time datetime="2018-08-18T08:56:01.499Z" itemprop="datePublished">2018-08-18</time>
 </a>
     
   </div>
@@ -84,7 +84,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/17/2018-08-17-DB-数据库事务/">数据库事务</a>
+      <a class="article-title" href="/alex.github.io/2018/08/18/2018-08-18-JAVA-JAVA的对象锁/">JAVA的对象锁</a>
     </h1>
   
 
@@ -92,44 +92,264 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><p>事务是指一组原子性的SQL操作</p>
-<h2 id="事务的特性"><a href="#事务的特性" class="headerlink" title="事务的特性"></a>事务的特性</h2><p>一个事务必须遵循ACID原则</p>
-<ol>
-<li><strong><em>原子性(atomicity)</em></strong> 事务作为最小的一个工作单元，每个事务中包含的所有操作，要么全部成功，要么全部失败</li>
-<li><strong><em>一致性(consistency)</em></strong> 数据库总是会从一个一致性状态到另一个一致性状态，事务在操作过程中如果中断，做出的部分修改不会被保存</li>
-<li><strong><em>隔离性(isolation)</em></strong> 事务A做出部分修改之后，事务B一般不会看到A所做出的改变（在未提交读隔离级别产生的脏读以及可串行化之下的隔离级别产生的幻读场景下仍然可以看到）</li>
-<li><strong><em>持久性(durability)</em></strong> 一旦事务提交，事务提交的数据就会被记录在数据库中持久存储</li>
-</ol>
-<h2 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h2><ol>
-<li><strong><em>未提交读(READ UNCOMMITED)</em></strong> 事务中的修改即使没有提交，对其他事务也是可见的</li>
-<li><strong><em>已提交读(READ COMMITED)</em></strong> 一个事务从开始到提交，所做的任何操作对其他事务都不可见，但是执行两次同样的查询得到的结果可能不同，是大部分数据库的默认隔离级别</li>
-<li><strong><em>可重复读(REPEATABLE READ)</em></strong> 一个事务从开始到提交，所做的任何操作对其他事物都不可见，执行多次同样的查询语句得到的结果一致，这是MySQL数据库的默认隔离级别</li>
-<li><strong><em>可串行化(SERIALIZABLE)</em></strong> 强制事务串行执行，在读取的每一条数据上都加锁</li>
-</ol>
-<h2 id="读取问题"><a href="#读取问题" class="headerlink" title="读取问题"></a>读取问题</h2><ol>
-<li>脏读 事务可以读取未提交的数据</li>
-<li>幻读 当事务在读取某个范围内的记录是，另外一个事务又在该范围内插入了新的记录，之前的事务再次读取该范围内的记录是会产生换行</li>
-</ol>
-<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><p>两个或多个事务在一对资源上相互占用，并且请求占用对方的资源，从而导致恶性循环<br><br>InnoDB会在锁超过等待超时的设定后自动回滚持有行级排它锁最少的事务</p>
-<h2 id="MySQL中的事务"><a href="#MySQL中的事务" class="headerlink" title="MySQL中的事务"></a>MySQL中的事务</h2><ul>
-<li><p>MySQL采用AUTOCOMMIT自动提交模式，每一个语句都会被当做一个事务进行操作提交，可以手动设置不自动提交</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> AUTOCOMMIT=<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+        <h1 id="JAVA的锁"><a href="#JAVA的锁" class="headerlink" title="JAVA的锁"></a>JAVA的锁</h1><h2 id="JAVA线程调度模式"><a href="#JAVA线程调度模式" class="headerlink" title="JAVA线程调度模式"></a>JAVA线程调度模式</h2><blockquote>
+<p>在谈及JAVA锁之前，不如先去了解一下JAVA线程的调度模式吧，线程调度模式一般分为两种，抢占式调度和协同式调度，<strong>抢占式调度</strong>是由系统在某种算法的运行下给所有线程CPU的时间切片，这个时候所有的线程都会在分配到的时间内进行自己的操作，但是优先级低的线程可能就没有得到分配，所谓并行也只不过是轮流占用CPU资源，并没有达到在单核中同时执行多个线程，<strong>协同式调度</strong>是由线程完成后主动将CPU让给下一个线程，而JAVA使用的是抢占式调度，根据线程优先级来分配CPU时间片</p>
+</blockquote>
+<h2 id="JAVA的对象头"><a href="#JAVA的对象头" class="headerlink" title="JAVA的对象头"></a>JAVA的对象头</h2><blockquote>
+<p>在这里简单介绍下JAVA对象锁实现的机制，其实现是依靠JAVA对象头，JAVA对象头中存放着对象的哈希值、锁信息、对象的年龄以及对象的元数据等信息，对象头的长度为2字来存储</p>
+</blockquote>
+<table><br>    <thead><br>        <tr><br>            <th>锁状态</th><br>            <th>存放内容</th><br>            <th>锁标志位(2bit)</th><br>        </tr><br>    </thead><br>    <body><br>        <tr><br>            <th>无锁</th><br>            <th>对象的HashCode(25bit)+分代年龄(4bit)+是否是偏向锁(1bit)</th><br>            <th>01</th><br>        </tr><br>        <tr><br>            <th>偏向锁</th><br>            <th>线程ID(23bit)+时间标记Epoch(2bit)+分代年龄(4bit)+是否是偏向锁(1bit)</th><br>            <th>01</th><br>        </tr><br>        <tr><br>            <th>轻量锁</th><br>            <th>栈中锁记录指针(30bit)</th><br>            <th>00</th><br>        </tr><br>        <tr><br>            <th>重量锁</th><br>            <th>珍重互斥量的指针(30bit)</th><br>            <th>10</th><br>        </tr><br>        <tr><br>            <th>GC标记</th><br>            <th>空(30bit)</th><br>            <th>11</th><br>        </tr><br>    </body><br></table>
+
+<h2 id="JAVA的锁-1"><a href="#JAVA的锁-1" class="headerlink" title="JAVA的锁"></a>JAVA的锁</h2><blockquote>
+<p>每一个JAVA对象都可以作为锁，JAVA对象锁等级分为4种，由低到高分别是无锁、偏向锁、轻量锁、重量锁</p>
+</blockquote>
+<p>##偏向锁<br>拥有同步锁的对象在同步时只需要检查偏向线程ID和当前线程ID是否一致<br><br><strong>场景</strong>总是由同一个线程来持有这个对象锁，很少发生竞争<br><br><strong>加锁</strong>发生在第一次进入同步代码块的时候，会使用CAS操作记录下当前线程的ID，并改变锁标志位<br><br><strong>升级</strong>如果发现当前线程和偏向线程不一致，则发生了锁竞争，需要膨胀为轻量级锁<br><br><strong>解锁</strong>发生在第一次出现锁竞争的时候，线程会等待全局安全点的到来，暂停偏向线程，查看该线程目前是否已经退出了同步块来决定是释放还是升级，然后唤醒偏向线程<br></p>
+<p>##轻量锁<br>轻量锁在每次进入和退出同步代码块的时候都需要使用CAS操作来更新对象头，每次都需要加锁和释放锁<br><br><strong>场景</strong>由少量线程进行资源的争夺<br><br><strong>加锁</strong>在MarkWord里记录当前线程的指针，使用CAS操作修改锁标示为到00<br><br><strong>升级</strong>线程在多次尝试占用轻量级锁失败之后，膨胀为重量级锁，将锁释放并且等待线程唤醒，修改所标记为10，并唤醒线程，重新争夺锁<br><br><strong>解锁</strong>使用CAS操作将锁为置为无锁<br></p>
+<p>##重量锁</p>
+<p>重量级锁每次进入和退出同步代码块的时候都需要进行竞争，竞争不到的线程进入堵塞并等待唤醒<br><br><strong>场景</strong>进行锁争夺的线程非常多<br><br><strong>加锁</strong>为当前线程分配锁定记录，将对象头指向该记录<br><br><strong>解锁</strong>操作对象头到无锁，唤醒等待该锁的所有线程<br></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/alex.github.io/2018/08/18/2018-08-18-JAVA-JAVA的对象锁/" data-id="cjkz78h4k0003mhbbbwbs914j" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JAVA锁/">JAVA锁</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2018-08-18-JVM-JVM参数优化" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/" class="article-date">
+  <time datetime="2018-08-18T06:53:43.029Z" itemprop="datePublished">2018-08-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/">JVM内存模型</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="JVM启动参数调优"><a href="#JVM启动参数调优" class="headerlink" title="JVM启动参数调优"></a>JVM启动参数调优</h1><h2 id="堆内存调优"><a href="#堆内存调优" class="headerlink" title="堆内存调优"></a>堆内存调优</h2><ul>
+<li><strong>-XX:NewRatio=2</strong> 设置新生代比例，示例代表着设置新生代:老年代=1:2，即年轻代占堆总空间的三分之一</li>
+<li><strong>-XX:SurvivorRatio=8</strong> 设置新生代eden和Survivor的比例，示例代表着两个Survivor:eden=2比8，一个Survivor占十分之一</li>
+<li><strong>-XX:MaxTenuringThreshold-15</strong> 设置年轻代晋升老年代需要的年龄</li>
+<li><strong>-XX:PretenureSizeThreshold</strong> 设置大对象直接进入老年代的阈值</li>
+<li><strong>-Xms512M</strong>  设置JVM初始化时分配512M堆内存</li>
+<li><strong>-Xms2018M</strong> 设置JVM最大可以分配2G堆内存</li>
+<li><strong>-Xmn256M</strong> 设置JVM最小可以分配256M堆内存</li>
+<li><strong>-Xmn1024M</strong> 设置JVM年轻代大小为1G</li>
+<li><strong>-XX:MinHeapFreeRatio</strong>     设置堆空间最小空闲比例，小于这个比例时尝试扩展</li>
+<li><strong>-XX:MaxHeapFreeRatio</strong>     设置堆空间最大空闲比例，大于这个比例是开始压缩</li>
+<li><strong>-XX:NewSize</strong>   设置新生代的大小</li>
+<li><strong>-XX:TargetSurvivorRatio</strong>   设置Survivor区可使用率，超过这个比例会进行年轻代晋升到老年代，不会等待通过年龄进行晋升<h2 id="方法区调优"><a href="#方法区调优" class="headerlink" title="方法区调优"></a>方法区调优</h2></li>
+<li><strong>-XX:MaxPermSize=128M</strong>    设置方法区/永久代大小为128M</li>
+<li><strong>-XX:PremSize</strong>    设置方法区的初始值</li>
+</ul>
+<p>##虚拟机栈</p>
+<ul>
+<li><strong>-Xss1M</strong>    设置设置每个线程的堆栈大小为1M</li>
+</ul>
+<p>##本地方法栈</p>
+<ul>
+<li><strong>-Xoss10M</strong>   设置本地方法栈的大小为10M</li>
+</ul>
+<p>##垃圾回收</p>
+<ul>
+<li><strong>-XX:+UseSerialGc</strong>    设置对年轻代，老年代使用串行回收器</li>
+<li><strong>-XX:+UseParallelGC</strong>    设置对年轻代使用并行收集器，老年代使用仍使用串行收集器</li>
+<li><strong>-XX:+UseParNewGC</strong>    设置对年轻代使用并行回收收集期，老年代仍使用串行收集器</li>
+<li><strong>-XX:ParallelGCThreads=16</strong>    设置并行收集器的线程数，最好和处理器数目相等</li>
+<li><strong>-XX:+UseParallelOldGC</strong>    设置对年轻代、老年代进行并行回收处理器</li>
+<li><strong>-XX:GCTimeRatio</strong>    设置吞吐量大小，范围在0到100，系统GC时间占总时间的比例不超过 1/（1+n），默认n是99，即1/100=1%</li>
+<li><strong>-XX:+UseAdaptiveSizePolicy</strong>    设置并行收集器会自动选择年轻代区大小和区比例，达到预期的最长回收时间，如果采用并行收集器建议长开启</li>
+<li><strong>-XX:+UseConcMarkSweepGc</strong>    设置对年轻代使用并行收集器，老年代使用CMS</li>
+<li><strong>-XX:ParallelCMSThreads=5</strong>    设置设计CMS回收器的线程数量为5</li>
+<li><strong>-XX:CMSInitiatingOccupancyFraction</strong>    设置CMS回收器在老年代空间占比触发的比例，默认68%</li>
+<li><strong>-XX:+CMSClassUnloadingEnabled</strong>    设置CMS回收器对类元数据进行回收</li>
+<li><strong>-XX:+CMSParallelRemarkEnabled</strong>    设置CMS回收器并行重标记</li>
+<li><strong>-XX:CMSInitiatingPermOccupancyFraction</strong>    设置CMS回收器方法区占用率比例到达时，启动CMS回收，需要支持元数据回收才可以使用</li>
+<li><strong>-XX:UseCMSInitiatingOccupancyOnly</strong>    设置CMS回收器在到达阈值的时候才进行回收</li>
+<li><strong>-XX:+CMSIncrementalMode</strong>    设置使用增量模式，适合单CPU</li>
+<li><strong>-XX:+UseCMSCompactAtFullConnection</strong>    设置开启CMS回收器老年代的压缩，消除碎片</li>
+<li><strong>-XX:CMSFullGCsBeforeCompactioin=5</strong>    设置设置多少次Full GC会产生一次内存压缩</li>
+<li><strong>-XX:+UseG1GC</strong>    设置使用G1回收器</li>
+<li><strong>-XX:+UnlockExperimentalVMPotions</strong>    设置允许使用实验性参数</li>
+<li><strong>-XX:MaxGCpauseMillis=100</strong>    设置G1回收器每次年轻代回收的最长时间，如果无法满足此时间，JVM会自动跳转年轻代大小来满足此值</li>
+<li><strong>-XX:GCPauseIntervalMills</strong>    设置G1会火速停顿间隔时间</li>
+</ul>
+<h2 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h2><ul>
+<li><strong>-XX:+PrintGC</strong>    设置输出GC日志</li>
+<li><strong>-XX:+PrintGCDetails</strong>    设置输出GC的详细日志</li>
+<li><strong>-XX:+PrintGCTimeStamps</strong>    设置输出GC的时间戳（以基准时间的形式）</li>
+<li><strong>-XX:+PrintGCDateStamps</strong>    设置输出GC的时间戳（以日期的形式，如 2017-09-04T21:53:59.234+0800）</li>
+<li><strong>-XX:+PrintGCApplicationConcurrentTime</strong>    设置输出每次垃圾会收取程序未中断的执行时间</li>
+<li><strong>-XX:+PrintGCApplicationStoppedTime</strong>    设置输出每次垃圾回收期间程序暂停的时间</li>
+<li><strong>-XX:+PrintHeapAtGC</strong> 设置在进行GC的前后打印出堆的信息</li>
+<li><strong>-Xloggc:../logs/gc.log</strong> 设置日志文件的输出路径</li>
+<li><strong>-XX:+DisableExplicitGC</strong>    设置禁用显示GC，例如System.GC()</li>
+<li><strong>-Xincgc</strong>    设置使用增量GC让GC和线程交替运行，减少停顿</li>
+</ul>
+<h2 id="JIT编译"><a href="#JIT编译" class="headerlink" title="JIT编译"></a>JIT编译</h2><ul>
+<li><strong>-XX:+CITime</strong>    JIT编译的基本信息</li>
+<li><strong>-XX:CompileThreshold</strong>    运行时将字节码编译成本地代码提高效率</li>
+</ul>
+<h2 id="堆Dump"><a href="#堆Dump" class="headerlink" title="堆Dump"></a>堆Dump</h2><ul>
+<li><strong>-XX:+HeapDumpOnOutOfMemoryError</strong>    程序OOM时进行快照</li>
+<li><strong>-XX:+HeapDumpPath</strong>    指定快照的保存地址</li>
+</ul>
+<h2 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h2><ul>
+<li><strong>-XX:+TraceClassLoading</strong>    追踪类加载</li>
+<li><strong>-XX:+TraceClassUnLoading</strong>    追踪类卸载</li>
+<li><strong>-XX:+PrintClassHistogram</strong>    打开运行时实力信息，统计系统内类</li>
+</ul>
+<h2 id="类校验"><a href="#类校验" class="headerlink" title="类校验"></a>类校验</h2><ul>
+<li><strong>-XX:-UseSplitVerifier</strong>    指定用旧的类教研群</li>
+<li><strong>-XX:-FailOverToOldVerifier</strong>    新校验器失败使用该设置用老校验器再次校验</li>
+</ul>
+<h2 id="Solaris线程控制"><a href="#Solaris线程控制" class="headerlink" title="Solaris线程控制"></a>Solaris线程控制</h2><ul>
+<li><strong>-XX:+UseBoundThreads</strong>    绑定所有用户线程到内核线程，减少饥饿状态次数</li>
+<li><strong>-XX:+UseLWPSynchronization</strong>    使用内核线程替换线程同步</li>
+<li><strong>-XX:+UseVMInterruptibleIO</strong>    允许运行时中断线程</li>
+</ul>
+<h2 id="使用内存大页"><a href="#使用内存大页" class="headerlink" title="使用内存大页"></a>使用内存大页</h2><ul>
+<li><strong>-XX:+UseLargePagess</strong>        使用大页，减少内存分页表项</li>
+<li><strong>-XX:LargePageSizeInBytes</strong>    设置大页的大小，大的内存分页可以提高CPU的内存寻址能力</li>
+</ul>
+<h2 id="压缩指针"><a href="#压缩指针" class="headerlink" title="压缩指针"></a>压缩指针</h2><ul>
+<li><strong>-XX:+UseCompressedOops</strong>    压缩指针减少内存消耗</li>
+</ul>
+<h2 id="DEBUG"><a href="#DEBUG" class="headerlink" title="DEBUG"></a>DEBUG</h2><ul>
+<li><strong>-XDebug</strong>                    通知JVM在Debug模式下工作</li>
+<li><p><strong>-Xrunjdwp</strong>                通知JVM使用java debug wrie protocol模式运行调试环境</p>
+<blockquote>
+<p><strong>transport</strong>            在调试程序和VM使用的进程直接通向<br><br><strong>de_socket</strong>            套接字传输<br><br><strong>de_shmem</strong>            内存共享传输（Windows系统）<br><br><strong>server=y/n</strong>            VM是否需要用来作为调试服务器执行<br><br><strong>address</strong>                调试服务器端口号，客户端用来连接的端口号<br><br><strong>suspend=y/n</strong>            是否在调试客户端简历后启动vm<br><br><strong>-Xnoagent</strong>                禁用默认sun.tools.debug调试器<br><br><strong>一个我使用的参数配置</strong> -Xrunjdwp:server=y,transport=dt_socket,addtess=9416,suspend=n</p>
+</blockquote>
 </li>
-<li><p>并且可以手动进行设定隔离级别</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> SEESION <span class="keyword">TRANSACTION</span> <span class="keyword">ISOLATION</span> <span class="keyword">LEVEL</span> <span class="keyword">READ</span> <span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+<li><p><strong>-Djava.compiler=None</strong>        禁止JIT编译器行为</p>
 </li>
-<li><p>由于事务的处理是由MySQL的第三层，也就是存储引擎实现的，所以跨引擎的事务是不可靠的</p>
-</li>
-<li>InnoDB引擎的锁采用二阶段锁定协议，在事务执行的过程中随时都可以执行加锁，在COMMIT或者ROLLBACK时同时释放所有锁</li>
+</ul>
+<h2 id="JMX远程调优"><a href="#JMX远程调优" class="headerlink" title="JMX远程调优"></a>JMX远程调优</h2><ul>
+<li><strong>-Dcom.sun.management.jmxremote</strong>                                启动远程JMX</li>
+<li><strong>-Dcom.sun.management.jmxremote.authenticate</strong>    true/false        启用鉴权</li>
+<li><strong>-Dcom.sun.management.jmxremote.port</strong>            1-65535            远程端口号</li>
+<li><strong>-Dcom.sun.management.jmxremote.local.only</strong>        true/false        是否只能本地调试</li>
+<li><strong>-Dcom.sun.management.jmxremote.ssl</strong>            true/false        是否支持SSL</li>
+<li><strong>-Dcom.sun.management.jmxremote.access.file</strong>    文件路径            鉴权的账户文件</li>
+<li><strong>-Dcom.sun.management.jmxremote.password.file</strong>    文件路径            鉴权的密码文件</li>
+<li><strong>-Djava.rmi.server.hostname</strong>                        ip/domain        链接IP</li>
 </ul>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/alex.github.io/2018/08/17/2018-08-17-DB-数据库事务/" data-id="cjkyw52850000yzbb9d2eaa1z" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/alex.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/" data-id="cjkz78h4n0005mhbblb176zkh" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/事务/">事务</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2018-08-18-JVM-JVM内存模型" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/" class="article-date">
+  <time datetime="2018-08-18T06:14:26.106Z" itemprop="datePublished">2018-08-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/">JVM内存模型</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><blockquote>
+<p>JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决</p>
+</blockquote>
+<h2 id="JVM区域划分"><a href="#JVM区域划分" class="headerlink" title="JVM区域划分"></a>JVM区域划分</h2><ol>
+<li>JVM指令系统<blockquote>
+<p>用来指定需要在目标平台上的操作指令</p>
+<ol>
+<li><strong>操作码</strong> 用来执行一条操作的性质</li>
+<li><strong>操作数</strong> 紧随操作码之后，被分为两个以上字节</li>
+</ol>
+</blockquote>
+</li>
+<li>JVM寄存器<blockquote>
+<p>用来保存CPU中包含的保存系统状态和处理信息的寄存器组，减少虚拟机对堆栈的访问，常用的JVM寄存器有四种</p>
+<ol>
+<li>PC程序计数器，用于记录程序的执行</li>
+<li>optop操作数栈顶指针，用于记录JAVA栈的指针</li>
+<li>frame当前执行环境指针，用于记录JAVA栈的指针</li>
+<li>vars当前执行环境第一个局部变量指针，用于记录JAVA栈的指针</li>
+</ol>
+</blockquote>
+</li>
+<li>JVM栈结构<ol>
+<li><strong>局部变量</strong> 存储类方法中的局部变量</li>
+<li><strong>执行环境</strong> 上次调用的方法、局部变量指针、操作数栈、栈底指针</li>
+<li><strong>操作数栈</strong> 存储运算所需要的操作数和结果</li>
+</ol>
+</li>
+<li>JVM碎片回收堆</li>
+<li><p>JVM存储区</p>
+<ol>
+<li><strong>常量缓冲池</strong> 类名、方法名、常量</li>
+<li><strong>方法区</strong> 方法字节码<h2 id="JAVA运行时的内存结构"><a href="#JAVA运行时的内存结构" class="headerlink" title="JAVA运行时的内存结构"></a>JAVA运行时的内存结构</h2><blockquote>
+<p>局部变量表是在编译阶段已经确定的内容，包含已知的基本数据类型，对象引用（指向对象的原始地址或者引用指针、对象句柄、或者用来指向一条字节码指令的returnAddress类型），该区域在方法执行期间不会做出改变大小</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><p><strong>方法区</strong> 被所有线程共享，存储加载类时读取的类信息，常量，静态变量以及字节码</p>
+</li>
+<li><strong>JAVA虚拟机栈</strong> 每一个线程都会独享一个栈，为虚拟机执行方法进行服务，存储局部变量表、操作数栈、动态链接、方法出口等</li>
+<li><strong>JAVA虚拟机堆</strong> 被所有线程共享，在虚拟机启动时创建，用于存放对象实例，可以细分为新生代Young和老年代Old，年轻代可以再次划分为Eden、FromSurvivor和ToSurvivor，默认情况下新生代占堆内存的三分之一，随着JIT编译器和逃逸分析的发展，虚拟机可以更好的进行栈上分配和标量替换，所以并不是所有的对象创建都会分配到Heap了</li>
+<li><strong>本地方法栈</strong> 每一个线程都会独享一个栈，为虚拟机执行Native方法进行服务，存储局部变量表、操作数栈、动态链接、方法出口等</li>
+<li><strong>程序计数器</strong> 每一个线程都会独享一个程序计数器，相互之间不会影响，记录当前字节码的行号指令器</li>
+</ol>
+<h2 id="JVM执行程序的过程"><a href="#JVM执行程序的过程" class="headerlink" title="JVM执行程序的过程"></a>JVM执行程序的过程</h2><ol>
+<li>加载Class文件</li>
+<li>管理、分配内存</li>
+<li>进行垃圾回收</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/alex.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/" data-id="cjkz78h4m0004mhbbe94cyxz0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li></ul>
 
     </footer>
   </div>
@@ -189,10 +409,78 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/alex.github.io/2018/08/17/2018-08-17-DB-MySQL的锁/" data-id="cjkyxjl5z0000aebbk7p4ck78" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/alex.github.io/2018/08/17/2018-08-17-DB-MySQL的锁/" data-id="cjkz78h4c0000mhbbnh7q0zex" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2018-08-17-DB-数据库事务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/17/2018-08-17-DB-数据库事务/" class="article-date">
+  <time datetime="2018-08-16T16:00:00.000Z" itemprop="datePublished">2018-08-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/alex.github.io/2018/08/17/2018-08-17-DB-数据库事务/">数据库事务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><p>事务是指一组原子性的SQL操作</p>
+<h2 id="事务的特性"><a href="#事务的特性" class="headerlink" title="事务的特性"></a>事务的特性</h2><p>一个事务必须遵循ACID原则</p>
+<ol>
+<li><strong><em>原子性(atomicity)</em></strong> 事务作为最小的一个工作单元，每个事务中包含的所有操作，要么全部成功，要么全部失败</li>
+<li><strong><em>一致性(consistency)</em></strong> 数据库总是会从一个一致性状态到另一个一致性状态，事务在操作过程中如果中断，做出的部分修改不会被保存</li>
+<li><strong><em>隔离性(isolation)</em></strong> 事务A做出部分修改之后，事务B一般不会看到A所做出的改变（在未提交读隔离级别产生的脏读以及可串行化之下的隔离级别产生的幻读场景下仍然可以看到）</li>
+<li><strong><em>持久性(durability)</em></strong> 一旦事务提交，事务提交的数据就会被记录在数据库中持久存储</li>
+</ol>
+<h2 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h2><ol>
+<li><strong><em>未提交读(READ UNCOMMITED)</em></strong> 事务中的修改即使没有提交，对其他事务也是可见的</li>
+<li><strong><em>已提交读(READ COMMITED)</em></strong> 一个事务从开始到提交，所做的任何操作对其他事务都不可见，但是执行两次同样的查询得到的结果可能不同，是大部分数据库的默认隔离级别</li>
+<li><strong><em>可重复读(REPEATABLE READ)</em></strong> 一个事务从开始到提交，所做的任何操作对其他事物都不可见，执行多次同样的查询语句得到的结果一致，这是MySQL数据库的默认隔离级别</li>
+<li><strong><em>可串行化(SERIALIZABLE)</em></strong> 强制事务串行执行，在读取的每一条数据上都加锁</li>
+</ol>
+<h2 id="读取问题"><a href="#读取问题" class="headerlink" title="读取问题"></a>读取问题</h2><ol>
+<li>脏读 事务可以读取未提交的数据</li>
+<li>幻读 当事务在读取某个范围内的记录是，另外一个事务又在该范围内插入了新的记录，之前的事务再次读取该范围内的记录是会产生换行</li>
+</ol>
+<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><p>两个或多个事务在一对资源上相互占用，并且请求占用对方的资源，从而导致恶性循环<br><br>InnoDB会在锁超过等待超时的设定后自动回滚持有行级排它锁最少的事务</p>
+<h2 id="MySQL中的事务"><a href="#MySQL中的事务" class="headerlink" title="MySQL中的事务"></a>MySQL中的事务</h2><ul>
+<li><p>MySQL采用AUTOCOMMIT自动提交模式，每一个语句都会被当做一个事务进行操作提交，可以手动设置不自动提交</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> AUTOCOMMIT=<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>并且可以手动进行设定隔离级别</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> SEESION <span class="keyword">TRANSACTION</span> <span class="keyword">ISOLATION</span> <span class="keyword">LEVEL</span> <span class="keyword">READ</span> <span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>由于事务的处理是由MySQL的第三层，也就是存储引擎实现的，所以跨引擎的事务是不可靠的</p>
+</li>
+<li>InnoDB引擎的锁采用二阶段锁定协议，在事务执行的过程中随时都可以执行加锁，在COMMIT或者ROLLBACK时同时释放所有锁</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/alex.github.io/2018/08/17/2018-08-17-DB-数据库事务/" data-id="cjkz78h4g0001mhbb5jgcbpth" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/事务/">事务</a></li></ul>
 
     </footer>
   </div>
@@ -214,7 +502,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/事务/">事务</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/JAVA锁/">JAVA锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/事务/">事务</a></li></ul>
     </div>
   </div>
 
@@ -224,7 +512,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/alex.github.io/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/alex.github.io/tags/事务/" style="font-size: 10px;">事务</a>
+      <a href="/alex.github.io/tags/JAVA锁/" style="font-size: 10px;">JAVA锁</a> <a href="/alex.github.io/tags/JVM/" style="font-size: 20px;">JVM</a> <a href="/alex.github.io/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/alex.github.io/tags/事务/" style="font-size: 10px;">事务</a>
     </div>
   </div>
 
@@ -246,11 +534,23 @@
       <ul>
         
           <li>
-            <a href="/alex.github.io/2018/08/17/2018-08-17-DB-数据库事务/">数据库事务</a>
+            <a href="/alex.github.io/2018/08/18/2018-08-18-JAVA-JAVA的对象锁/">JAVA的对象锁</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/">JVM内存模型</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/">JVM内存模型</a>
           </li>
         
           <li>
             <a href="/alex.github.io/2018/08/17/2018-08-17-DB-MySQL的锁/">MySQL的整体架构</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/17/2018-08-17-DB-数据库事务/">数据库事务</a>
           </li>
         
       </ul>
