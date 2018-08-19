@@ -1,96 +1,97 @@
-
- <!DOCTYPE HTML>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   
-    <title>JVM内存模型 | Alex</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
-    
-    <meta name="author" content="Alex Ren">
-    
-    <meta name="description" content="JVM
-JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决
 
-JVM区域划分
-JVM指令系统
-用来指定需要在目标">
-    
-    
-    
-    
-    
-    <link rel="icon" href="/alex.github.io/img/favicon.ico">
-    
-    
-    <link rel="apple-touch-icon" href="/alex.github.io/img/pacman.jpg">
-    <link rel="apple-touch-icon-precomposed" href="/alex.github.io/img/pacman.jpg">
-    
-    <link rel="stylesheet" href="/alex.github.io/css/style.css">
+  
+  <title>JVM内存模型 | Alex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="JVM JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决  JVM区域划分 JVM指令系统 用来指定需要在目标平台上的操作指令  操作码 用来执行一条操作的性质 操作数 紧随操作码之后，被分为两个以上字节">
+<meta name="keywords" content="JVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM内存模型">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="JVM JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决  JVM区域划分 JVM指令系统 用来指定需要在目标平台上的操作指令  操作码 用来执行一条操作的性质 操作数 紧随操作码之后，被分为两个以上字节">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-18T06:14:26.106Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JVM内存模型">
+<meta name="twitter:description" content="JVM JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决  JVM区域划分 JVM指令系统 用来指定需要在目标平台上的操作指令  操作码 用来执行一条操作的性质 操作数 紧随操作码之后，被分为两个以上字节">
+  
+    <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/alex.github.io/css/style.css">
 </head>
 
-  <body>
-    <header>
-      <div>
-		
-			<div id="imglogo">
-				<a href="/alex.github.io/"><img src="/alex.github.io/img/psyduck.jpeg" alt="Alex" title="Alex"/></a>
-			</div>
-			
-			<div id="textlogo">
-				<h1 class="site-name"><a href="/alex.github.io/" title="Alex">Alex</a></h1>
-				<h2 class="blog-motto">可达鸭眉头一紧，发现编程并不简单</h2>
-			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
-			</a></div>
-			<nav class="animated">
-				<ul>
-					
-						<li><a href="/">Home</a></li>
-					
-						<li><a href="/archives">Archives</a></li>
-					
-					<li>
-					
-					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
-						<label>Search</label>
-						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
-						<input type="hidden" name="q" value="site:alexrencn.github.io">
-					</form>
-					
-					</li>
-				</ul>
-			</nav>			
-</div>
-
-    </header>
-    <div id="container">
-      <div id="main" class="post" itemscope itemprop="blogPost">
-	<article itemprop="articleBody"> 
-		<header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/" title="JVM内存模型" itemprop="url">JVM内存模型</a>
-  </h1>
-  <p class="article-author">By
-    
-      <a href="https://alexrencn.github.io" title="Alex Ren">Alex Ren</a>
-    </p>
-  <p class="article-time">
-    <time datetime="2018-08-18T06:14:26.106Z" itemprop="datePublished">2018-08-18</time>
-    更新日期:<time datetime="2018-08-18T06:14:26.106Z" itemprop="dateModified">2018-08-18</time>
-    
-  </p>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/alex.github.io/" id="logo">Alex</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/alex.github.io/" id="subtitle">可达鸭眉头一紧，发现编程并不简单</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/alex.github.io/">Home</a>
+        
+          <a class="main-nav-link" href="/alex.github.io/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/alex.github.io/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://alexrencn.github.io"></form>
+      </div>
+    </div>
+  </div>
 </header>
-	<div class="article-content">
-		
-		
-		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#JVM"><span class="toc-number">1.</span> <span class="toc-text">JVM</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JVM区域划分"><span class="toc-number">1.1.</span> <span class="toc-text">JVM区域划分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JAVA运行时的内存结构"><span class="toc-number">1.2.</span> <span class="toc-text">JAVA运行时的内存结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JVM执行程序的过程"><span class="toc-number">1.3.</span> <span class="toc-text">JVM执行程序的过程</span></a></li></ol></li></ol>
-		</div>
-		
-		<h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><blockquote>
+      <div class="outer">
+        <section id="main"><article id="post-2018-08-18-JVM-JVM内存模型" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/" class="article-date">
+  <time datetime="2018-08-18T06:14:26.106Z" itemprop="datePublished">2018-08-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JVM内存模型
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><blockquote>
 <p>JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决</p>
 </blockquote>
 <h2 id="JVM区域划分"><a href="#JVM区域划分" class="headerlink" title="JVM区域划分"></a>JVM区域划分</h2><ol>
@@ -140,210 +141,132 @@ JVM指令系统
 <li>管理、分配内存</li>
 <li>进行垃圾回收</li>
 </ol>
-  
-	</div>
-		<footer class="article-footer clearfix">
 
-  <div class="article-tags">
-  
-  <span></span> <a href="/alex.github.io/tags/JVM/">JVM</a>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/" data-id="cjl0f6j9a00008cbbavp4jitd" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li></ul>
+
+    </footer>
   </div>
-
-
-
-
-<div class="article-share" id="share">
-
-  <div data-url="https://alexrencn.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/" data-title="JVM内存模型 | Alex" data-tsina="" class="share clearfix">
-  </div>
-
-</div>
-</footer>   	       
-	</article>
-	
-<nav class="article-nav clearfix">
- 
- <div class="prev" >
- <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/" title="JVM内存模型">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  JVM内存模型</span>
-</a>
-</div>
-
-
+  
+    
+<nav id="article-nav">
+  
+    <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JVM内存模型
+        
+      </div>
+    </a>
+  
+  
 </nav>
 
-	
-</div>  
-      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+  
+</article>
 
-  <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#JVM"><span class="toc-number">1.</span> <span class="toc-text">JVM</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#JVM区域划分"><span class="toc-number">1.1.</span> <span class="toc-text">JVM区域划分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JAVA运行时的内存结构"><span class="toc-number">1.2.</span> <span class="toc-text">JAVA运行时的内存结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#JVM执行程序的过程"><span class="toc-number">1.3.</span> <span class="toc-text">JVM执行程序的过程</span></a></li></ol></li></ol>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/redis-缓存/">redis,缓存</a></li></ul>
+    </div>
   </div>
 
-<div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
-<aside class="clearfix">
 
   
-
-  
-<div class="tagslist">
-	<p class="asidetitle">标签</p>
-		<ul class="clearfix">
-		
-			<li><a href="/alex.github.io/tags/JVM/" title="JVM">JVM<sup>2</sup></a></li>
-		
-			<li><a href="/alex.github.io/tags/redis-缓存/" title="redis,缓存">redis,缓存<sup>2</sup></a></li>
-		
-		</ul>
-</div>
-
-
-  <div class="rsspart">
-	<a href="" target="_blank" title="rss">RSS 订阅</a>
-</div>
-
-</aside>
-</div>
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/alex.github.io/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/alex.github.io/tags/redis-缓存/" style="font-size: 10px;">redis,缓存</a>
     </div>
-    <footer><div id="footer" >
-	
-	<div class="line">
-		<span></span>
-		<div class="author"></div>
-	</div>
-	
-	
-	<div class="social-font clearfix">
-		
-		
-		
-		
-		
-	</div>
-		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2018 
-		
-		<a href="https://alexrencn.github.io" target="_blank" title="Alex Ren">Alex Ren</a>
-		
-		</p>
-</div>
-</footer>
-    <script src="/alex.github.io/js/jquery-2.1.0.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){ 
-  $('.navbar').click(function(){
-    $('header nav').toggleClass('shownav');
-  });
-  var myWidth = 0;
-  function getSize(){
-    if( typeof( window.innerWidth ) == 'number' ) {
-      myWidth = window.innerWidth;
-    } else if( document.documentElement && document.documentElement.clientWidth) {
-      myWidth = document.documentElement.clientWidth;
-    };
-  };
-  var m = $('#main'),
-      a = $('#asidepart'),
-      c = $('.closeaside'),
-      o = $('.openaside');
-  $(window).resize(function(){
-    getSize(); 
-    if (myWidth >= 1024) {
-      $('header nav').removeClass('shownav');
-    }else
-    {
-      m.removeClass('moveMain');
-      a.css('display', 'block').removeClass('fadeOut');
-      o.css('display', 'none');
-      
-      $('#toc.toc-aside').css('display', 'none');
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/alex.github.io/archives/2018/08/">八月 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
         
-    }
-  });
-  c.click(function(){
-    a.addClass('fadeOut').css('display', 'none');
-    o.css('display', 'block').addClass('fadeIn');
-    m.addClass('moveMain');
-  });
-  o.click(function(){
-    o.css('display', 'none').removeClass('beforeFadeIn');
-    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
-    m.removeClass('moveMain');
-  });
-  $(window).scroll(function(){
-    o.css("top",Math.max(80,260-$(this).scrollTop()));
-  });
-});
-</script>
+          <li>
+            <a href="/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存一致性问题/">缓存一致性问题</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/">JVM内存模型</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/">JVM内存模型</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
 
-<script type="text/javascript">
-$(document).ready(function(){ 
-  var ai = $('.article-content>iframe'),
-      ae = $('.article-content>embed'),
-      t  = $('#toc'),
-      h  = $('article h2')
-      ah = $('article h2'),
-      ta = $('#toc.toc-aside'),
-      o  = $('.openaside'),
-      c  = $('.closeaside');
-  if(ai.length>0){
-    ai.wrap('<div class="video-container" />');
-  };
-  if(ae.length>0){
-   ae.wrap('<div class="video-container" />');
-  };
-  if(ah.length==0){
-    t.css('display','none');
-  }else{
-    c.click(function(){
-      ta.css('display', 'block').addClass('fadeIn');
-    });
-    o.click(function(){
-      ta.css('display', 'none');
-    });
-    $(window).scroll(function(){
-      ta.css("top",Math.max(140,320-$(this).scrollTop()));
-    });
-  };
-});
-</script>
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Alex Ren<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/alex.github.io/" class="mobile-nav-link">Home</a>
+  
+    <a href="/alex.github.io/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 
-<script type="text/javascript">
-$(document).ready(function(){ 
-  var $this = $('.share'),
-      url = $this.attr('data-url'),
-      encodedUrl = encodeURIComponent(url),
-      title = $this.attr('data-title'),
-      tsina = $this.attr('data-tsina');
-  var html = [
-  '<a href="#" class="overlay" id="qrcode"></a>',
-  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
-  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
-  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
-  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
-  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
-  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
-  '<span title="Share to"></span>'
-  ].join('');
-  $this.append(html);
-  $('.article-share-qrcode').click(function(){
-    var imgSrc = $('#qrcode-pic').attr('data-src');
-    $('#qrcode-pic').attr('src', imgSrc);
-    $('#qrcode-pic').load(function(){
-        $('.qrcode strong').text(' ');
-    });
-  });
-});     
-</script>
+  <link rel="stylesheet" href="/alex.github.io/fancybox/jquery.fancybox.css">
+  <script src="/alex.github.io/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/alex.github.io/js/script.js"></script>
 
 
 
-
-
-
-  </body>
+  </div>
+</body>
 </html>
