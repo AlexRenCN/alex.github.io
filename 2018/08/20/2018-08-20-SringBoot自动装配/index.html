@@ -5,19 +5,20 @@
   
 
   
-  <title>Alex</title>
+  <title>SringBoot自动装配 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JAVA之路">
-<meta name="keywords" content="JAVA,MySQL,Linux">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Alex">
-<meta property="og:url" content="https://alexrencn.github.io/index.html">
+  <meta name="description" content="本文贴出的众多代码，版本来源为SpringBoot1.5.10，Spring4.3.14，如果两端代码中间有调用关系，可以通过查找上方的中文注释来快速定位  SpringBootStarter自动装配过程在项目中我们一般使用 @SpringBootApplication 来作为SpringBoot项目的启动类，SpringBoot采用约定大于配置的思想来进行类的注入，使得配置文件大量简化，服务构">
+<meta name="keywords" content="SpringBoot,微服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SringBoot自动装配">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/20/2018-08-20-SringBoot自动装配/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JAVA之路">
+<meta property="og:description" content="本文贴出的众多代码，版本来源为SpringBoot1.5.10，Spring4.3.14，如果两端代码中间有调用关系，可以通过查找上方的中文注释来快速定位  SpringBootStarter自动装配过程在项目中我们一般使用 @SpringBootApplication 来作为SpringBoot项目的启动类，SpringBoot采用约定大于配置的思想来进行类的注入，使得配置文件大量简化，服务构">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-20T15:13:08.109Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Alex">
-<meta name="twitter:description" content="JAVA之路">
+<meta name="twitter:title" content="SringBoot自动装配">
+<meta name="twitter:description" content="本文贴出的众多代码，版本来源为SpringBoot1.5.10，Spring4.3.14，如果两端代码中间有调用关系，可以通过查找上方的中文注释来快速定位  SpringBootStarter自动装配过程在项目中我们一般使用 @SpringBootApplication 来作为SpringBoot项目的启动类，SpringBoot采用约定大于配置的思想来进行类的注入，使得配置文件大量简化，服务构">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -68,9 +69,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-2018-08-20-SringBoot自动装配" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-2018-08-20-SringBoot自动装配" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/alex.github.io/2018/08/20/2018-08-20-SringBoot自动装配/" class="article-date">
   <time datetime="2018-08-20T15:13:08.109Z" itemprop="datePublished">2018-08-20</time>
@@ -83,8 +82,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-20-SringBoot自动装配/">SringBoot自动装配</a>
+    <h1 class="article-title" itemprop="name">
+      SringBoot自动装配
     </h1>
   
 
@@ -132,412 +131,19 @@
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-2018-08-20-微服务架构设计及解答" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-20-微服务架构设计及解答/" class="article-date">
-  <time datetime="2018-08-20T05:08:14.490Z" itemprop="datePublished">2018-08-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-20-微服务架构设计及解答/">微服务架构设计及解答</a>
-    </h1>
+    <a href="/alex.github.io/2018/08/20/2018-08-20-微服务架构设计及解答/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">微服务架构设计及解答</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>##转发说明<br>本文转发自开源中国的<a href="https://www.oschina.net/question/2720166_2283418" target="_blank" rel="noopener">一次高手问答</a>,解答来自于<a href="https://my.oschina.net/u/2335629" target="_blank" rel="noopener">@cloudskyme  张锋</a>,在此文里看到了许多没有注意到的技术栈，以及设计过程中的思考过程，在这里整理了部分解答用作备用，在此表示感谢<br>
-        
-          <p class="article-more-link">
-            <a href="/alex.github.io/2018/08/20/2018-08-20-微服务架构设计及解答/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-20-微服务架构设计及解答/" data-id="cjl2f7qy2000o74bbwuym65qc" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/微服务/">微服务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/架构设计/">架构设计</a></li></ul>
-
-    </footer>
-  </div>
   
 </article>
-
-
-  
-    <article id="post-2018-08-18-缓存可能产生的问题及解决方案" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/" class="article-date">
-  <time datetime="2018-08-20T02:10:12.479Z" itemprop="datePublished">2018-08-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>#缓存问题</p>
-<blockquote>
-<p>在设计和使用缓存的时候，我们必须要考虑到缓存系统的可用性，避免因使用缓存出现的问题，本文涉及到的内容是在整个架构体系正常运行的情况下可能会出现的致命问题，适合使用缓存做具体业务的开发人员进行查看<br>
-        
-          <p class="article-more-link">
-            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/" data-id="cjl2f7qxr000g74bbpujjobp1" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/redis/">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/缓存/">缓存</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2018-08-18-缓存一致性问题" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-18-缓存一致性问题/" class="article-date">
-  <time datetime="2018-08-20T02:10:12.476Z" itemprop="datePublished">2018-08-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-18-缓存一致性问题/">缓存一致性问题</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>#缓存问题</p>
-<blockquote>
-<p>在缓存的日常运用中，经常会遇到从缓存中获取某个值，经过业务处理后需要更新数据库对于的数据和该缓存值的内容，而这两个操作和该请求中其他的操作都可能出现异常，甚至时候需要进行IO操作的时间过长，都可能会造成更新缓存和更新数据库只成功一种的情况，这会造成数据不一致，在生产环境中排查这类问题非常困难，如何在设计阶段保证缓存一致性是开发人员在使用缓存时必须考虑的问题<br>
-        
-          <p class="article-more-link">
-            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存一致性问题/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-18-缓存一致性问题/" data-id="cjl2f7qxa000474bbdcnq6sqi" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/redis/">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/缓存/">缓存</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2018-08-18-JAVA的对象锁" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/" class="article-date">
-  <time datetime="2018-08-20T02:10:12.473Z" itemprop="datePublished">2018-08-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/">JAVA的对象锁</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="JAVA的锁"><a href="#JAVA的锁" class="headerlink" title="JAVA的锁"></a>JAVA的锁</h1><h2 id="JAVA线程调度模式"><a href="#JAVA线程调度模式" class="headerlink" title="JAVA线程调度模式"></a>JAVA线程调度模式</h2><blockquote>
-<p>在谈及JAVA锁之前，不如先去了解一下JAVA线程的调度模式吧，线程调度模式一般分为两种，抢占式调度和协同式调度，<strong>抢占式调度</strong>是由系统在某种算法的运行下给所有线程CPU的时间切片，这个时候所有的线程都会在分配到的时间内进行自己的操作，但是优先级低的线程可能就没有得到分配，所谓并行也只不过是轮流占用CPU资源，并没有达到在单核中同时执行多个线程，<strong>协同式调度</strong>是由线程完成后主动将CPU让给下一个线程，而JAVA使用的是抢占式调度，根据线程优先级来分配CPU时间片<br>
-        
-          <p class="article-more-link">
-            <a href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-18-JAVA的对象锁/" data-id="cjl2f7qx5000174bbcwvvsdh8" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JAVA/">JAVA</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2018-08-17-数据库事务" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-17-数据库事务/" class="article-date">
-  <time datetime="2018-08-20T02:10:12.469Z" itemprop="datePublished">2018-08-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-17-数据库事务/">数据库事务</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><p>事务是指一组原子性的SQL操作</p>
-<h2 id="事务的特性"><a href="#事务的特性" class="headerlink" title="事务的特性"></a>事务的特性</h2><p>一个事务必须遵循ACID原则</p>
-<ol>
-<li><strong><em>原子性(atomicity)</em></strong> 事务作为最小的一个工作单元，每个事务中包含的所有操作，要么全部成功，要么全部失败</li>
-<li><strong><em>一致性(consistency)</em></strong> 数据库总是会从一个一致性状态到另一个一致性状态，事务在操作过程中如果中断，做出的部分修改不会被保存</li>
-<li><strong><em>隔离性(isolation)</em></strong> 事务A做出部分修改之后，事务B一般不会看到A所做出的改变（在未提交读隔离级别产生的脏读以及可串行化之下的隔离级别产生的幻读场景下仍然可以看到）</li>
-<li><strong><em>持久性(durability)</em></strong> 一旦事务提交，事务提交的数据就会被记录在数据库中持久存储
-        
-          <p class="article-more-link">
-            <a href="/alex.github.io/2018/08/20/2018-08-17-数据库事务/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-17-数据库事务/" data-id="cjl2f7qx1000074bbnb8kt0ov" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/事务/">事务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/数据库/">数据库</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2018-08-19-分布式系统如何保证幂等性" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/" class="article-date">
-  <time datetime="2018-08-20T02:09:33.379Z" itemprop="datePublished">2018-08-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/">分布式系统如何保证幂等性</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>##起因</p>
-<blockquote>
-<p>近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，重复处理了一些订单<br>
-        
-          <p class="article-more-link">
-            <a href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/" data-id="cjl2f7qy0000n74bbb8m9az22" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/分布式/">分布式</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/幂等性设计/">幂等性设计</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2018-08-18-JVM内存模型" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-18-JVM内存模型/" class="article-date">
-  <time datetime="2018-08-20T01:55:20.395Z" itemprop="datePublished">2018-08-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-18-JVM内存模型/">JVM内存模型</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><blockquote>
-<p>JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决<br>
-        
-          <p class="article-more-link">
-            <a href="/alex.github.io/2018/08/20/2018-08-18-JVM内存模型/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-18-JVM内存模型/" data-id="cjl2f7qxu000j74bbuikw3g5j" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2018-08-18-JVM参数优化" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-18-JVM参数优化/" class="article-date">
-  <time datetime="2018-08-20T01:55:20.391Z" itemprop="datePublished">2018-08-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-18-JVM参数优化/">JVM内存模型</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="JVM启动参数调优"><a href="#JVM启动参数调优" class="headerlink" title="JVM启动参数调优"></a>JVM启动参数调优</h1><p>本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我
-        
-          <p class="article-more-link">
-            <a href="/alex.github.io/2018/08/20/2018-08-18-JVM参数优化/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-18-JVM参数优化/" data-id="cjl2f7qxz000m74bbu8j92jwp" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-2018-08-17-MySQL的锁" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-17-MySQL的锁/" class="article-date">
-  <time datetime="2018-08-20T01:50:27.415Z" itemprop="datePublished">2018-08-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-17-MySQL的锁/">MySQL的整体架构</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="MySQL的锁"><a href="#MySQL的锁" class="headerlink" title="MySQL的锁"></a>MySQL的锁</h1><p>本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率
-        
-          <p class="article-more-link">
-            <a href="/alex.github.io/2018/08/20/2018-08-17-MySQL的锁/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-17-MySQL的锁/" data-id="cjl2f7qx8000374bbpa8uh6dq" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-
 
 </section>
         
