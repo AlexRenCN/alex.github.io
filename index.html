@@ -7,17 +7,17 @@
   
   <title>Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JAVA程序员，北漂一族">
+  <meta name="description" content="JAVA之路">
 <meta name="keywords" content="JAVA,MySQL,Linux">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Alex">
 <meta property="og:url" content="https://alexrencn.github.io/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JAVA程序员，北漂一族">
+<meta property="og:description" content="JAVA之路">
 <meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Alex">
-<meta name="twitter:description" content="JAVA程序员，北漂一族">
+<meta name="twitter:description" content="JAVA之路">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -70,10 +70,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-2018-08-18-REDIS-缓存一致性问题" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2018-08-18-缓存可能产生的问题及解决方案" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存一致性问题/" class="article-date">
-  <time datetime="2018-08-18T14:49:37.670Z" itemprop="datePublished">2018-08-18</time>
+    <a href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/" class="article-date">
+  <time datetime="2018-08-20T02:10:12.479Z" itemprop="datePublished">2018-08-20</time>
 </a>
     
   </div>
@@ -84,7 +84,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存一致性问题/">缓存一致性问题</a>
+      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
     </h1>
   
 
@@ -94,44 +94,19 @@
       
         <p>#缓存问题</p>
 <blockquote>
-<p>在缓存的日常运用中，经常会遇到从缓存中获取某个值，经过业务处理后需要更新数据库对于的数据和该缓存值的内容，而这两个操作和该请求中其他的操作都可能出现异常，甚至时候需要进行IO操作的时间过长，都可能会造成更新缓存和更新数据库只成功一种的情况，这会造成数据不一致，在生产环境中排查这类问题非常困难，如何在设计阶段保证缓存一致性是开发人员在使用缓存时必须考虑的问题</p>
-</blockquote>
-<p>##读操作的数据一致性</p>
-<p>如果缓存命中并直接返回，就不会进行DB操作，也就不存在一致性问题了<br><br>我们主要说一下未命中的情况，读操作涉及到数据库缓存的存放，整个请求的流程应该是</p>
-<ol>
-<li>从缓存中获取值</li>
-<li>缓存命中则使用缓存的值，未命中则需要进行下一步操作</li>
-<li>从数据库中获取值，一般是从读数据库中获取</li>
-<li>将数据进行缓存</li>
-<li>完成请求其他的操作</li>
-</ol>
-<p>##写操作的数据一致性<br>在写操作中，我们对于缓存的操作并不是修改而是直接淘汰，下一次请求Cache Miss之后去进行缓存的写操作，</p>
-<ol>
-<li>从缓存中获取值</li>
-<li>删除缓存，下一次查询缓存的时候会未命中，而去查询数据库</li>
-<li>更新数据库</li>
-<li>删除缓存</li>
-<li>完成请求其他的操作<blockquote>
-<p>如果使用这个策略，我们要注意的地方有，删除缓存后会不会造成缓存击穿的问题，也需要考虑，数据库更新需要耗费时间，在完成更新之前可能有另外的线程以及完成了旧数据的缓存，所以进行了两次缓存淘汰</p>
-</blockquote>
-</li>
-</ol>
-<p>##读写分离的数据一致性<br>数据不一致的来源首先来自于主从库不一致，然后由Catch miss时查询从库，导致的缓存和数据库不一致</p>
-<ol>
-<li><strong>读主库</strong>，针对热点数据，在短时间内可能会发生大量变化，此时主从同步的时间差很容易影响到缓存读取到的数据准确性，针对特殊的数据可以直接从主库读取，避免主从数据库不同步造成的后续影响</li>
-<li><strong>数据库监听</strong>，监听从库更新的数据，并针对缓存范围内的内容尝试进行缓存淘汰<br>##其他策略的简述</li>
-</ol>
-<ul>
-<li><strong>不去关心缓存的一致性</strong> 如果是像微博或者头条一样的产品，他们的推送内容是否要求必须一致呢，答案并不是，短时间的缓存不一致并不会造成问题，那么缓存和数据库只要做到最终一致性即可</li>
-</ul>
-
+<p>在设计和使用缓存的时候，我们必须要考虑到缓存系统的可用性，避免因使用缓存出现的问题，本文涉及到的内容是在整个架构体系正常运行的情况下可能会出现的致命问题，适合使用缓存做具体业务的开发人员进行查看<br>
+        
+          <p class="article-more-link">
+            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/18/2018-08-18-REDIS-缓存一致性问题/" data-id="cjl0z223l0001n6bb0u78s757" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/" data-id="cjl1n84d70009vdfy7rmtu53a" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/redis-缓存/">redis,缓存</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/redis/">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/缓存/">缓存</a></li></ul>
 
     </footer>
   </div>
@@ -140,10 +115,10 @@
 
 
   
-    <article id="post-2018-08-18-REDIS-缓存可能产生的问题及解决方案" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2018-08-18-缓存一致性问题" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存可能产生的问题及解决方案/" class="article-date">
-  <time datetime="2018-08-18T13:00:39.572Z" itemprop="datePublished">2018-08-18</time>
+    <a href="/alex.github.io/2018/08/20/2018-08-18-缓存一致性问题/" class="article-date">
+  <time datetime="2018-08-20T02:10:12.476Z" itemprop="datePublished">2018-08-20</time>
 </a>
     
   </div>
@@ -154,7 +129,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
+      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-18-缓存一致性问题/">缓存一致性问题</a>
     </h1>
   
 
@@ -164,57 +139,19 @@
       
         <p>#缓存问题</p>
 <blockquote>
-<p>在设计和使用缓存的时候，我们必须要考虑到缓存系统的可用性，避免因使用缓存出现的问题，本文涉及到的内容是在整个架构体系正常运行的情况下可能会出现的致命问题，适合使用缓存做具体业务的开发人员进行查看</p>
-</blockquote>
-<p>##缓存击穿</p>
-<blockquote>
-<p>如果我们对于某一个热点数据进行了缓存，在缓存失效的一瞬间有大量的请求进来，这个时候所有的请求都会被系统推到数据库，瞬间的请求完全可以把数据库压垮</p>
-</blockquote>
-<p>根据缓存击穿的发生条件，<strong>频繁</strong>、<strong>失效</strong>和**大量请求共同造成了这个问题，而可以产生缓存击穿的数据必然是极大的热点数据，我们不可能把访问频繁的问题通过任何方式处理掉，只需要考虑剩下两个问题即可</p>
-<ul>
-<li>使用互斥量，如果缓存未能命中，不是直接去访问数据库，而是先去争夺一个锁资源，通过Redis的SetNX或者Memcached的Add操作，都可以保证有一个唯一的请求可以争夺到锁，争夺到锁的线程就可以去访问数据库并且更新缓存，而其他线程没有得到该锁，就应该继续尝试获取缓存内容，做一个自旋锁，这个自旋锁会在其他线程更新缓存失败或者完成数据缓存之后结束，虽然占用了无用的CPU但是实际上自旋的时间很短</li>
-<li>提前更新，还是使用互斥量去争夺更新缓存的锁，不过更新的时间不再是失效时，而是在失效之前，通过在缓存中存储一个预计时效的时间，来判断是否需要更新缓存，而且可以灵活的根据实际场景选择没有得到更新锁的线程是自旋等待还是直接取当前缓存</li>
-<li>修改过期时间，如果业务要求并不严格而且缓存更新实在是屈指可数，我们可以不设定Redis的过期，而是由一个定时任务去定时更新缓存内容，这样可以减少上述因为缓存更新造成的CPU空跑现象和频繁校验，不过一定需要确定，在更新缓存的定时任务挂掉的情况下，业务功能是可以接受缓存不更新的<br>##缓存穿透<blockquote>
-<p>如果有不怀好意的人员针对某个接口进行攻击，不断的查询一个不可能存在的数据，这个时候我们即使使用了缓存，也不会在缓存里完成任何一次命中，这个请求就会到数据访问层进行数据库交互并查询出空结果集，或者发生异常，如果到数据库的查询过多，很可能会使数据库崩溃</p>
-</blockquote>
-</li>
-</ul>
-<p>根据缓存穿透的发生条件，<strong>频繁</strong>和<strong>不可能存在的键</strong>是两个触发此问题的根源，我们只需要限制这两个条件就会使该问题得到缓解<br></p>
-<ul>
-<li>使用限流，任何方式的限流都可以有效的解决这个问题，无论是针对DDOS攻击而购买的高防IP，或者是主流RPC框架提供的限流都会让这个问题得到缓解，进行查询的接口如果有了上线，那么只需要考虑在访问上限的情况下数据库能否承受就好了</li>
-<li>Key值过滤，我们在使用缓存的时候，key值的选择一般是有着一定的命名规范的，比如：系统名-业务名-KEY,这样能够做到避免key值冲突引发的惨案，而我们可以根据我们已知的命名规则，把不可能存在的key值做直接过滤也可以解决这个问题，常见的做法是使用布隆过滤器（一个超大的hashMap），或者直接把结果为空进行缓存，让下一个请求在缓存里命中，但是缓存时间不宜过长，因为我们并没有去考虑这个键是不会存在还是暂时不存在<br>##缓存雪崩<blockquote>
-<p>针对某种业务需要缓存大量的数据，如果这些数据时同时放入的，由于业务规则的一致性，这些缓存将会在某个时刻同时失效，在失效的这一时刻，大量的请求会发生缓存未命中的情况，同时请求数据库而把数据库压垮</p>
-</blockquote>
-</li>
-</ul>
-<p>根据缓存雪崩发生的条件，<strong>大量缓存</strong>和<strong>同时</strong>失效是产生问题的原因</p>
-<ul>
-<li>使用随机失效时间，在预估的失效时间之上做一个分散，比如之前的缓存希望存放60s，我们可以改为40S+随机数的模式，让缓存失效的时间分散在一个时间范围内，这样数据库的访问会得到一定的缓解</li>
-</ul>
-<p>##缓存并发</p>
-<blockquote>
-<p>在访问高并发数据的缓存副本时，如果缓存失效，无法保证设置缓存和更新数据库是同一个线程，可能会造成数据不一致的情况</p>
-</blockquote>
-<p>根据缓存并发发生的条件，<strong>并发更新</strong>和<strong>设置缓存</strong>是产生问题的原因，我们只需要保证这两个操作的原子性即可</p>
-<ul>
-<li>使用互斥量，由争取到分布式更新锁的线程去更新缓存，其他线程自旋等待，只要更新线程能够设置缓存和及时释放更新锁就能达到效果</li>
-</ul>
-<p>##缓存预热</p>
-<blockquote>
-<p>此场景发生在功能上线的时候，如果有大量的请求访问进来，但是刚刚上线的系统还没有任何缓存，这个时候所有请求又会到数据库中进行查询</p>
-</blockquote>
-<p>根据缓存预热发生的条件，<strong>大量请求</strong>和<strong>还未缓存</strong>是产生问题的原因，和此问题的名字一样，我们需要制定一些策略在上线之前对缓存进行预热</p>
-<ul>
-<li>使用预热程序，在系统上线之前先启动预热程序，将可能产生的缓存进行尽可能的放入缓存中，然后再进行部署</li>
-</ul>
-
+<p>在缓存的日常运用中，经常会遇到从缓存中获取某个值，经过业务处理后需要更新数据库对于的数据和该缓存值的内容，而这两个操作和该请求中其他的操作都可能出现异常，甚至时候需要进行IO操作的时间过长，都可能会造成更新缓存和更新数据库只成功一种的情况，这会造成数据不一致，在生产环境中排查这类问题非常困难，如何在设计阶段保证缓存一致性是开发人员在使用缓存时必须考虑的问题<br>
+        
+          <p class="article-more-link">
+            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存一致性问题/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/18/2018-08-18-REDIS-缓存可能产生的问题及解决方案/" data-id="cjl0z223r0004n6bb5j9xa4m4" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-18-缓存一致性问题/" data-id="cjl1n84d50008vdfyee8ipi12" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/redis-缓存/">redis,缓存</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/redis/">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/缓存/">缓存</a></li></ul>
 
     </footer>
   </div>
@@ -223,10 +160,10 @@
 
 
   
-    <article id="post-2018-08-18-JVM-JVM参数优化" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2018-08-18-JAVA的对象锁" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/" class="article-date">
-  <time datetime="2018-08-18T06:53:43.029Z" itemprop="datePublished">2018-08-18</time>
+    <a href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/" class="article-date">
+  <time datetime="2018-08-20T02:10:12.473Z" itemprop="datePublished">2018-08-20</time>
 </a>
     
   </div>
@@ -237,7 +174,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/">JVM内存模型</a>
+      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/">JAVA的对象锁</a>
     </h1>
   
 
@@ -245,123 +182,20 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="JVM启动参数调优"><a href="#JVM启动参数调优" class="headerlink" title="JVM启动参数调优"></a>JVM启动参数调优</h1><h2 id="堆内存调优"><a href="#堆内存调优" class="headerlink" title="堆内存调优"></a>堆内存调优</h2><ul>
-<li><strong>-XX:NewRatio=2</strong> 设置新生代比例，示例代表着设置新生代:老年代=1:2，即年轻代占堆总空间的三分之一</li>
-<li><strong>-XX:SurvivorRatio=8</strong> 设置新生代eden和Survivor的比例，示例代表着两个Survivor:eden=2比8，一个Survivor占十分之一</li>
-<li><strong>-XX:MaxTenuringThreshold-15</strong> 设置年轻代晋升老年代需要的年龄</li>
-<li><strong>-XX:PretenureSizeThreshold</strong> 设置大对象直接进入老年代的阈值</li>
-<li><strong>-Xms512M</strong>  设置JVM初始化时分配512M堆内存</li>
-<li><strong>-Xms2018M</strong> 设置JVM最大可以分配2G堆内存</li>
-<li><strong>-Xmn256M</strong> 设置JVM最小可以分配256M堆内存</li>
-<li><strong>-Xmn1024M</strong> 设置JVM年轻代大小为1G</li>
-<li><strong>-XX:MinHeapFreeRatio</strong>     设置堆空间最小空闲比例，小于这个比例时尝试扩展</li>
-<li><strong>-XX:MaxHeapFreeRatio</strong>     设置堆空间最大空闲比例，大于这个比例是开始压缩</li>
-<li><strong>-XX:NewSize</strong>   设置新生代的大小</li>
-<li><strong>-XX:TargetSurvivorRatio</strong>   设置Survivor区可使用率，超过这个比例会进行年轻代晋升到老年代，不会等待通过年龄进行晋升<h2 id="方法区调优"><a href="#方法区调优" class="headerlink" title="方法区调优"></a>方法区调优</h2></li>
-<li><strong>-XX:MaxPermSize=128M</strong>    设置方法区/永久代大小为128M</li>
-<li><strong>-XX:PremSize</strong>    设置方法区的初始值</li>
-</ul>
-<p>##虚拟机栈</p>
-<ul>
-<li><strong>-Xss1M</strong>    设置设置每个线程的堆栈大小为1M</li>
-</ul>
-<p>##本地方法栈</p>
-<ul>
-<li><strong>-Xoss10M</strong>   设置本地方法栈的大小为10M</li>
-</ul>
-<p>##垃圾回收</p>
-<ul>
-<li><strong>-XX:+UseSerialGc</strong>    设置对年轻代，老年代使用串行回收器</li>
-<li><strong>-XX:+UseParallelGC</strong>    设置对年轻代使用并行收集器，老年代使用仍使用串行收集器</li>
-<li><strong>-XX:+UseParNewGC</strong>    设置对年轻代使用并行回收收集期，老年代仍使用串行收集器</li>
-<li><strong>-XX:ParallelGCThreads=16</strong>    设置并行收集器的线程数，最好和处理器数目相等</li>
-<li><strong>-XX:+UseParallelOldGC</strong>    设置对年轻代、老年代进行并行回收处理器</li>
-<li><strong>-XX:GCTimeRatio</strong>    设置吞吐量大小，范围在0到100，系统GC时间占总时间的比例不超过 1/（1+n），默认n是99，即1/100=1%</li>
-<li><strong>-XX:+UseAdaptiveSizePolicy</strong>    设置并行收集器会自动选择年轻代区大小和区比例，达到预期的最长回收时间，如果采用并行收集器建议长开启</li>
-<li><strong>-XX:+UseConcMarkSweepGc</strong>    设置对年轻代使用并行收集器，老年代使用CMS</li>
-<li><strong>-XX:ParallelCMSThreads=5</strong>    设置设计CMS回收器的线程数量为5</li>
-<li><strong>-XX:CMSInitiatingOccupancyFraction</strong>    设置CMS回收器在老年代空间占比触发的比例，默认68%</li>
-<li><strong>-XX:+CMSClassUnloadingEnabled</strong>    设置CMS回收器对类元数据进行回收</li>
-<li><strong>-XX:+CMSParallelRemarkEnabled</strong>    设置CMS回收器并行重标记</li>
-<li><strong>-XX:CMSInitiatingPermOccupancyFraction</strong>    设置CMS回收器方法区占用率比例到达时，启动CMS回收，需要支持元数据回收才可以使用</li>
-<li><strong>-XX:UseCMSInitiatingOccupancyOnly</strong>    设置CMS回收器在到达阈值的时候才进行回收</li>
-<li><strong>-XX:+CMSIncrementalMode</strong>    设置使用增量模式，适合单CPU</li>
-<li><strong>-XX:+UseCMSCompactAtFullConnection</strong>    设置开启CMS回收器老年代的压缩，消除碎片</li>
-<li><strong>-XX:CMSFullGCsBeforeCompactioin=5</strong>    设置设置多少次Full GC会产生一次内存压缩</li>
-<li><strong>-XX:+UseG1GC</strong>    设置使用G1回收器</li>
-<li><strong>-XX:+UnlockExperimentalVMPotions</strong>    设置允许使用实验性参数</li>
-<li><strong>-XX:MaxGCpauseMillis=100</strong>    设置G1回收器每次年轻代回收的最长时间，如果无法满足此时间，JVM会自动跳转年轻代大小来满足此值</li>
-<li><strong>-XX:GCPauseIntervalMills</strong>    设置G1会火速停顿间隔时间</li>
-</ul>
-<h2 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h2><ul>
-<li><strong>-XX:+PrintGC</strong>    设置输出GC日志</li>
-<li><strong>-XX:+PrintGCDetails</strong>    设置输出GC的详细日志</li>
-<li><strong>-XX:+PrintGCTimeStamps</strong>    设置输出GC的时间戳（以基准时间的形式）</li>
-<li><strong>-XX:+PrintGCDateStamps</strong>    设置输出GC的时间戳（以日期的形式，如 2017-09-04T21:53:59.234+0800）</li>
-<li><strong>-XX:+PrintGCApplicationConcurrentTime</strong>    设置输出每次垃圾会收取程序未中断的执行时间</li>
-<li><strong>-XX:+PrintGCApplicationStoppedTime</strong>    设置输出每次垃圾回收期间程序暂停的时间</li>
-<li><strong>-XX:+PrintHeapAtGC</strong> 设置在进行GC的前后打印出堆的信息</li>
-<li><strong>-Xloggc:../logs/gc.log</strong> 设置日志文件的输出路径</li>
-<li><strong>-XX:+DisableExplicitGC</strong>    设置禁用显示GC，例如System.GC()</li>
-<li><strong>-Xincgc</strong>    设置使用增量GC让GC和线程交替运行，减少停顿</li>
-</ul>
-<h2 id="JIT编译"><a href="#JIT编译" class="headerlink" title="JIT编译"></a>JIT编译</h2><ul>
-<li><strong>-XX:+CITime</strong>    JIT编译的基本信息</li>
-<li><strong>-XX:CompileThreshold</strong>    运行时将字节码编译成本地代码提高效率</li>
-</ul>
-<h2 id="堆Dump"><a href="#堆Dump" class="headerlink" title="堆Dump"></a>堆Dump</h2><ul>
-<li><strong>-XX:+HeapDumpOnOutOfMemoryError</strong>    程序OOM时进行快照</li>
-<li><strong>-XX:+HeapDumpPath</strong>    指定快照的保存地址</li>
-</ul>
-<h2 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h2><ul>
-<li><strong>-XX:+TraceClassLoading</strong>    追踪类加载</li>
-<li><strong>-XX:+TraceClassUnLoading</strong>    追踪类卸载</li>
-<li><strong>-XX:+PrintClassHistogram</strong>    打开运行时实力信息，统计系统内类</li>
-</ul>
-<h2 id="类校验"><a href="#类校验" class="headerlink" title="类校验"></a>类校验</h2><ul>
-<li><strong>-XX:-UseSplitVerifier</strong>    指定用旧的类教研群</li>
-<li><strong>-XX:-FailOverToOldVerifier</strong>    新校验器失败使用该设置用老校验器再次校验</li>
-</ul>
-<h2 id="Solaris线程控制"><a href="#Solaris线程控制" class="headerlink" title="Solaris线程控制"></a>Solaris线程控制</h2><ul>
-<li><strong>-XX:+UseBoundThreads</strong>    绑定所有用户线程到内核线程，减少饥饿状态次数</li>
-<li><strong>-XX:+UseLWPSynchronization</strong>    使用内核线程替换线程同步</li>
-<li><strong>-XX:+UseVMInterruptibleIO</strong>    允许运行时中断线程</li>
-</ul>
-<h2 id="使用内存大页"><a href="#使用内存大页" class="headerlink" title="使用内存大页"></a>使用内存大页</h2><ul>
-<li><strong>-XX:+UseLargePagess</strong>        使用大页，减少内存分页表项</li>
-<li><strong>-XX:LargePageSizeInBytes</strong>    设置大页的大小，大的内存分页可以提高CPU的内存寻址能力</li>
-</ul>
-<h2 id="压缩指针"><a href="#压缩指针" class="headerlink" title="压缩指针"></a>压缩指针</h2><ul>
-<li><strong>-XX:+UseCompressedOops</strong>    压缩指针减少内存消耗</li>
-</ul>
-<h2 id="DEBUG"><a href="#DEBUG" class="headerlink" title="DEBUG"></a>DEBUG</h2><ul>
-<li><strong>-XDebug</strong>                    通知JVM在Debug模式下工作</li>
-<li><p><strong>-Xrunjdwp</strong>                通知JVM使用java debug wrie protocol模式运行调试环境</p>
-<blockquote>
-<p><strong>transport</strong>            在调试程序和VM使用的进程直接通向<br><br><strong>de_socket</strong>            套接字传输<br><br><strong>de_shmem</strong>            内存共享传输（Windows系统）<br><br><strong>server=y/n</strong>            VM是否需要用来作为调试服务器执行<br><br><strong>address</strong>                调试服务器端口号，客户端用来连接的端口号<br><br><strong>suspend=y/n</strong>            是否在调试客户端简历后启动vm<br><br><strong>-Xnoagent</strong>                禁用默认sun.tools.debug调试器<br><br><strong>一个我使用的参数配置</strong> -Xrunjdwp:server=y,transport=dt_socket,addtess=9416,suspend=n</p>
-</blockquote>
-</li>
-<li><p><strong>-Djava.compiler=None</strong>        禁止JIT编译器行为</p>
-</li>
-</ul>
-<h2 id="JMX远程调优"><a href="#JMX远程调优" class="headerlink" title="JMX远程调优"></a>JMX远程调优</h2><ul>
-<li><strong>-Dcom.sun.management.jmxremote</strong>                                启动远程JMX</li>
-<li><strong>-Dcom.sun.management.jmxremote.authenticate</strong>    true/false        启用鉴权</li>
-<li><strong>-Dcom.sun.management.jmxremote.port</strong>            1-65535            远程端口号</li>
-<li><strong>-Dcom.sun.management.jmxremote.local.only</strong>        true/false        是否只能本地调试</li>
-<li><strong>-Dcom.sun.management.jmxremote.ssl</strong>            true/false        是否支持SSL</li>
-<li><strong>-Dcom.sun.management.jmxremote.access.file</strong>    文件路径            鉴权的账户文件</li>
-<li><strong>-Dcom.sun.management.jmxremote.password.file</strong>    文件路径            鉴权的密码文件</li>
-<li><strong>-Djava.rmi.server.hostname</strong>                        ip/domain        链接IP</li>
-</ul>
-
+        <h1 id="JAVA的锁"><a href="#JAVA的锁" class="headerlink" title="JAVA的锁"></a>JAVA的锁</h1><h2 id="JAVA线程调度模式"><a href="#JAVA线程调度模式" class="headerlink" title="JAVA线程调度模式"></a>JAVA线程调度模式</h2><blockquote>
+<p>在谈及JAVA锁之前，不如先去了解一下JAVA线程的调度模式吧，线程调度模式一般分为两种，抢占式调度和协同式调度，<strong>抢占式调度</strong>是由系统在某种算法的运行下给所有线程CPU的时间切片，这个时候所有的线程都会在分配到的时间内进行自己的操作，但是优先级低的线程可能就没有得到分配，所谓并行也只不过是轮流占用CPU资源，并没有达到在单核中同时执行多个线程，<strong>协同式调度</strong>是由线程完成后主动将CPU让给下一个线程，而JAVA使用的是抢占式调度，根据线程优先级来分配CPU时间片<br>
+        
+          <p class="article-more-link">
+            <a href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/" data-id="cjl0z223q0003n6bbywgg740b" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-18-JAVA的对象锁/" data-id="cjl1n84d00003vdfy7eex1zqa" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JAVA/">JAVA</a></li></ul>
 
     </footer>
   </div>
@@ -370,10 +204,10 @@
 
 
   
-    <article id="post-2018-08-18-JVM-JVM内存模型" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-2018-08-17-数据库事务" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/" class="article-date">
-  <time datetime="2018-08-18T06:14:26.106Z" itemprop="datePublished">2018-08-18</time>
+    <a href="/alex.github.io/2018/08/20/2018-08-17-数据库事务/" class="article-date">
+  <time datetime="2018-08-20T02:10:12.469Z" itemprop="datePublished">2018-08-20</time>
 </a>
     
   </div>
@@ -384,7 +218,101 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/">JVM内存模型</a>
+      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-17-数据库事务/">数据库事务</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><p>事务是指一组原子性的SQL操作</p>
+<h2 id="事务的特性"><a href="#事务的特性" class="headerlink" title="事务的特性"></a>事务的特性</h2><p>一个事务必须遵循ACID原则</p>
+<ol>
+<li><strong><em>原子性(atomicity)</em></strong> 事务作为最小的一个工作单元，每个事务中包含的所有操作，要么全部成功，要么全部失败</li>
+<li><strong><em>一致性(consistency)</em></strong> 数据库总是会从一个一致性状态到另一个一致性状态，事务在操作过程中如果中断，做出的部分修改不会被保存</li>
+<li><strong><em>隔离性(isolation)</em></strong> 事务A做出部分修改之后，事务B一般不会看到A所做出的改变（在未提交读隔离级别产生的脏读以及可串行化之下的隔离级别产生的幻读场景下仍然可以看到）</li>
+<li><strong><em>持久性(durability)</em></strong> 一旦事务提交，事务提交的数据就会被记录在数据库中持久存储
+        
+          <p class="article-more-link">
+            <a href="/alex.github.io/2018/08/20/2018-08-17-数据库事务/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-17-数据库事务/" data-id="cjl1n84cw0001vdfy5pqh3u3c" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/事务/">事务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/数据库/">数据库</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2018-08-19-分布式系统如何保证幂等性" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/" class="article-date">
+  <time datetime="2018-08-20T02:09:33.379Z" itemprop="datePublished">2018-08-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/">分布式系统如何保证幂等性</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>##起因</p>
+<blockquote>
+<p>近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，重复处理了一些订单<br>
+        
+          <p class="article-more-link">
+            <a href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/" data-id="cjl1n84d8000bvdfy6yhp0oo7" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/分布式/">分布式</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/幂等性设计/">幂等性设计</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2018-08-18-JVM内存模型" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/20/2018-08-18-JVM内存模型/" class="article-date">
+  <time datetime="2018-08-20T01:55:20.395Z" itemprop="datePublished">2018-08-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-18-JVM内存模型/">JVM内存模型</a>
     </h1>
   
 
@@ -393,63 +321,105 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><blockquote>
-<p>JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决</p>
-</blockquote>
-<h2 id="JVM区域划分"><a href="#JVM区域划分" class="headerlink" title="JVM区域划分"></a>JVM区域划分</h2><ol>
-<li>JVM指令系统<blockquote>
-<p>用来指定需要在目标平台上的操作指令</p>
-<ol>
-<li><strong>操作码</strong> 用来执行一条操作的性质</li>
-<li><strong>操作数</strong> 紧随操作码之后，被分为两个以上字节</li>
-</ol>
-</blockquote>
-</li>
-<li>JVM寄存器<blockquote>
-<p>用来保存CPU中包含的保存系统状态和处理信息的寄存器组，减少虚拟机对堆栈的访问，常用的JVM寄存器有四种</p>
-<ol>
-<li>PC程序计数器，用于记录程序的执行</li>
-<li>optop操作数栈顶指针，用于记录JAVA栈的指针</li>
-<li>frame当前执行环境指针，用于记录JAVA栈的指针</li>
-<li>vars当前执行环境第一个局部变量指针，用于记录JAVA栈的指针</li>
-</ol>
-</blockquote>
-</li>
-<li>JVM栈结构<ol>
-<li><strong>局部变量</strong> 存储类方法中的局部变量</li>
-<li><strong>执行环境</strong> 上次调用的方法、局部变量指针、操作数栈、栈底指针</li>
-<li><strong>操作数栈</strong> 存储运算所需要的操作数和结果</li>
-</ol>
-</li>
-<li>JVM碎片回收堆</li>
-<li><p>JVM存储区</p>
-<ol>
-<li><strong>常量缓冲池</strong> 类名、方法名、常量</li>
-<li><strong>方法区</strong> 方法字节码<h2 id="JAVA运行时的内存结构"><a href="#JAVA运行时的内存结构" class="headerlink" title="JAVA运行时的内存结构"></a>JAVA运行时的内存结构</h2><blockquote>
-<p>局部变量表是在编译阶段已经确定的内容，包含已知的基本数据类型，对象引用（指向对象的原始地址或者引用指针、对象句柄、或者用来指向一条字节码指令的returnAddress类型），该区域在方法执行期间不会做出改变大小</p>
-</blockquote>
-</li>
-</ol>
-</li>
-<li><p><strong>方法区</strong> 被所有线程共享，存储加载类时读取的类信息，常量，静态变量以及字节码</p>
-</li>
-<li><strong>JAVA虚拟机栈</strong> 每一个线程都会独享一个栈，为虚拟机执行方法进行服务，存储局部变量表、操作数栈、动态链接、方法出口等</li>
-<li><strong>JAVA虚拟机堆</strong> 被所有线程共享，在虚拟机启动时创建，用于存放对象实例，可以细分为新生代Young和老年代Old，年轻代可以再次划分为Eden、FromSurvivor和ToSurvivor，默认情况下新生代占堆内存的三分之一，随着JIT编译器和逃逸分析的发展，虚拟机可以更好的进行栈上分配和标量替换，所以并不是所有的对象创建都会分配到Heap了</li>
-<li><strong>本地方法栈</strong> 每一个线程都会独享一个栈，为虚拟机执行Native方法进行服务，存储局部变量表、操作数栈、动态链接、方法出口等</li>
-<li><strong>程序计数器</strong> 每一个线程都会独享一个程序计数器，相互之间不会影响，记录当前字节码的行号指令器</li>
-</ol>
-<h2 id="JVM执行程序的过程"><a href="#JVM执行程序的过程" class="headerlink" title="JVM执行程序的过程"></a>JVM执行程序的过程</h2><ol>
-<li>加载Class文件</li>
-<li>管理、分配内存</li>
-<li>进行垃圾回收</li>
-</ol>
-
+<p>JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决<br>
+        
+          <p class="article-more-link">
+            <a href="/alex.github.io/2018/08/20/2018-08-18-JVM内存模型/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/" data-id="cjl0z223f0000n6bb8gecrdo5" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-18-JVM内存模型/" data-id="cjl1n84d20004vdfy0m8ed10x" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2018-08-18-JVM参数优化" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/20/2018-08-18-JVM参数优化/" class="article-date">
+  <time datetime="2018-08-20T01:55:20.391Z" itemprop="datePublished">2018-08-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-18-JVM参数优化/">JVM内存模型</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="JVM启动参数调优"><a href="#JVM启动参数调优" class="headerlink" title="JVM启动参数调优"></a>JVM启动参数调优</h1><p>本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我
+        
+          <p class="article-more-link">
+            <a href="/alex.github.io/2018/08/20/2018-08-18-JVM参数优化/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-18-JVM参数优化/" data-id="cjl1n84d30005vdfy9cmebz1a" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-2018-08-17-MySQL的锁" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/20/2018-08-17-MySQL的锁/" class="article-date">
+  <time datetime="2018-08-20T01:50:27.415Z" itemprop="datePublished">2018-08-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/alex.github.io/2018/08/20/2018-08-17-MySQL的锁/">MySQL的整体架构</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="MySQL的锁"><a href="#MySQL的锁" class="headerlink" title="MySQL的锁"></a>MySQL的锁</h1><p>本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率
+        
+          <p class="article-more-link">
+            <a href="/alex.github.io/2018/08/20/2018-08-17-MySQL的锁/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-17-MySQL的锁/" data-id="cjl1n84cr0000vdfy75iltokq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li></ul>
 
     </footer>
   </div>
@@ -471,7 +441,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/redis-缓存/">redis,缓存</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/JAVA/">JAVA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/redis/">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/事务/">事务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/分布式/">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/幂等性设计/">幂等性设计</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/缓存/">缓存</a></li></ul>
     </div>
   </div>
 
@@ -481,7 +451,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/alex.github.io/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/alex.github.io/tags/redis-缓存/" style="font-size: 10px;">redis,缓存</a>
+      <a href="/alex.github.io/tags/JAVA/" style="font-size: 10px;">JAVA</a> <a href="/alex.github.io/tags/JVM/" style="font-size: 20px;">JVM</a> <a href="/alex.github.io/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/alex.github.io/tags/redis/" style="font-size: 20px;">redis</a> <a href="/alex.github.io/tags/事务/" style="font-size: 10px;">事务</a> <a href="/alex.github.io/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/alex.github.io/tags/幂等性设计/" style="font-size: 10px;">幂等性设计</a> <a href="/alex.github.io/tags/数据库/" style="font-size: 10px;">数据库</a> <a href="/alex.github.io/tags/缓存/" style="font-size: 20px;">缓存</a>
     </div>
   </div>
 
@@ -503,19 +473,23 @@
       <ul>
         
           <li>
-            <a href="/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存一致性问题/">缓存一致性问题</a>
+            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/18/2018-08-18-REDIS-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
+            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存一致性问题/">缓存一致性问题</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM参数优化/">JVM内存模型</a>
+            <a href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/">JAVA的对象锁</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/18/2018-08-18-JVM-JVM内存模型/">JVM内存模型</a>
+            <a href="/alex.github.io/2018/08/20/2018-08-17-数据库事务/">数据库事务</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/">分布式系统如何保证幂等性</a>
           </li>
         
       </ul>

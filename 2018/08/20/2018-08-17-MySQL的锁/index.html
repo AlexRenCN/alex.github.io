@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>MySQL的整体架构 | Alex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="MySQL的锁本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率">
+<meta name="keywords" content="MySQL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL的整体架构">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/20/2018-08-17-MySQL的锁/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="MySQL的锁本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-20T01:50:27.415Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL的整体架构">
+<meta name="twitter:description" content="MySQL的锁本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率">
+  
+    <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/alex.github.io/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/alex.github.io/" id="logo">Alex</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/alex.github.io/" id="subtitle">可达鸭眉头一紧，发现编程并不简单</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/alex.github.io/">Home</a>
+        
+          <a class="main-nav-link" href="/alex.github.io/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/alex.github.io/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://alexrencn.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2018-08-17-MySQL的锁" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/20/2018-08-17-MySQL的锁/" class="article-date">
+  <time datetime="2018-08-20T01:50:27.415Z" itemprop="datePublished">2018-08-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      MySQL的整体架构
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="MySQL的锁"><a href="#MySQL的锁" class="headerlink" title="MySQL的锁"></a>MySQL的锁</h1><p>本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率<a id="more"></a></p>
+<h2 id="锁级别分类描述"><a href="#锁级别分类描述" class="headerlink" title="锁级别分类描述"></a>锁级别分类描述</h2><ol>
+<li><strong>共享锁</strong> ，读锁，只有在读和读之间可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事务更新</li>
+<li><strong>排它锁</strong> ，写锁，不可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事物更新和读取</li>
+<li><strong>意向锁</strong> ，有读锁和写锁，由于共享锁和排它锁都可以针对行，在事务中如果涉及到多表操作，可能在不同事务内会造成死锁的问题，MySQL为了避免锁的冲突，使用意向锁，事务A在申请一行的行锁的时候，数据库会先自动申请意向锁，事务B在申请排它锁的时候会先查看表是否被其他事务加了表锁，然后再查看表是否加了意向共享锁，如果有，事务B申请表排它锁的步骤会被堵塞，只存在表锁</li>
+<li><strong>间隙锁</strong> ，写锁，不可以重入，为了避免幻读的情况出现，主要出现在同一个事务先Delete再Insert的情况下，数据库扫描索引，发现Delete的数据是一个间隙锁，然后就会向左右各扫描到一个值，锁住整个区间内的数据，会造成死锁的出现<h2 id="锁粒度分类描述"><a href="#锁粒度分类描述" class="headerlink" title="锁粒度分类描述"></a>锁粒度分类描述</h2></li>
+</ol>
+<table><br>    <thead><br>        <tr><br>            <th></th><br>            <th>行锁</th><br>            <th>页锁</th><br>            <th>表锁</th><br>        </tr><br>    </thead><br>    <body><br>        <tr><br>            <th>锁范围</th><br>            <th>当前操作行</th><br>            <th>当前操作行相邻的一组数据</th><br>            <th>当前表</th><br>        </tr><br>        <tr><br>            <th>开销</th><br>            <th>最大</th><br>            <th>折中</th><br>            <th>最小</th><br>        </tr><br>        <tr><br>            <th>并发度</th><br>            <th>最低</th><br>            <th>折中</th><br>            <th>最高</th><br>        </tr><br>        <tr><br>            <th>死锁</th><br>            <th>会</th><br>            <th>会</th><br>            <th>不会</th><br>        </tr><br>    </body><br></table>
+
+
+<h2 id="加锁方式分类描述"><a href="#加锁方式分类描述" class="headerlink" title="加锁方式分类描述"></a>加锁方式分类描述</h2><ol>
+<li><p>显式加锁</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">1</span> <span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share</span> <span class="keyword">mode</span>;<span class="comment">--共享锁</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">1</span> <span class="keyword">for</span> <span class="keyword">update</span>;<span class="comment">--排它锁</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自动加锁，数据库在执行事务的时候自动进行加锁</p>
+</li>
+</ol>
+<h4 id="操作方式分类描述"><a href="#操作方式分类描述" class="headerlink" title="操作方式分类描述"></a>操作方式分类描述</h4><ol>
+<li><strong>DDL锁</strong> (Data Manipulation Language)数据操控语言，针对数据库中的数据进行操作</li>
+<li><strong>DML锁</strong> (Data Definition Language)数据库定义语言，针对表的结构、数据类型、约束等关系进行操作</li>
+<li><strong>DCL锁</strong> (Data Control Language)数据库控制语言，针对数据库的用户和权限进行操作</li>
+</ol>
+<h4 id="从使用方式进行加锁"><a href="#从使用方式进行加锁" class="headerlink" title="从使用方式进行加锁"></a>从使用方式进行加锁</h4><ol>
+<li><strong>乐观锁</strong></li>
+<li><strong>悲观锁</strong> </li>
+</ol>
+
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-17-MySQL的锁/" data-id="cjl1n84cr0000vdfy75iltokq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/alex.github.io/2018/08/20/2018-08-18-JVM参数优化/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JVM内存模型
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/JAVA/">JAVA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/redis/">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/事务/">事务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/分布式/">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/幂等性设计/">幂等性设计</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/缓存/">缓存</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/alex.github.io/tags/JAVA/" style="font-size: 10px;">JAVA</a> <a href="/alex.github.io/tags/JVM/" style="font-size: 20px;">JVM</a> <a href="/alex.github.io/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/alex.github.io/tags/redis/" style="font-size: 20px;">redis</a> <a href="/alex.github.io/tags/事务/" style="font-size: 10px;">事务</a> <a href="/alex.github.io/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/alex.github.io/tags/幂等性设计/" style="font-size: 10px;">幂等性设计</a> <a href="/alex.github.io/tags/数据库/" style="font-size: 10px;">数据库</a> <a href="/alex.github.io/tags/缓存/" style="font-size: 20px;">缓存</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/alex.github.io/archives/2018/08/">八月 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存一致性问题/">缓存一致性问题</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/">JAVA的对象锁</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/20/2018-08-17-数据库事务/">数据库事务</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/">分布式系统如何保证幂等性</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Alex Ren<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/alex.github.io/" class="mobile-nav-link">Home</a>
+  
+    <a href="/alex.github.io/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/alex.github.io/fancybox/jquery.fancybox.css">
+  <script src="/alex.github.io/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/alex.github.io/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

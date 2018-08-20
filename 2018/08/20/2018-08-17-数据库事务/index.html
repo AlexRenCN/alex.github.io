@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>数据库事务 | Alex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="事务事务是指一组原子性的SQL操作 事务的特性一个事务必须遵循ACID原则  原子性(atomicity) 事务作为最小的一个工作单元，每个事务中包含的所有操作，要么全部成功，要么全部失败 一致性(consistency) 数据库总是会从一个一致性状态到另一个一致性状态，事务在操作过程中如果中断，做出的部分修改不会被保存 隔离性(isolation) 事务A做出部分修改之后，事务B一般不会看到A所">
+<meta name="keywords" content="事务,数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库事务">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/20/2018-08-17-数据库事务/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="事务事务是指一组原子性的SQL操作 事务的特性一个事务必须遵循ACID原则  原子性(atomicity) 事务作为最小的一个工作单元，每个事务中包含的所有操作，要么全部成功，要么全部失败 一致性(consistency) 数据库总是会从一个一致性状态到另一个一致性状态，事务在操作过程中如果中断，做出的部分修改不会被保存 隔离性(isolation) 事务A做出部分修改之后，事务B一般不会看到A所">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-20T02:10:12.470Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据库事务">
+<meta name="twitter:description" content="事务事务是指一组原子性的SQL操作 事务的特性一个事务必须遵循ACID原则  原子性(atomicity) 事务作为最小的一个工作单元，每个事务中包含的所有操作，要么全部成功，要么全部失败 一致性(consistency) 数据库总是会从一个一致性状态到另一个一致性状态，事务在操作过程中如果中断，做出的部分修改不会被保存 隔离性(isolation) 事务A做出部分修改之后，事务B一般不会看到A所">
+  
+    <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/alex.github.io/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/alex.github.io/" id="logo">Alex</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/alex.github.io/" id="subtitle">可达鸭眉头一紧，发现编程并不简单</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/alex.github.io/">Home</a>
+        
+          <a class="main-nav-link" href="/alex.github.io/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/alex.github.io/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://alexrencn.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-2018-08-17-数据库事务" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/20/2018-08-17-数据库事务/" class="article-date">
+  <time datetime="2018-08-20T02:10:12.469Z" itemprop="datePublished">2018-08-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      数据库事务
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><p>事务是指一组原子性的SQL操作</p>
+<h2 id="事务的特性"><a href="#事务的特性" class="headerlink" title="事务的特性"></a>事务的特性</h2><p>一个事务必须遵循ACID原则</p>
+<ol>
+<li><strong><em>原子性(atomicity)</em></strong> 事务作为最小的一个工作单元，每个事务中包含的所有操作，要么全部成功，要么全部失败</li>
+<li><strong><em>一致性(consistency)</em></strong> 数据库总是会从一个一致性状态到另一个一致性状态，事务在操作过程中如果中断，做出的部分修改不会被保存</li>
+<li><strong><em>隔离性(isolation)</em></strong> 事务A做出部分修改之后，事务B一般不会看到A所做出的改变（在未提交读隔离级别产生的脏读以及可串行化之下的隔离级别产生的幻读场景下仍然可以看到）</li>
+<li><strong><em>持久性(durability)</em></strong> 一旦事务提交，事务提交的数据就会被记录在数据库中持久存储<a id="more"></a>
+<h2 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h2></li>
+<li><strong><em>未提交读(READ UNCOMMITED)</em></strong> 事务中的修改即使没有提交，对其他事务也是可见的</li>
+<li><strong><em>已提交读(READ COMMITED)</em></strong> 一个事务从开始到提交，所做的任何操作对其他事务都不可见，但是执行两次同样的查询得到的结果可能不同，是大部分数据库的默认隔离级别</li>
+<li><strong><em>可重复读(REPEATABLE READ)</em></strong> 一个事务从开始到提交，所做的任何操作对其他事物都不可见，执行多次同样的查询语句得到的结果一致，这是MySQL数据库的默认隔离级别</li>
+<li><strong><em>可串行化(SERIALIZABLE)</em></strong> 强制事务串行执行，在读取的每一条数据上都加锁</li>
+</ol>
+<h2 id="读取问题"><a href="#读取问题" class="headerlink" title="读取问题"></a>读取问题</h2><ol>
+<li>脏读 事务可以读取未提交的数据</li>
+<li>幻读 当事务在读取某个范围内的记录是，另外一个事务又在该范围内插入了新的记录，之前的事务再次读取该范围内的记录是会产生换行</li>
+</ol>
+<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><p>两个或多个事务在一对资源上相互占用，并且请求占用对方的资源，从而导致恶性循环<br><br>InnoDB会在锁超过等待超时的设定后自动回滚持有行级排它锁最少的事务</p>
+<h2 id="MySQL中的事务"><a href="#MySQL中的事务" class="headerlink" title="MySQL中的事务"></a>MySQL中的事务</h2><ul>
+<li><p>MySQL采用AUTOCOMMIT自动提交模式，每一个语句都会被当做一个事务进行操作提交，可以手动设置不自动提交</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> AUTOCOMMIT=<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>并且可以手动进行设定隔离级别</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> SEESION <span class="keyword">TRANSACTION</span> <span class="keyword">ISOLATION</span> <span class="keyword">LEVEL</span> <span class="keyword">READ</span> <span class="keyword">COMMIT</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>由于事务的处理是由MySQL的第三层，也就是存储引擎实现的，所以跨引擎的事务是不可靠的</p>
+</li>
+<li>InnoDB引擎的锁采用二阶段锁定协议，在事务执行的过程中随时都可以执行加锁，在COMMIT或者ROLLBACK时同时释放所有锁</li>
+</ul>
+
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-17-数据库事务/" data-id="cjl1n84cw0001vdfy5pqh3u3c" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/事务/">事务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/数据库/">数据库</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JAVA的对象锁
+        
+      </div>
+    </a>
+  
+  
+    <a href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">分布式系统如何保证幂等性</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/JAVA/">JAVA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/redis/">redis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/事务/">事务</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/分布式/">分布式</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/幂等性设计/">幂等性设计</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/数据库/">数据库</a></li><li class="tag-list-item"><a class="tag-list-link" href="/alex.github.io/tags/缓存/">缓存</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/alex.github.io/tags/JAVA/" style="font-size: 10px;">JAVA</a> <a href="/alex.github.io/tags/JVM/" style="font-size: 20px;">JVM</a> <a href="/alex.github.io/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/alex.github.io/tags/redis/" style="font-size: 20px;">redis</a> <a href="/alex.github.io/tags/事务/" style="font-size: 10px;">事务</a> <a href="/alex.github.io/tags/分布式/" style="font-size: 10px;">分布式</a> <a href="/alex.github.io/tags/幂等性设计/" style="font-size: 10px;">幂等性设计</a> <a href="/alex.github.io/tags/数据库/" style="font-size: 10px;">数据库</a> <a href="/alex.github.io/tags/缓存/" style="font-size: 20px;">缓存</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/alex.github.io/archives/2018/08/">八月 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存一致性问题/">缓存一致性问题</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/">JAVA的对象锁</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/20/2018-08-17-数据库事务/">数据库事务</a>
+          </li>
+        
+          <li>
+            <a href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/">分布式系统如何保证幂等性</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Alex Ren<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/alex.github.io/" class="mobile-nav-link">Home</a>
+  
+    <a href="/alex.github.io/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/alex.github.io/fancybox/jquery.fancybox.css">
+  <script src="/alex.github.io/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/alex.github.io/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

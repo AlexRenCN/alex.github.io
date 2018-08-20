@@ -941,6 +941,10 @@ a.article-title:hover {
   max-width: 100%;
   margin: 0 auto;
 }
+.article-statement {
+  font-size: 1em;
+  font-family: "微软雅黑";
+}
 #comments {
   background: #fff;
   -webkit-box-shadow: 1px 2px 3px #ddd;
