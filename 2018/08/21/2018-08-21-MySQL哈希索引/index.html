@@ -5,19 +5,20 @@
   
 
   
-  <title>Tag: JAVA | Alex</title>
+  <title>MySQL的哈希索引 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JAVA之路">
-<meta name="keywords" content="JAVA,MySQL,Linux">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Alex">
-<meta property="og:url" content="https://alexrencn.github.io/tags/JAVA/index.html">
+  <meta name="description" content="基于InnoDB存储引擎的哈希索引描述，帮助以后再合适的场景下选择正确的索引">
+<meta name="keywords" content="MySQL,聚簇索引">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL的哈希索引">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/21/2018-08-21-MySQL哈希索引/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JAVA之路">
+<meta property="og:description" content="基于InnoDB存储引擎的哈希索引描述，帮助以后再合适的场景下选择正确的索引">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-21T14:57:40.644Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Alex">
-<meta name="twitter:description" content="JAVA之路">
+<meta name="twitter:title" content="MySQL的哈希索引">
+<meta name="twitter:description" content="基于InnoDB存储引擎的哈希索引描述，帮助以后再合适的场景下选择正确的索引">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -68,40 +69,72 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/alex.github.io/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/" class="archive-article-date">
-  <time datetime="2018-08-20T02:10:12.473Z" itemprop="datePublished">8月 20</time>
+        <section id="main"><article id="post-2018-08-21-MySQL哈希索引" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL哈希索引/" class="article-date">
+  <time datetime="2018-08-21T14:57:40.644Z" itemprop="datePublished">2018-08-21</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/">JAVA的对象锁</a>
+    <h1 class="article-title" itemprop="name">
+      MySQL的哈希索引
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>基于InnoDB存储引擎的哈希索引描述，帮助以后再合适的场景下选择正确的索引<br><a id="more"></a></p>
+</blockquote>
+<p>####什么是哈希索引<br>哈希索引基于哈希表实现，只有命中该索引的所有列时才会生效</p>
+<p>####聚簇索引的数据结构<br>根据所有索引列计算哈希值，把哈希值放在索引中，并记录哈希指向的数据指针<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">哈希1--&gt;数据行1</span><br><span class="line">哈希2--&gt;数据行2</span><br><span class="line">哈希3--&gt;数据行3</span><br><span class="line">哈希4--&gt;数据行4</span><br><span class="line">哈希1--&gt;哈希2</span><br><span class="line">哈希2--&gt;哈希3</span><br><span class="line">哈希3--&gt;哈希4</span><br></pre></td></tr></table></figure></p>
+<p>####优点</p>
+<ul>
+<li>哈希索引只支持等值比较查询，（=、in、&lt;=&gt;、）</li>
+<li>查询速度更快</li>
+</ul>
+<p>####缺点</p>
+<ul>
+<li>哈希索引只存储哈希值和数据行指针，不存储任何字段，所有无法避免数据行的读取</li>
+<li>哈希索引并不存在顺序，无法用于排序</li>
+<li>哈希索引需要根据所有索引列匹配，无法用部分列得到哈希值</li>
+<li>哈希索引没有存储字段，所以无法用于范围查询</li>
+<li>哈希索引在哈希冲突严重的时候，需要遍历所有冲突的数据，影响查询以及删除效率</li>
+</ul>
 
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/08/21/2018-08-21-MySQL哈希索引/" data-id="cjl3u7it1000ghnbbo5s4idu9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/聚簇索引/">聚簇索引</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL聚簇索引/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">MySQL的聚簇索引</div>
+    </a>
+  
+</nav>
+
+  
+</article>
 
 </section>
         
