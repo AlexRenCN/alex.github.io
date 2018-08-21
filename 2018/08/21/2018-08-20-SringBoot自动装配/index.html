@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="Alex">
 <meta property="og:description" content="本文贴出的众多代码，版本来源为SpringBoot1.5.10，Spring4.3.14，如果两端代码中间有调用关系，可以通过查找上方的中文注释来快速定位">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-21T15:09:51.472Z">
+<meta property="og:updated_time" content="2018-08-21T15:11:20.191Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SringBoot自动装配">
 <meta name="twitter:description" content="本文贴出的众多代码，版本来源为SpringBoot1.5.10，Spring4.3.14，如果两端代码中间有调用关系，可以通过查找上方的中文注释来快速定位">
@@ -72,7 +72,7 @@
         <section id="main"><article id="post-2018-08-20-SringBoot自动装配" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/alex.github.io/2018/08/21/2018-08-20-SringBoot自动装配/" class="article-date">
-  <time datetime="2018-08-21T15:09:51.472Z" itemprop="datePublished">2018-08-21</time>
+  <time datetime="2018-08-21T15:11:20.190Z" itemprop="datePublished">2018-08-21</time>
 </a>
     
   </div>
@@ -92,7 +92,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <blockquote>
-<p>本文贴出的众多代码，版本来源为SpringBoot1.5.10，Spring4.3.14，如果两端代码中间有调用关系，可以通过查找上方的中文注释来快速定位<br><a id="more"></a></p>
+<p>本文贴出的众多代码，版本来源为SpringBoot1.5.10，Spring4.3.14，如果两端代码中间有调用关系，可以通过查找上方的中文注释来快速定位<br><a id="more"></a><br><!--more--></p>
 </blockquote>
 <h1 id="SpringBootStarter自动装配过程"><a href="#SpringBootStarter自动装配过程" class="headerlink" title="SpringBootStarter自动装配过程"></a>SpringBootStarter自动装配过程</h1><p>在项目中我们一般使用 <strong>@SpringBootApplication</strong> 来作为SpringBoot项目的启动类，SpringBoot采用约定大于配置的思想来进行类的注入，使得配置文件大量简化，服务构建更为快捷<br><br>那么SpringBoot是如何进行自动装配的呢？根据SpringBoot1.5.10的源码，可以看到 <strong>@SpringBootApplication</strong>引用了 <strong>@SpringBootConfiguration</strong>进行配置<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@SpringBootConfiguration</span><span class="comment">//允许注入的代码</span></span><br><span class="line"><span class="meta">@EnableAutoConfiguration</span></span><br><span class="line"><span class="meta">@ComponentScan</span>(excludeFilters = &#123;</span><br><span class="line">		<span class="meta">@Filter</span>(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),</span><br><span class="line">		<span class="meta">@Filter</span>(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) &#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> SpringBootApplication &#123;</span><br><span class="line"> <span class="comment">//省略部分内容</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>而 <strong>@SpringBootConfiguration</strong>接口使用 <strong>@Configuration</strong>进行修饰<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target</span>(ElementType.TYPE)</span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Configuration</span><span class="comment">//允许注入的代码</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> SpringBootConfiguration &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -123,7 +123,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/21/2018-08-20-SringBoot自动装配/" data-id="cjl3uikgh000cilbbz8gyvv68" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/2018/08/21/2018-08-20-SringBoot自动装配/" data-id="cjl3ukiqo000cj7bbsst07pe7" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/SpringBoot/">SpringBoot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/微服务/">微服务</a></li></ul>
@@ -134,19 +134,10 @@
     
 <nav id="article-nav">
   
-    <a href="/alex.github.io/2018/08/21/2018-08-18-缓存一致性问题/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          缓存一致性问题
-        
-      </div>
-    </a>
   
-  
-    <a href="/alex.github.io/2018/08/21/2018-08-19-分布式系统如何保证幂等性/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/alex.github.io/2018/08/21/2018-08-18-缓存可能产生的问题及解决方案/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">分布式系统如何保证幂等性</div>
+      <div class="article-nav-title">缓存可能产生的问题及解决方案</div>
     </a>
   
 </nav>
@@ -197,15 +188,15 @@
       <ul>
         
           <li>
+            <a href="/alex.github.io/2018/08/21/2018-08-20-SringBoot自动装配/">SringBoot自动装配</a>
+          </li>
+        
+          <li>
             <a href="/alex.github.io/2018/08/21/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
           </li>
         
           <li>
             <a href="/alex.github.io/2018/08/21/2018-08-18-缓存一致性问题/">缓存一致性问题</a>
-          </li>
-        
-          <li>
-            <a href="/alex.github.io/2018/08/21/2018-08-20-SringBoot自动装配/">SringBoot自动装配</a>
           </li>
         
           <li>
