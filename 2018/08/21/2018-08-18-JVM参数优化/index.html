@@ -7,18 +7,18 @@
   
   <title>JVM内存模型 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JVM启动参数调优本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我">
+  <meta name="description" content="本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我">
 <meta name="keywords" content="JVM">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JVM内存模型">
-<meta property="og:url" content="https://alexrencn.github.io/2018/08/20/2018-08-18-JVM参数优化/index.html">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/21/2018-08-18-JVM参数优化/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JVM启动参数调优本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我">
+<meta property="og:description" content="本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-20T01:55:20.391Z">
+<meta property="og:updated_time" content="2018-08-21T15:04:42.528Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM内存模型">
-<meta name="twitter:description" content="JVM启动参数调优本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我">
+<meta name="twitter:description" content="本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -71,8 +71,8 @@
       <div class="outer">
         <section id="main"><article id="post-2018-08-18-JVM参数优化" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-18-JVM参数优化/" class="article-date">
-  <time datetime="2018-08-20T01:55:20.391Z" itemprop="datePublished">2018-08-20</time>
+    <a href="/alex.github.io/2018/08/21/2018-08-18-JVM参数优化/" class="article-date">
+  <time datetime="2018-08-21T15:04:42.527Z" itemprop="datePublished">2018-08-21</time>
 </a>
     
   </div>
@@ -91,7 +91,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="JVM启动参数调优"><a href="#JVM启动参数调优" class="headerlink" title="JVM启动参数调优"></a>JVM启动参数调优</h1><p>本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我<a id="more"></a></p>
+        <p>本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我<br><a id="more"></a></p>
 <h2 id="堆内存调优"><a href="#堆内存调优" class="headerlink" title="堆内存调优"></a>堆内存调优</h2><ul>
 <li><strong>-XX:NewRatio=2</strong> 设置新生代比例，示例代表着设置新生代:老年代=1:2，即年轻代占堆总空间的三分之一</li>
 <li><strong>-XX:SurvivorRatio=8</strong> 设置新生代eden和Survivor的比例，示例代表着两个Survivor:eden=2比8，一个Survivor占十分之一</li>
@@ -206,7 +206,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-18-JVM参数优化/" data-id="cjl3u7isp0005hnbblhfappp5" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/2018/08/21/2018-08-18-JVM参数优化/" data-id="cjl3uikg70004ilbbzdjgxnts" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li></ul>
@@ -217,19 +217,19 @@
     
 <nav id="article-nav">
   
-    <a href="/alex.github.io/2018/08/20/2018-08-18-JVM内存模型/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/alex.github.io/2018/08/21/2018-08-18-JAVA的对象锁/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          JVM内存模型
+          JAVA的对象锁
         
       </div>
     </a>
   
   
-    <a href="/alex.github.io/2018/08/20/2018-08-17-MySQL的锁/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/alex.github.io/2018/08/21/2018-08-17-数据库事务/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">MySQL的整体架构</div>
+      <div class="article-nav-title">数据库事务</div>
     </a>
   
 </nav>
@@ -280,11 +280,11 @@
       <ul>
         
           <li>
-            <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL哈希索引/">MySQL的哈希索引</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL聚簇索引/">MySQL的聚簇索引</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-18-缓存一致性问题/">缓存一致性问题</a>
           </li>
         
           <li>
@@ -292,11 +292,11 @@
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/20/2018-08-20-微服务架构设计及解答/">微服务架构设计及解答</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-19-分布式系统如何保证幂等性/">分布式系统如何保证幂等性</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-17-MySQL的锁/">MySQL的整体架构</a>
           </li>
         
       </ul>

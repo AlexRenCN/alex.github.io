@@ -7,18 +7,18 @@
   
   <title>分布式系统如何保证幂等性 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="##起因  近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，重复处理了一些订单">
+  <meta name="description" content="近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，重复处理了一些订单">
 <meta name="keywords" content="幂等性设计,分布式">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布式系统如何保证幂等性">
-<meta property="og:url" content="https://alexrencn.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/index.html">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/21/2018-08-19-分布式系统如何保证幂等性/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="##起因  近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，重复处理了一些订单">
+<meta property="og:description" content="近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，重复处理了一些订单">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-20T02:09:33.380Z">
+<meta property="og:updated_time" content="2018-08-21T15:09:51.468Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式系统如何保证幂等性">
-<meta name="twitter:description" content="##起因  近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，重复处理了一些订单">
+<meta name="twitter:description" content="近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，重复处理了一些订单">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -71,8 +71,8 @@
       <div class="outer">
         <section id="main"><article id="post-2018-08-19-分布式系统如何保证幂等性" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/" class="article-date">
-  <time datetime="2018-08-20T02:09:33.379Z" itemprop="datePublished">2018-08-20</time>
+    <a href="/alex.github.io/2018/08/21/2018-08-19-分布式系统如何保证幂等性/" class="article-date">
+  <time datetime="2018-08-21T15:09:51.468Z" itemprop="datePublished">2018-08-21</time>
 </a>
     
   </div>
@@ -91,8 +91,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>##起因</p>
-<blockquote>
+        <blockquote>
 <p>近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，重复处理了一些订单<br><a id="more"></a></p>
 </blockquote>
 <p>##幂等性<br>什么是幂等性:系统针对同样的请求(包括参数，地址)，无论发生多少次请求，得到的结果都是一致的，接口的幂等性保证了分布式系统在复杂的环境中不会因为重复请求而发生重复处理，简化了系统处理故障的步骤</p>
@@ -140,7 +139,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/" data-id="cjl3u7isy000chnbbui5waw2v" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/2018/08/21/2018-08-19-分布式系统如何保证幂等性/" data-id="cjl3uikgg000bilbb7nhl0xj9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/分布式/">分布式</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/幂等性设计/">幂等性设计</a></li></ul>
@@ -151,19 +150,19 @@
     
 <nav id="article-nav">
   
-    <a href="/alex.github.io/2018/08/20/2018-08-17-数据库事务/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/alex.github.io/2018/08/21/2018-08-20-SringBoot自动装配/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          数据库事务
+          SringBoot自动装配
         
       </div>
     </a>
   
   
-    <a href="/alex.github.io/2018/08/20/2018-08-18-JVM内存模型/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/alex.github.io/2018/08/21/2018-08-17-MySQL的锁/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">JVM内存模型</div>
+      <div class="article-nav-title">MySQL的整体架构</div>
     </a>
   
 </nav>
@@ -214,11 +213,11 @@
       <ul>
         
           <li>
-            <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL哈希索引/">MySQL的哈希索引</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL聚簇索引/">MySQL的聚簇索引</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-18-缓存一致性问题/">缓存一致性问题</a>
           </li>
         
           <li>
@@ -226,11 +225,11 @@
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/20/2018-08-20-微服务架构设计及解答/">微服务架构设计及解答</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-19-分布式系统如何保证幂等性/">分布式系统如何保证幂等性</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-17-MySQL的锁/">MySQL的整体架构</a>
           </li>
         
       </ul>

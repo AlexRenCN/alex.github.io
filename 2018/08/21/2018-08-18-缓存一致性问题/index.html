@@ -5,20 +5,20 @@
   
 
   
-  <title>JVM内存模型 | Alex</title>
+  <title>缓存一致性问题 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JVM JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决">
-<meta name="keywords" content="JVM">
+  <meta name="description" content="在缓存的日常运用中，经常会遇到从缓存中获取某个值，经过业务处理后需要更新数据库对于的数据和该缓存值的内容，而这两个操作和该请求中其他的操作都可能出现异常，甚至时候需要进行IO操作的时间过长，都可能会造成更新缓存和更新数据库只成功一种的情况，这会造成数据不一致，在生产环境中排查这类问题非常困难，如何在设计阶段保证缓存一致性是开发人员在使用缓存时必须考虑的问题">
+<meta name="keywords" content="redis,缓存">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JVM内存模型">
-<meta property="og:url" content="https://alexrencn.github.io/2018/08/20/2018-08-18-JVM内存模型/index.html">
+<meta property="og:title" content="缓存一致性问题">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/21/2018-08-18-缓存一致性问题/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JVM JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决">
+<meta property="og:description" content="在缓存的日常运用中，经常会遇到从缓存中获取某个值，经过业务处理后需要更新数据库对于的数据和该缓存值的内容，而这两个操作和该请求中其他的操作都可能出现异常，甚至时候需要进行IO操作的时间过长，都可能会造成更新缓存和更新数据库只成功一种的情况，这会造成数据不一致，在生产环境中排查这类问题非常困难，如何在设计阶段保证缓存一致性是开发人员在使用缓存时必须考虑的问题">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-20T01:55:20.395Z">
+<meta property="og:updated_time" content="2018-08-21T15:09:51.475Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JVM内存模型">
-<meta name="twitter:description" content="JVM JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决">
+<meta name="twitter:title" content="缓存一致性问题">
+<meta name="twitter:description" content="在缓存的日常运用中，经常会遇到从缓存中获取某个值，经过业务处理后需要更新数据库对于的数据和该缓存值的内容，而这两个操作和该请求中其他的操作都可能出现异常，甚至时候需要进行IO操作的时间过长，都可能会造成更新缓存和更新数据库只成功一种的情况，这会造成数据不一致，在生产环境中排查这类问题非常困难，如何在设计阶段保证缓存一致性是开发人员在使用缓存时必须考虑的问题">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -69,10 +69,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-2018-08-18-JVM内存模型" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-2018-08-18-缓存一致性问题" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-18-JVM内存模型/" class="article-date">
-  <time datetime="2018-08-20T01:55:20.395Z" itemprop="datePublished">2018-08-20</time>
+    <a href="/alex.github.io/2018/08/21/2018-08-18-缓存一致性问题/" class="article-date">
+  <time datetime="2018-08-21T15:09:51.475Z" itemprop="datePublished">2018-08-21</time>
 </a>
     
   </div>
@@ -83,7 +83,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      JVM内存模型
+      缓存一致性问题
     </h1>
   
 
@@ -91,65 +91,46 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><blockquote>
-<p>JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决<br><a id="more"></a></p>
+        <blockquote>
+<p>在缓存的日常运用中，经常会遇到从缓存中获取某个值，经过业务处理后需要更新数据库对于的数据和该缓存值的内容，而这两个操作和该请求中其他的操作都可能出现异常，甚至时候需要进行IO操作的时间过长，都可能会造成更新缓存和更新数据库只成功一种的情况，这会造成数据不一致，在生产环境中排查这类问题非常困难，如何在设计阶段保证缓存一致性是开发人员在使用缓存时必须考虑的问题<br><a id="more"></a></p>
 </blockquote>
-<h2 id="JVM区域划分"><a href="#JVM区域划分" class="headerlink" title="JVM区域划分"></a>JVM区域划分</h2><ol>
-<li>JVM指令系统<blockquote>
-<p>用来指定需要在目标平台上的操作指令</p>
+<p>##读操作的数据一致性</p>
+<p>如果缓存命中并直接返回，就不会进行DB操作，也就不存在一致性问题了<br><br>我们主要说一下未命中的情况，读操作涉及到数据库缓存的存放，整个请求的流程应该是</p>
 <ol>
-<li><strong>操作码</strong> 用来执行一条操作的性质</li>
-<li><strong>操作数</strong> 紧随操作码之后，被分为两个以上字节</li>
+<li>从缓存中获取值</li>
+<li>缓存命中则使用缓存的值，未命中则需要进行下一步操作</li>
+<li>从数据库中获取值，一般是从读数据库中获取</li>
+<li>将数据进行缓存</li>
+<li>完成请求其他的操作</li>
 </ol>
-</blockquote>
-</li>
-<li>JVM寄存器<blockquote>
-<p>用来保存CPU中包含的保存系统状态和处理信息的寄存器组，减少虚拟机对堆栈的访问，常用的JVM寄存器有四种</p>
+<p>##写操作的数据一致性<br>在写操作中，我们对于缓存的操作并不是修改而是直接淘汰，下一次请求Cache Miss之后去进行缓存的写操作，</p>
 <ol>
-<li>PC程序计数器，用于记录程序的执行</li>
-<li>optop操作数栈顶指针，用于记录JAVA栈的指针</li>
-<li>frame当前执行环境指针，用于记录JAVA栈的指针</li>
-<li>vars当前执行环境第一个局部变量指针，用于记录JAVA栈的指针</li>
-</ol>
+<li>从缓存中获取值</li>
+<li>删除缓存，下一次查询缓存的时候会未命中，而去查询数据库</li>
+<li>更新数据库</li>
+<li>删除缓存</li>
+<li>完成请求其他的操作<blockquote>
+<p>如果使用这个策略，我们要注意的地方有，删除缓存后会不会造成缓存击穿的问题，也需要考虑，数据库更新需要耗费时间，在完成更新之前可能有另外的线程以及完成了旧数据的缓存，所以进行了两次缓存淘汰</p>
 </blockquote>
 </li>
-<li>JVM栈结构<ol>
-<li><strong>局部变量</strong> 存储类方法中的局部变量</li>
-<li><strong>执行环境</strong> 上次调用的方法、局部变量指针、操作数栈、栈底指针</li>
-<li><strong>操作数栈</strong> 存储运算所需要的操作数和结果</li>
 </ol>
-</li>
-<li>JVM碎片回收堆</li>
-<li><p>JVM存储区</p>
+<p>##读写分离的数据一致性<br>数据不一致的来源首先来自于主从库不一致，然后由Catch miss时查询从库，导致的缓存和数据库不一致</p>
 <ol>
-<li><strong>常量缓冲池</strong> 类名、方法名、常量</li>
-<li><strong>方法区</strong> 方法字节码<h2 id="JAVA运行时的内存结构"><a href="#JAVA运行时的内存结构" class="headerlink" title="JAVA运行时的内存结构"></a>JAVA运行时的内存结构</h2><blockquote>
-<p>局部变量表是在编译阶段已经确定的内容，包含已知的基本数据类型，对象引用（指向对象的原始地址或者引用指针、对象句柄、或者用来指向一条字节码指令的returnAddress类型），该区域在方法执行期间不会做出改变大小</p>
-</blockquote>
-</li>
+<li><strong>读主库</strong>，针对热点数据，在短时间内可能会发生大量变化，此时主从同步的时间差很容易影响到缓存读取到的数据准确性，针对特殊的数据可以直接从主库读取，避免主从数据库不同步造成的后续影响</li>
+<li><strong>数据库监听</strong>，监听从库更新的数据，并针对缓存范围内的内容尝试进行缓存淘汰<br>##其他策略的简述</li>
 </ol>
-</li>
-<li><p><strong>方法区</strong> 被所有线程共享，存储加载类时读取的类信息，常量，静态变量以及字节码</p>
-</li>
-<li><strong>JAVA虚拟机栈</strong> 每一个线程都会独享一个栈，为虚拟机执行方法进行服务，存储局部变量表、操作数栈、动态链接、方法出口等</li>
-<li><strong>JAVA虚拟机堆</strong> 被所有线程共享，在虚拟机启动时创建，用于存放对象实例，可以细分为新生代Young和老年代Old，年轻代可以再次划分为Eden、FromSurvivor和ToSurvivor，默认情况下新生代占堆内存的三分之一，随着JIT编译器和逃逸分析的发展，虚拟机可以更好的进行栈上分配和标量替换，所以并不是所有的对象创建都会分配到Heap了</li>
-<li><strong>本地方法栈</strong> 每一个线程都会独享一个栈，为虚拟机执行Native方法进行服务，存储局部变量表、操作数栈、动态链接、方法出口等</li>
-<li><strong>程序计数器</strong> 每一个线程都会独享一个程序计数器，相互之间不会影响，记录当前字节码的行号指令器</li>
-</ol>
-<h2 id="JVM执行程序的过程"><a href="#JVM执行程序的过程" class="headerlink" title="JVM执行程序的过程"></a>JVM执行程序的过程</h2><ol>
-<li>加载Class文件</li>
-<li>管理、分配内存</li>
-<li>进行垃圾回收</li>
-</ol>
+<ul>
+<li><strong>不去关心缓存的一致性</strong> 如果是像微博或者头条一样的产品，他们的推送内容是否要求必须一致呢，答案并不是，短时间的缓存不一致并不会造成问题，那么缓存和数据库只要做到最终一致性即可</li>
+</ul>
 
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-18-JVM内存模型/" data-id="cjl3u7isn0004hnbbl66ir2q0" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/2018/08/21/2018-08-18-缓存一致性问题/" data-id="cjl3uikga0008ilbbk78kfrsg" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/redis/">redis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/缓存/">缓存</a></li></ul>
 
     </footer>
   </div>
@@ -157,19 +138,19 @@
     
 <nav id="article-nav">
   
-    <a href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/alex.github.io/2018/08/21/2018-08-18-缓存可能产生的问题及解决方案/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          分布式系统如何保证幂等性
+          缓存可能产生的问题及解决方案
         
       </div>
     </a>
   
   
-    <a href="/alex.github.io/2018/08/20/2018-08-18-JVM参数优化/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/alex.github.io/2018/08/21/2018-08-20-SringBoot自动装配/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">JVM内存模型</div>
+      <div class="article-nav-title">SringBoot自动装配</div>
     </a>
   
 </nav>
@@ -220,11 +201,11 @@
       <ul>
         
           <li>
-            <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL哈希索引/">MySQL的哈希索引</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL聚簇索引/">MySQL的聚簇索引</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-18-缓存一致性问题/">缓存一致性问题</a>
           </li>
         
           <li>
@@ -232,11 +213,11 @@
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/20/2018-08-20-微服务架构设计及解答/">微服务架构设计及解答</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-19-分布式系统如何保证幂等性/">分布式系统如何保证幂等性</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-17-MySQL的锁/">MySQL的整体架构</a>
           </li>
         
       </ul>

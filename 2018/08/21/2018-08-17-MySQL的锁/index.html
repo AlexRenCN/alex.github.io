@@ -7,18 +7,18 @@
   
   <title>MySQL的整体架构 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="MySQL的锁本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率">
+  <meta name="description" content="本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率">
 <meta name="keywords" content="MySQL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL的整体架构">
-<meta property="og:url" content="https://alexrencn.github.io/2018/08/20/2018-08-17-MySQL的锁/index.html">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/21/2018-08-17-MySQL的锁/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="MySQL的锁本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率">
+<meta property="og:description" content="本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-20T01:50:27.415Z">
+<meta property="og:updated_time" content="2018-08-21T15:04:42.534Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL的整体架构">
-<meta name="twitter:description" content="MySQL的锁本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率">
+<meta name="twitter:description" content="本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -71,8 +71,8 @@
       <div class="outer">
         <section id="main"><article id="post-2018-08-17-MySQL的锁" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-17-MySQL的锁/" class="article-date">
-  <time datetime="2018-08-20T01:50:27.415Z" itemprop="datePublished">2018-08-20</time>
+    <a href="/alex.github.io/2018/08/21/2018-08-17-MySQL的锁/" class="article-date">
+  <time datetime="2018-08-21T15:04:42.534Z" itemprop="datePublished">2018-08-21</time>
 </a>
     
   </div>
@@ -91,7 +91,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="MySQL的锁"><a href="#MySQL的锁" class="headerlink" title="MySQL的锁"></a>MySQL的锁</h1><p>本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率<a id="more"></a></p>
+        <p>本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率<br><a id="more"></a></p>
 <h2 id="锁级别分类描述"><a href="#锁级别分类描述" class="headerlink" title="锁级别分类描述"></a>锁级别分类描述</h2><ol>
 <li><strong>共享锁</strong> ，读锁，只有在读和读之间可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事务更新</li>
 <li><strong>排它锁</strong> ，写锁，不可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事物更新和读取</li>
@@ -122,7 +122,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-17-MySQL的锁/" data-id="cjl3u7isd0000hnbbia3ba5d3" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/2018/08/21/2018-08-17-MySQL的锁/" data-id="cjl3uikfw0000ilbbwkpibs94" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li></ul>
@@ -133,15 +133,20 @@
     
 <nav id="article-nav">
   
-    <a href="/alex.github.io/2018/08/20/2018-08-18-JVM参数优化/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/alex.github.io/2018/08/21/2018-08-19-分布式系统如何保证幂等性/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          JVM内存模型
+          分布式系统如何保证幂等性
         
       </div>
     </a>
   
+  
+    <a href="/alex.github.io/2018/08/21/2018-08-18-JVM内存模型/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JVM内存模型</div>
+    </a>
   
 </nav>
 
@@ -191,11 +196,11 @@
       <ul>
         
           <li>
-            <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL哈希索引/">MySQL的哈希索引</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL聚簇索引/">MySQL的聚簇索引</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-18-缓存一致性问题/">缓存一致性问题</a>
           </li>
         
           <li>
@@ -203,11 +208,11 @@
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/20/2018-08-20-微服务架构设计及解答/">微服务架构设计及解答</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-19-分布式系统如何保证幂等性/">分布式系统如何保证幂等性</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-17-MySQL的锁/">MySQL的整体架构</a>
           </li>
         
       </ul>

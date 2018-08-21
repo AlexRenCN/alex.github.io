@@ -7,18 +7,18 @@
   
   <title>数据库事务 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="事务事务是指一组原子性的SQL操作 事务的特性一个事务必须遵循ACID原则  原子性(atomicity) 事务作为最小的一个工作单元，每个事务中包含的所有操作，要么全部成功，要么全部失败 一致性(consistency) 数据库总是会从一个一致性状态到另一个一致性状态，事务在操作过程中如果中断，做出的部分修改不会被保存 隔离性(isolation) 事务A做出部分修改之后，事务B一般不会看到A所">
+  <meta name="description" content="事务是指一组原子性的SQL操作,在数据库中，事务作为一个最小的工作单元存在">
 <meta name="keywords" content="事务,数据库">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据库事务">
-<meta property="og:url" content="https://alexrencn.github.io/2018/08/20/2018-08-17-数据库事务/index.html">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/21/2018-08-17-数据库事务/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="事务事务是指一组原子性的SQL操作 事务的特性一个事务必须遵循ACID原则  原子性(atomicity) 事务作为最小的一个工作单元，每个事务中包含的所有操作，要么全部成功，要么全部失败 一致性(consistency) 数据库总是会从一个一致性状态到另一个一致性状态，事务在操作过程中如果中断，做出的部分修改不会被保存 隔离性(isolation) 事务A做出部分修改之后，事务B一般不会看到A所">
+<meta property="og:description" content="事务是指一组原子性的SQL操作,在数据库中，事务作为一个最小的工作单元存在">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-20T02:10:12.470Z">
+<meta property="og:updated_time" content="2018-08-21T15:04:42.524Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库事务">
-<meta name="twitter:description" content="事务事务是指一组原子性的SQL操作 事务的特性一个事务必须遵循ACID原则  原子性(atomicity) 事务作为最小的一个工作单元，每个事务中包含的所有操作，要么全部成功，要么全部失败 一致性(consistency) 数据库总是会从一个一致性状态到另一个一致性状态，事务在操作过程中如果中断，做出的部分修改不会被保存 隔离性(isolation) 事务A做出部分修改之后，事务B一般不会看到A所">
+<meta name="twitter:description" content="事务是指一组原子性的SQL操作,在数据库中，事务作为一个最小的工作单元存在">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -71,8 +71,8 @@
       <div class="outer">
         <section id="main"><article id="post-2018-08-17-数据库事务" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/alex.github.io/2018/08/20/2018-08-17-数据库事务/" class="article-date">
-  <time datetime="2018-08-20T02:10:12.469Z" itemprop="datePublished">2018-08-20</time>
+    <a href="/alex.github.io/2018/08/21/2018-08-17-数据库事务/" class="article-date">
+  <time datetime="2018-08-21T15:04:42.524Z" itemprop="datePublished">2018-08-21</time>
 </a>
     
   </div>
@@ -91,14 +91,13 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><p>事务是指一组原子性的SQL操作</p>
+        <p>事务是指一组原子性的SQL操作,在数据库中，事务作为一个最小的工作单元存在<br><a id="more"></a></p>
 <h2 id="事务的特性"><a href="#事务的特性" class="headerlink" title="事务的特性"></a>事务的特性</h2><p>一个事务必须遵循ACID原则</p>
 <ol>
 <li><strong><em>原子性(atomicity)</em></strong> 事务作为最小的一个工作单元，每个事务中包含的所有操作，要么全部成功，要么全部失败</li>
 <li><strong><em>一致性(consistency)</em></strong> 数据库总是会从一个一致性状态到另一个一致性状态，事务在操作过程中如果中断，做出的部分修改不会被保存</li>
 <li><strong><em>隔离性(isolation)</em></strong> 事务A做出部分修改之后，事务B一般不会看到A所做出的改变（在未提交读隔离级别产生的脏读以及可串行化之下的隔离级别产生的幻读场景下仍然可以看到）</li>
-<li><strong><em>持久性(durability)</em></strong> 一旦事务提交，事务提交的数据就会被记录在数据库中持久存储<a id="more"></a>
-<h2 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h2></li>
+<li><strong><em>持久性(durability)</em></strong> 一旦事务提交，事务提交的数据就会被记录在数据库中持久存储<h2 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h2></li>
 <li><strong><em>未提交读(READ UNCOMMITED)</em></strong> 事务中的修改即使没有提交，对其他事务也是可见的</li>
 <li><strong><em>已提交读(READ COMMITED)</em></strong> 一个事务从开始到提交，所做的任何操作对其他事务都不可见，但是执行两次同样的查询得到的结果可能不同，是大部分数据库的默认隔离级别</li>
 <li><strong><em>可重复读(REPEATABLE READ)</em></strong> 一个事务从开始到提交，所做的任何操作对其他事物都不可见，执行多次同样的查询语句得到的结果一致，这是MySQL数据库的默认隔离级别</li>
@@ -125,7 +124,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/20/2018-08-17-数据库事务/" data-id="cjl3u7ish0001hnbb07hicupp" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/2018/08/21/2018-08-17-数据库事务/" data-id="cjl3uikg10001ilbbprr0k6jv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/事务/">事务</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/数据库/">数据库</a></li></ul>
@@ -136,19 +135,19 @@
     
 <nav id="article-nav">
   
-    <a href="/alex.github.io/2018/08/20/2018-08-18-JAVA的对象锁/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/alex.github.io/2018/08/21/2018-08-18-JVM参数优化/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          JAVA的对象锁
+          JVM内存模型
         
       </div>
     </a>
   
   
-    <a href="/alex.github.io/2018/08/20/2018-08-19-分布式系统如何保证幂等性/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL哈希索引/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">分布式系统如何保证幂等性</div>
+      <div class="article-nav-title">MySQL的哈希索引</div>
     </a>
   
 </nav>
@@ -199,11 +198,11 @@
       <ul>
         
           <li>
-            <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL哈希索引/">MySQL的哈希索引</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/21/2018-08-21-MySQL聚簇索引/">MySQL的聚簇索引</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-18-缓存一致性问题/">缓存一致性问题</a>
           </li>
         
           <li>
@@ -211,11 +210,11 @@
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/20/2018-08-20-微服务架构设计及解答/">微服务架构设计及解答</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-19-分布式系统如何保证幂等性/">分布式系统如何保证幂等性</a>
           </li>
         
           <li>
-            <a href="/alex.github.io/2018/08/20/2018-08-18-缓存可能产生的问题及解决方案/">缓存可能产生的问题及解决方案</a>
+            <a href="/alex.github.io/2018/08/21/2018-08-17-MySQL的锁/">MySQL的整体架构</a>
           </li>
         
       </ul>
