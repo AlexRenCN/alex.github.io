@@ -5,19 +5,20 @@
   
 
   
-  <title>Tag: MySQL | Alex</title>
+  <title>数据库架构优化 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JAVA之路">
-<meta name="keywords" content="JAVA,MySQL,Linux">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Alex">
-<meta property="og:url" content="https://alexrencn.github.io/tags/MySQL/index.html">
+  <meta name="description" content="随着项目的发展，访问量和数据量的增大，项目访问数据库的压力会越来越大，如何针对数据库进行优化，满足日益增长的业务呢">
+<meta name="keywords" content="数据库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库架构优化">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/22/2018-08-22-数据库架构优化/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JAVA之路">
+<meta property="og:description" content="随着项目的发展，访问量和数据量的增大，项目访问数据库的压力会越来越大，如何针对数据库进行优化，满足日益增长的业务呢">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-22T12:59:01.119Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Alex">
-<meta name="twitter:description" content="JAVA之路">
+<meta name="twitter:title" content="数据库架构优化">
+<meta name="twitter:description" content="随着项目的发展，访问量和数据量的增大，项目访问数据库的压力会越来越大，如何针对数据库进行优化，满足日益增长的业务呢">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -68,59 +69,78 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/alex.github.io/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/22/2018-08-21-MySQL聚簇索引/" class="archive-article-date">
-  <time datetime="2018-08-22T02:41:08.949Z" itemprop="datePublished">8月 22</time>
+        <section id="main"><article id="post-2018-08-22-数据库架构优化" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/22/2018-08-22-数据库架构优化/" class="article-date">
+  <time datetime="2018-08-22T12:59:01.118Z" itemprop="datePublished">2018-08-22</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/22/2018-08-21-MySQL聚簇索引/">MySQL的聚簇索引</a>
+    <h1 class="article-title" itemprop="name">
+      数据库架构优化
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/22/2018-08-21-MySQL哈希索引/" class="archive-article-date">
-  <time datetime="2018-08-22T02:41:08.945Z" itemprop="datePublished">8月 22</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/22/2018-08-21-MySQL哈希索引/">MySQL的哈希索引</a>
-    </h1>
-  
+        <blockquote>
+<p>随着项目的发展，访问量和数据量的增大，项目访问数据库的压力会越来越大，如何针对数据库进行优化，满足日益增长的业务呢<br><a id="more"></a></p>
+</blockquote>
+<p>####读写分离<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">应用[应用]--&gt;|读写|主地址[主地址]</span><br><span class="line">应用[应用]--&gt;|读写|读写分离[读写分离]</span><br><span class="line">应用[应用]--&gt;|读|只读1[只读1]</span><br><span class="line">应用[应用]--&gt;|读|只读2[只读2]</span><br><span class="line">主地址[主地址]--&gt;|读写|主实例[主实例]</span><br><span class="line">读写分离[读写分离]--&gt;|写|主实例[主实例]</span><br><span class="line">读写分离[读写分离]--&gt;|读|只读实例1[只读实例1]</span><br><span class="line">读写分离[读写分离]--&gt;|读|只读实例2[只读实例2]</span><br><span class="line">只读1[只读1]--&gt;|读|只读实例1[只读实例1]</span><br><span class="line">只读2[只读2]--&gt;|读|只读实例2[只读实例2]</span><br></pre></td></tr></table></figure></p>
+<p>上图为阿里云数据库的简单设计描述，针对的场景是<strong>读多写少</strong>，把读操作和写操作分开,<br>在一致性要求非常高的情况下，主实例也应该承担一部分读取操作<br><br>实现读写分离的方式：</p>
+<ul>
+<li>使用编码方式，在程序中定义两个数据源并针对不同的数据访问层使用不同的数据源</li>
+<li>使用中间件，在数据访问层和数据库中间添加一个数据库代理服务</li>
+</ul>
+<p>####分库分别</p>
+<p>#####分表<br>随着数据库中的数据增多，对于单表可能出现查询瓶颈，这个时候首先要对数据库表进行分表处理</p>
+<ul>
+<li><strong>垂直拆分</strong>，按照业务模块进行拆分，将原表中的所有字段进行业务划分，分开出存在不同的表、数据库、或者服务器中</li>
+<li><strong>水平拆分</strong>，按照某种规则对单表进行水平切分，进行表分区或者建立多个表，根据规则选择访问</li>
+</ul>
 
-    </header>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/08/22/2018-08-22-数据库架构优化/" data-id="cjlcgwu9l000xipbbpaww7r2a" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/数据库/">数据库</a></li></ul>
+
+    </footer>
   </div>
-</article>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/alex.github.io/2018/08/23/2018-08-22-支付系统设计/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          支付系统的设计
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/alex.github.io/2018/08/22/2018-08-23-数据库表连接/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">数据库架构优化</div>
+    </a>
   
+</nav>
 
+  
+</article>
 
 </section>
         

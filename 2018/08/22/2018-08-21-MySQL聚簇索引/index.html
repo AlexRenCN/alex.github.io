@@ -5,19 +5,20 @@
   
 
   
-  <title>Tag: MySQL | Alex</title>
+  <title>MySQL的聚簇索引 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JAVA之路">
-<meta name="keywords" content="JAVA,MySQL,Linux">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Alex">
-<meta property="og:url" content="https://alexrencn.github.io/tags/MySQL/index.html">
+  <meta name="description" content="记录一个有意思的，平时没有使用过的索引">
+<meta name="keywords" content="MySQL,索引">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL的聚簇索引">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/22/2018-08-21-MySQL聚簇索引/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JAVA之路">
+<meta property="og:description" content="记录一个有意思的，平时没有使用过的索引">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-22T02:41:08.949Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Alex">
-<meta name="twitter:description" content="JAVA之路">
+<meta name="twitter:title" content="MySQL的聚簇索引">
+<meta name="twitter:description" content="记录一个有意思的，平时没有使用过的索引">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -68,59 +69,85 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/alex.github.io/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/22/2018-08-21-MySQL聚簇索引/" class="archive-article-date">
-  <time datetime="2018-08-22T02:41:08.949Z" itemprop="datePublished">8月 22</time>
+        <section id="main"><article id="post-2018-08-21-MySQL聚簇索引" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/22/2018-08-21-MySQL聚簇索引/" class="article-date">
+  <time datetime="2018-08-22T02:41:08.949Z" itemprop="datePublished">2018-08-22</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/22/2018-08-21-MySQL聚簇索引/">MySQL的聚簇索引</a>
+    <h1 class="article-title" itemprop="name">
+      MySQL的聚簇索引
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/22/2018-08-21-MySQL哈希索引/" class="archive-article-date">
-  <time datetime="2018-08-22T02:41:08.945Z" itemprop="datePublished">8月 22</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/22/2018-08-21-MySQL哈希索引/">MySQL的哈希索引</a>
-    </h1>
-  
+        <blockquote>
+<p>记录一个有意思的，平时没有使用过的索引<br><a id="more"></a></p>
+</blockquote>
+<p>####什么是聚簇索引<br>聚簇索引不是一种单独的索引类型，而是一种数据存储方式，以InnoDB为例，聚簇索引的数据结构为在同一个结构中保存Btree索引和数据行</p>
+<p>####聚簇索引的数据结构</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">索引+数据行1--&gt;索引+数据行2</span><br><span class="line">索引+数据行2--&gt;索引+数据行3</span><br></pre></td></tr></table></figure>
+<p>数据行的存放时位于索引的叶子页中，聚簇这个词的含义即表示数据行和相邻的键值紧靠着存储，因为数据行不能存在于两个位置，所以每个表至多只能有一个聚簇索引</p>
+<p>####优点</p>
+<ul>
+<li>聚簇索引可以把相关的数据保存在一起，提高IO密集型的操作效率，避免全表扫描导致的IO</li>
+<li>查询速度更快，在索引命中后可以通过搜索叶子页快速定位数据行</li>
+<li>使用覆盖索引扫描的查询可以直接使用页节点中的主键值<br>####缺点</li>
+<li>聚簇索引提高了IO密集型应用的性能，不能保证其他场景的效率</li>
+<li>插入速度依赖插入顺序，根据ID的顺序进行插入效率最高</li>
+<li>更新聚簇索引的消耗很高，InnoDB会对需要根系的数据行进行重新分配位置</li>
+<li>针对主键的新增和修改，都会使一个子页中添加新的数据行，如果页已经存满，会导致页分裂，页分裂会产生磁盘的缝隙</li>
+<li>在全表扫描时性能不佳，在数据行分散，以及页分裂导致的存储不连续更为明显</li>
+<li>二级索引（非聚簇索引），会在叶子节点包含数据行的主键列，会更庞大</li>
+<li>二级索引的访问需要进行两次索引查找，二级索引存储数据行的主键值，再通过聚簇索引进行查找<br>####聚簇索引和非聚簇索引区别</li>
+<li>非聚簇索引的数据和索引存储无关</li>
+<li>非聚簇索引可以有多个</li>
+</ul>
 
-    </header>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/08/22/2018-08-21-MySQL聚簇索引/" data-id="cjlcgwu99000fipbbkrccybvk" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/MySQL/">MySQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/索引/">索引</a></li></ul>
+
+    </footer>
   </div>
-</article>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/alex.github.io/2018/08/22/2018-08-18-缓存一致性问题/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          缓存一致性问题
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/alex.github.io/2018/08/22/2018-08-21-MySQL哈希索引/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">MySQL的哈希索引</div>
+    </a>
   
+</nav>
 
+  
+</article>
 
 </section>
         

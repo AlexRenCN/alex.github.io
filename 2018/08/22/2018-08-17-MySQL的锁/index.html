@@ -5,20 +5,20 @@
   
 
   
-  <title>JVM内存模型 | Alex</title>
+  <title>MySQL的整体架构 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决">
-<meta name="keywords" content="JVM">
+  <meta name="description" content="本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率">
+<meta name="keywords" content="数据库">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JVM内存模型">
-<meta property="og:url" content="https://alexrencn.github.io/2018/08/21/2018-08-18-JVM内存模型/index.html">
+<meta property="og:title" content="MySQL的整体架构">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/22/2018-08-17-MySQL的锁/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决">
+<meta property="og:description" content="本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-08-21T15:04:42.532Z">
+<meta property="og:updated_time" content="2018-08-22T02:41:08.954Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JVM内存模型">
-<meta name="twitter:description" content="JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决">
+<meta name="twitter:title" content="MySQL的整体架构">
+<meta name="twitter:description" content="本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -69,10 +69,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-2018-08-18-JVM内存模型" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-2018-08-17-MySQL的锁" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/alex.github.io/2018/08/21/2018-08-18-JVM内存模型/" class="article-date">
-  <time datetime="2018-08-21T15:04:42.532Z" itemprop="datePublished">2018-08-21</time>
+    <a href="/alex.github.io/2018/08/22/2018-08-17-MySQL的锁/" class="article-date">
+  <time datetime="2018-08-22T02:41:08.954Z" itemprop="datePublished">2018-08-22</time>
 </a>
     
   </div>
@@ -83,7 +83,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      JVM内存模型
+      MySQL的整体架构
     </h1>
   
 
@@ -91,65 +91,41 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
-<p>JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决<br><a id="more"></a></p>
-</blockquote>
-<h2 id="JVM区域划分"><a href="#JVM区域划分" class="headerlink" title="JVM区域划分"></a>JVM区域划分</h2><ol>
-<li>JVM指令系统<blockquote>
-<p>用来指定需要在目标平台上的操作指令</p>
-<ol>
-<li><strong>操作码</strong> 用来执行一条操作的性质</li>
-<li><strong>操作数</strong> 紧随操作码之后，被分为两个以上字节</li>
+        <p>本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率<br><a id="more"></a></p>
+<h2 id="锁级别分类描述"><a href="#锁级别分类描述" class="headerlink" title="锁级别分类描述"></a>锁级别分类描述</h2><ol>
+<li><strong>共享锁</strong> ，读锁，只有在读和读之间可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事务更新</li>
+<li><strong>排它锁</strong> ，写锁，不可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事物更新和读取</li>
+<li><strong>意向锁</strong> ，有读锁和写锁，由于共享锁和排它锁都可以针对行，在事务中如果涉及到多表操作，可能在不同事务内会造成死锁的问题，MySQL为了避免锁的冲突，使用意向锁，事务A在申请一行的行锁的时候，数据库会先自动申请意向锁，事务B在申请排它锁的时候会先查看表是否被其他事务加了表锁，然后再查看表是否加了意向共享锁，如果有，事务B申请表排它锁的步骤会被堵塞，只存在表锁</li>
+<li><strong>间隙锁</strong> ，写锁，不可以重入，为了避免幻读的情况出现，主要出现在同一个事务先Delete再Insert的情况下，数据库扫描索引，发现Delete的数据是一个间隙锁，然后就会向左右各扫描到一个值，锁住整个区间内的数据，会造成死锁的出现<h2 id="锁粒度分类描述"><a href="#锁粒度分类描述" class="headerlink" title="锁粒度分类描述"></a>锁粒度分类描述</h2></li>
 </ol>
-</blockquote>
+<table><br>    <thead><br>        <tr><br>            <th></th><br>            <th>行锁</th><br>            <th>页锁</th><br>            <th>表锁</th><br>        </tr><br>    </thead><br>    <body><br>        <tr><br>            <th>锁范围</th><br>            <th>当前操作行</th><br>            <th>当前操作行相邻的一组数据</th><br>            <th>当前表</th><br>        </tr><br>        <tr><br>            <th>开销</th><br>            <th>最大</th><br>            <th>折中</th><br>            <th>最小</th><br>        </tr><br>        <tr><br>            <th>并发度</th><br>            <th>最低</th><br>            <th>折中</th><br>            <th>最高</th><br>        </tr><br>        <tr><br>            <th>死锁</th><br>            <th>会</th><br>            <th>会</th><br>            <th>不会</th><br>        </tr><br>    </body><br></table>
+
+
+<h2 id="加锁方式分类描述"><a href="#加锁方式分类描述" class="headerlink" title="加锁方式分类描述"></a>加锁方式分类描述</h2><ol>
+<li><p>显式加锁</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">1</span> <span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share</span> <span class="keyword">mode</span>;<span class="comment">--共享锁</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">1</span> <span class="keyword">for</span> <span class="keyword">update</span>;<span class="comment">--排它锁</span></span><br></pre></td></tr></table></figure>
 </li>
-<li>JVM寄存器<blockquote>
-<p>用来保存CPU中包含的保存系统状态和处理信息的寄存器组，减少虚拟机对堆栈的访问，常用的JVM寄存器有四种</p>
-<ol>
-<li>PC程序计数器，用于记录程序的执行</li>
-<li>optop操作数栈顶指针，用于记录JAVA栈的指针</li>
-<li>frame当前执行环境指针，用于记录JAVA栈的指针</li>
-<li>vars当前执行环境第一个局部变量指针，用于记录JAVA栈的指针</li>
-</ol>
-</blockquote>
-</li>
-<li>JVM栈结构<ol>
-<li><strong>局部变量</strong> 存储类方法中的局部变量</li>
-<li><strong>执行环境</strong> 上次调用的方法、局部变量指针、操作数栈、栈底指针</li>
-<li><strong>操作数栈</strong> 存储运算所需要的操作数和结果</li>
-</ol>
-</li>
-<li>JVM碎片回收堆</li>
-<li><p>JVM存储区</p>
-<ol>
-<li><strong>常量缓冲池</strong> 类名、方法名、常量</li>
-<li><strong>方法区</strong> 方法字节码<h2 id="JAVA运行时的内存结构"><a href="#JAVA运行时的内存结构" class="headerlink" title="JAVA运行时的内存结构"></a>JAVA运行时的内存结构</h2><blockquote>
-<p>局部变量表是在编译阶段已经确定的内容，包含已知的基本数据类型，对象引用（指向对象的原始地址或者引用指针、对象句柄、或者用来指向一条字节码指令的returnAddress类型），该区域在方法执行期间不会做出改变大小</p>
-</blockquote>
+<li><p>自动加锁，数据库在执行事务的时候自动进行加锁</p>
 </li>
 </ol>
-</li>
-<li><p><strong>方法区</strong> 被所有线程共享，存储加载类时读取的类信息，常量，静态变量以及字节码</p>
-</li>
-<li><strong>JAVA虚拟机栈</strong> 每一个线程都会独享一个栈，为虚拟机执行方法进行服务，存储局部变量表、操作数栈、动态链接、方法出口等</li>
-<li><strong>JAVA虚拟机堆</strong> 被所有线程共享，在虚拟机启动时创建，用于存放对象实例，可以细分为新生代Young和老年代Old，年轻代可以再次划分为Eden、FromSurvivor和ToSurvivor，默认情况下新生代占堆内存的三分之一，随着JIT编译器和逃逸分析的发展，虚拟机可以更好的进行栈上分配和标量替换，所以并不是所有的对象创建都会分配到Heap了</li>
-<li><strong>本地方法栈</strong> 每一个线程都会独享一个栈，为虚拟机执行Native方法进行服务，存储局部变量表、操作数栈、动态链接、方法出口等</li>
-<li><strong>程序计数器</strong> 每一个线程都会独享一个程序计数器，相互之间不会影响，记录当前字节码的行号指令器</li>
+<h4 id="操作方式分类描述"><a href="#操作方式分类描述" class="headerlink" title="操作方式分类描述"></a>操作方式分类描述</h4><ol>
+<li><strong>DDL锁</strong> (Data Manipulation Language)数据操控语言，针对数据库中的数据进行操作</li>
+<li><strong>DML锁</strong> (Data Definition Language)数据库定义语言，针对表的结构、数据类型、约束等关系进行操作</li>
+<li><strong>DCL锁</strong> (Data Control Language)数据库控制语言，针对数据库的用户和权限进行操作</li>
 </ol>
-<h2 id="JVM执行程序的过程"><a href="#JVM执行程序的过程" class="headerlink" title="JVM执行程序的过程"></a>JVM执行程序的过程</h2><ol>
-<li>加载Class文件</li>
-<li>管理、分配内存</li>
-<li>进行垃圾回收</li>
+<h4 id="从使用方式进行加锁"><a href="#从使用方式进行加锁" class="headerlink" title="从使用方式进行加锁"></a>从使用方式进行加锁</h4><ol>
+<li><strong>乐观锁</strong></li>
+<li><strong>悲观锁</strong> </li>
 </ol>
 
         
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://alexrencn.github.io/2018/08/21/2018-08-18-JVM内存模型/" data-id="cjlcgwu900004ipbb6n7ppdwn" class="article-share-link">Share</a>
+      <a data-url="https://alexrencn.github.io/2018/08/22/2018-08-17-MySQL的锁/" data-id="cjlcgwu8r0000ipbbb708tjpm" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JVM/">JVM</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/数据库/">数据库</a></li></ul>
 
     </footer>
   </div>
@@ -157,19 +133,19 @@
     
 <nav id="article-nav">
   
-    <a href="/alex.github.io/2018/08/21/2018-08-20-SringBoot自动装配/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/alex.github.io/2018/08/22/2018-08-22-Eureka源码分析/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          SringBoot自动装配
+          Eureka源码分析
         
       </div>
     </a>
   
   
-    <a href="/alex.github.io/2018/08/21/2018-08-18-JAVA的对象锁/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/alex.github.io/2018/08/22/2018-08-18-缓存可能产生的问题及解决方案/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">JAVA的对象锁</div>
+      <div class="article-nav-title">缓存可能产生的问题及解决方案</div>
     </a>
   
 </nav>

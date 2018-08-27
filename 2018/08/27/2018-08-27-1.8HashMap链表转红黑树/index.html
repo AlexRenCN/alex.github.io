@@ -5,19 +5,20 @@
   
 
   
-  <title>Tag: MySQL | Alex</title>
+  <title>1.8HashMap链表转红黑树 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JAVA之路">
-<meta name="keywords" content="JAVA,MySQL,Linux">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Alex">
-<meta property="og:url" content="https://alexrencn.github.io/tags/MySQL/index.html">
+  <meta name="description" content="ConcurrentHashMap的底层数据为数组加链表，哈希冲突的值会放在链表中，如果哈希冲突严重，对ConcurrentHashMap的操作会变为对长链表的操作，为了解决效率问题，1.8会进行红黑树的转换">
+<meta name="keywords" content="jdk8">
+<meta property="og:type" content="article">
+<meta property="og:title" content="1.8HashMap链表转红黑树">
+<meta property="og:url" content="https://alexrencn.github.io/2018/08/27/2018-08-27-1.8HashMap链表转红黑树/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JAVA之路">
+<meta property="og:description" content="ConcurrentHashMap的底层数据为数组加链表，哈希冲突的值会放在链表中，如果哈希冲突严重，对ConcurrentHashMap的操作会变为对长链表的操作，为了解决效率问题，1.8会进行红黑树的转换">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-27T15:58:15.328Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Alex">
-<meta name="twitter:description" content="JAVA之路">
+<meta name="twitter:title" content="1.8HashMap链表转红黑树">
+<meta name="twitter:description" content="ConcurrentHashMap的底层数据为数组加链表，哈希冲突的值会放在链表中，如果哈希冲突严重，对ConcurrentHashMap的操作会变为对长链表的操作，为了解决效率问题，1.8会进行红黑树的转换">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -68,59 +69,60 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/alex.github.io/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/22/2018-08-21-MySQL聚簇索引/" class="archive-article-date">
-  <time datetime="2018-08-22T02:41:08.949Z" itemprop="datePublished">8月 22</time>
+        <section id="main"><article id="post-2018-08-27-1.8HashMap链表转红黑树" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/08/27/2018-08-27-1.8HashMap链表转红黑树/" class="article-date">
+  <time datetime="2018-08-27T15:58:15.327Z" itemprop="datePublished">2018-08-27</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/22/2018-08-21-MySQL聚簇索引/">MySQL的聚簇索引</a>
+    <h1 class="article-title" itemprop="name">
+      1.8HashMap链表转红黑树
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/22/2018-08-21-MySQL哈希索引/" class="archive-article-date">
-  <time datetime="2018-08-22T02:41:08.945Z" itemprop="datePublished">8月 22</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/22/2018-08-21-MySQL哈希索引/">MySQL的哈希索引</a>
-    </h1>
-  
+        <p>ConcurrentHashMap的底层数据为数组加链表，哈希冲突的值会放在链表中，如果哈希冲突严重，对ConcurrentHashMap的操作会变为对长链表的操作，为了解决效率问题，1.8会进行红黑树的转换<br><a id="more"></a></p>
+<p>####什么是红黑树<br>红黑树是一种特殊的平衡二叉树，存放有序的数据，检索的时间复杂度为O(lgn)<br><br>红黑树的特性</p>
+<ol>
+<li>红黑树的节点非红即黑</li>
+</ol>
+<p>####在什么情况下进行转换<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * The bin count threshold for using a tree rather than list for a</span></span><br><span class="line"><span class="comment"> * bin.  Bins are converted to trees when adding an element to a</span></span><br><span class="line"><span class="comment"> * bin with at least this many nodes. The value must be greater</span></span><br><span class="line"><span class="comment"> * than 2, and should be at least 8 to mesh with assumptions in</span></span><br><span class="line"><span class="comment"> * tree removal about conversion back to plain bins upon</span></span><br><span class="line"><span class="comment"> * shrinkage.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TREEIFY_THRESHOLD = <span class="number">8</span>;</span><br></pre></td></tr></table></figure></p>
 
-    </header>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/08/27/2018-08-27-1.8HashMap链表转红黑树/" data-id="cjlcgwu9h000pipbbeiwxpngo" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/jdk8/">jdk8</a></li></ul>
+
+    </footer>
   </div>
-</article>
+  
+    
+<nav id="article-nav">
   
   
-    </div></section>
+    <a href="/alex.github.io/2018/08/27/2018-08-27-缓存更新策略/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">缓存更新策略</div>
+    </a>
   
+</nav>
 
+  
+</article>
 
 </section>
         
