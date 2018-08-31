@@ -5,19 +5,20 @@
   
 
   
-  <title>归档 | Alex</title>
+  <title>高并发概念描述 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JAVA之路">
-<meta name="keywords" content="JAVA,MySQL,Linux">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Alex">
-<meta property="og:url" content="https://alexrencn.github.io/archives/index.html">
+  <meta name="description" content="这几天看算法的书籍，学习进度非常缓慢，再次复读一下《JAVA高并发程序设计》,换一下思考的方向并且进行复习">
+<meta name="keywords" content="高并发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="高并发概念描述">
+<meta property="og:url" content="https://alexrencn.github.io/2018/09/01/2018-08-30-高并发概念描述/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JAVA之路">
+<meta property="og:description" content="这几天看算法的书籍，学习进度非常缓慢，再次复读一下《JAVA高并发程序设计》,换一下思考的方向并且进行复习">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-08-31T16:41:42.703Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Alex">
-<meta name="twitter:description" content="JAVA之路">
+<meta name="twitter:title" content="高并发概念描述">
+<meta name="twitter:description" content="这几天看算法的书籍，学习进度非常缓慢，再次复读一下《JAVA高并发程序设计》,换一下思考的方向并且进行复习">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -68,216 +69,97 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/alex.github.io/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/09/01/2018-08-30-高并发概念描述/" class="archive-article-date">
-  <time datetime="2018-08-31T16:41:42.702Z" itemprop="datePublished">9月 1</time>
+        <section id="main"><article id="post-2018-08-30-高并发概念描述" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/09/01/2018-08-30-高并发概念描述/" class="article-date">
+  <time datetime="2018-08-31T16:41:42.702Z" itemprop="datePublished">2018-09-01</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/09/01/2018-08-30-高并发概念描述/">高并发概念描述</a>
+    <h1 class="article-title" itemprop="name">
+      高并发概念描述
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/28/2018-08-28-MySQL采用自增列/" class="archive-article-date">
-  <time datetime="2018-08-28T08:38:58.989Z" itemprop="datePublished">8月 28</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/28/2018-08-28-MySQL采用自增列/">MySQL采用自增列</a>
-    </h1>
-  
+        <p>这几天看算法的书籍，学习进度非常缓慢，再次复读一下《JAVA高并发程序设计》,换一下思考的方向并且进行复习<br><a id="more"></a></p>
+<p>####同步&amp;异步</p>
+<ul>
+<li>同步：一旦方法调用开始，必须等到方法调用返回后，才能继续后续的行为</li>
+<li>异步：一旦开始，方法调用就会立即返回，斌能够继续后续的操作<br>####并发&amp;并行</li>
+<li>并发：两个或者多个任务交替执行</li>
+<li>并行：两个或者多个任务同时执行<br>####临界区</li>
+<li>表示一种公共资源或者共享数据，可以被多个线程使用，但是每一次，只能有一个线程使用它，一旦临界区资源被占用，其他线程要想使用这个资源，就必须等待<blockquote>
+<p>在java中主内存便是这样的临界区，对同一个数据的操作只能同时有一个线程执行</p>
+</blockquote>
+####阻塞&amp;非堵塞</li>
+<li>堵塞：一个线程占用临界区资源，其他所有需要这个资源的线程必须在临界区内进行等待</li>
+<li>非堵塞：一个线程占用临界区资源，其他线程会尝试向前执行<br>####死锁<br>集合中的每一个进程都在等待只能由本集合中的其他进程才能引发的事件，那么该组进程是死锁的。<br><br>产生死锁的条件</li>
+</ul>
+<ol>
+<li>互斥条件：一个资源每次只能被一个进程使用。</li>
+<li>请求与保持条件：一个进程因请求资源而阻塞时，对已获得的资源保持不放。</li>
+<li>不剥夺条件:进程已获得的资源，在末使用完之前，不能强行剥夺。</li>
+<li>循环等待条件:若干进程之间形成一种头尾相接的循环等待资源关系。<br>####饥饿<br>线程因为某种原因无法获得所需要的资源，例如优先级太低导致的抢占不到CPU运行时间片<br>####活锁<br>两个或者多个线程谦让自己的资源，导致资源不断在两个线程中跳动，而没有一个线程同时拿到所有资源而正常执行<br>####并发级别</li>
+</ol>
+<ul>
+<li>阻塞：如果拿不到临界区的锁，线程就会被挂起等待，直到其他线程释放</li>
+<li>无饥饿：线程公平，满足先来后到</li>
+<li>无障碍：都可以进入临界区，修改共享数据，一旦检测到数据变得，会对自己的修改进行回滚，直到成功并退出临界区</li>
+<li>无锁：所有的线程都会对临界区进行访问，保证只有一个线程能在有限步里离开临界区</li>
+<li>无等待：要求所有线程都必须在有限步内完成<br>####Amdahl定理<br>加速比定义：加速比=优化前系统耗时/优化后系统耗时<br><br>优化的效果取决于<strong>CPU数量</strong>以及<strong>系统中串行化程序的比重</strong><br>####Gustafson定理<br>执行时间=a串行时间+b并行时间<br><br>执行总时间=a串行时间=n处理器个数b并行时间<br><br>加速比=（a+nb）/(a+b)<br><br>F=a/(a+b)<br><br>如果串行化比例小，并行化比例大，只要添加处理器个数就能得到更快的速度<br>####JVM线程</li>
+<li>原子性：一个不可中断的操作，不会被其他线程所干扰</li>
+<li>可见性：一个线程修改了一个共享变量的值，其他线程能够立即知道这个修改</li>
+<li>有序性：保证运行过程和原有的语义结构一致<ul>
+<li>符合happen-before原则可以保证有序性，包括<ul>
+<li>程序顺序原则，一个县城内保证语义的串行性</li>
+<li>volatile原则，volatile变量的写先发生于读</li>
+<li>锁规则，解锁发生在加锁前</li>
+<li>传递性，A先于B，B先于C，则A先于C</li>
+<li>线程start优先于每个动作</li>
+<li>线程所有操作优先于终结Join</li>
+<li>线程中断优先于被中断的代码</li>
+<li>对象构造函数执行优先于finalize（）方法</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/28/2018-08-27-1.8HashMap链表转红黑树/" class="archive-article-date">
-  <time datetime="2018-08-27T16:30:09.961Z" itemprop="datePublished">8月 28</time>
-</a>
+        
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/28/2018-08-27-1.8HashMap链表转红黑树/">1.8HashMap链表转红黑树</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/27/2018-08-27-缓存更新策略/" class="archive-article-date">
-  <time datetime="2018-08-27T13:32:42.228Z" itemprop="datePublished">8月 27</time>
-</a>
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/09/01/2018-08-30-高并发概念描述/" data-id="cjli87ewy000wtsbb495i7z1s" class="article-share-link">Share</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/27/2018-08-27-缓存更新策略/">缓存更新策略</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/23/2018-08-22-支付系统设计/" class="archive-article-date">
-  <time datetime="2018-08-23T09:22:28.472Z" itemprop="datePublished">8月 23</time>
-</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/23/2018-08-22-支付系统设计/">支付系统的设计</a>
-    </h1>
-  
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/高并发/">高并发</a></li></ul>
 
-    </header>
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/alex.github.io/2018/08/28/2018-08-28-MySQL采用自增列/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">MySQL采用自增列</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/22/2018-08-22-数据库架构优化/" class="archive-article-date">
-  <time datetime="2018-08-22T12:59:01.118Z" itemprop="datePublished">8月 22</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/22/2018-08-22-数据库架构优化/">数据库架构优化</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/22/2018-08-23-数据库表连接/" class="archive-article-date">
-  <time datetime="2018-08-22T12:59:01.000Z" itemprop="datePublished">8月 22</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/22/2018-08-23-数据库表连接/">数据库架构优化</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/22/2018-08-22-Oracle执行计划/" class="archive-article-date">
-  <time datetime="2018-08-22T12:19:13.916Z" itemprop="datePublished">8月 22</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/22/2018-08-22-Oracle执行计划/">Oracle执行计划</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/22/2018-08-22-Eureka源码分析/" class="archive-article-date">
-  <time datetime="2018-08-22T12:14:29.263Z" itemprop="datePublished">8月 22</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/22/2018-08-22-Eureka源码分析/">Eureka源码分析</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/22/2018-08-17-MySQL的锁/" class="archive-article-date">
-  <time datetime="2018-08-22T02:41:08.954Z" itemprop="datePublished">8月 22</time>
-</a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/22/2018-08-17-MySQL的锁/">MySQL的整体架构</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-
-  <nav id="page-nav">
-    
-    <span class="page-number current">1</span><a class="page-number" href="/alex.github.io/archives/page/2/">2</a><a class="page-number" href="/alex.github.io/archives/page/3/">3</a><a class="extend next" rel="next" href="/alex.github.io/archives/page/2/">下一页 &raquo;</a>
-  </nav>
 
 </section>
         
