@@ -5,19 +5,20 @@
   
 
   
-  <title>Tag: SpringBoot | Alex</title>
+  <title>JAVA线程池队列 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JAVA之路">
-<meta name="keywords" content="JAVA,MySQL,Linux">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Alex">
-<meta property="og:url" content="https://alexrencn.github.io/tags/SpringBoot/index.html">
+  <meta name="description" content="ThreadPoolExecutor构造器中BlockingQueue的描述">
+<meta name="keywords" content="JAVA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA线程池队列">
+<meta property="og:url" content="https://alexrencn.github.io/2018/09/02/2018-09-01-JAVA线程池队列/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JAVA之路">
+<meta property="og:description" content="ThreadPoolExecutor构造器中BlockingQueue的描述">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-09-02T04:44:04.771Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Alex">
-<meta name="twitter:description" content="JAVA之路">
+<meta name="twitter:title" content="JAVA线程池队列">
+<meta name="twitter:description" content="ThreadPoolExecutor构造器中BlockingQueue的描述">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -68,40 +69,101 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/alex.github.io/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/21/2018-08-20-SringBoot自动装配/" class="archive-article-date">
-  <time datetime="2018-08-21T15:11:20.190Z" itemprop="datePublished">8月 21</time>
+        <section id="main"><article id="post-2018-09-01-JAVA线程池队列" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/09/02/2018-09-01-JAVA线程池队列/" class="article-date">
+  <time datetime="2018-09-02T04:44:04.770Z" itemprop="datePublished">2018-09-02</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/21/2018-08-20-SringBoot自动装配/">SringBoot自动装配</a>
+    <h1 class="article-title" itemprop="name">
+      JAVA线程池队列
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ThreadPoolExecutor构造器中BlockingQueue<runable>的描述<br><a id="more"></a></runable></p>
+<p>###JDK8中的队列实现</p>
+<p>####SynchronousQueue<br><strong>直接提交的队列</strong><br><strong>默认使用：</strong> newCachedThreadPool</p>
+<blockquote>
+<p>该队列没有容量，只有一个元素存在，每一个插入操作都要等待对应的删除操作，每一个删除操作也需要等待对于的插入操作<br>需要注意最大线程数的设置，避免操作被拒绝,是一个公平队列，先进先出</p>
+</blockquote>
+<p>####ArrayBlockingQueue<br><strong>有界堵塞队列</strong></p>
+<blockquote>
+<p>使用数组实现，任务队列放满之后才会将线程池从corePoolSize进行提升，注重保持在核心数量,是一个公平队列，先进先出</p>
+</blockquote>
+<p>####LinkedBlockingQueue<br><strong>有界堵塞队列</strong><br><strong>默认使用：</strong> newFixedThreadPool、newSingleThreadExecutor</p>
+<blockquote>
+<p>使用链表实现，默认大小是Integer.MAX_VALUE，所以最好手动指定大小，每个提交的任务都会储存在一个node对象中，实现了锁分离，添加和移除任务各有一把锁，是一个公平队列，先进先出</p>
+</blockquote>
+<p>####DelayedWorkQueue<br><strong>无界堵塞队列</strong><br><strong>默认使用：</strong> ScheduledThreadPoolExecutor、newSingleThreadScheduledExecutor</p>
+<blockquote>
+<p>可以按照任务优先级执行，采用消费者-生产者模式进行消费</p>
+</blockquote>
+<p>####PriorityBlockingQueue<br><strong>优先任务队列</strong></p>
+<blockquote>
+<p>是一种特殊的无界队列，可以按照任务优先级执行，元素可以实现Comparable接口，不允许为null</p>
+</blockquote>
+<p>####DelayQueue<br><strong>无界堵塞队列</strong></p>
+<blockquote>
+<p>每个元素都会有一定的延时，然后释放</p>
+</blockquote>
+<p>####LinkedBlockingDueue<br><strong>有界堵塞队列</strong></p>
+<blockquote>
+<p>使用链表实现，允许从双端进行插入和删除，默认大小是Integer.MAX_VALUE，所以最好手动指定大小，每个提交的任务都会储存在一个node对象中，实现了锁分离，添加和移除任务各有一把锁，任务队列放满之后才会将线程池从corePoolSize进行提升，注重保持在核心数量,是一个公平队列，先进先出</p>
+</blockquote>
+<p>####LinkedTransferQueue<br><strong>无界堵塞队列</strong></p>
+<blockquote>
+<p>使用链表实现，采用消费者-生产者模式进行消费，是一个公平队列，先进先出</p>
+</blockquote>
+<p>###线程池不同队列如何运行</p>
+<p>####有界队列工作步骤</p>
+<ol>
+<li>如果实际线程数小于corePoolSize，则优先创建新的线程</li>
+<li>若大于corePoolSize，加入等待队列<br>####无界队列工作步骤</li>
+<li>如果实际线程数小于corePoolSize，则优先创建新的线程</li>
+<li>若大于corePoolSize，加入等待队列</li>
+<li>若等待队列已满，无法加入，并且总线程数不超过maxSize则创建新的进程执行任务</li>
+<li>若大于maxSize则执行拒绝策略<br>####直接提交队列工作步骤</li>
+<li>提交给线程执行</li>
+<li>如果没有空闲线程，则会创建新的线程</li>
+<li>如果已经达到maxSize最大值则执行拒绝策略</li>
+</ol>
 
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/09/02/2018-09-01-JAVA线程池队列/" data-id="cjlkdg791000zvybb6b43b0l4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/JAVA/">JAVA</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/alex.github.io/2018/09/01/2018-08-22-Eureka源码分析/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Eureka源码分析</div>
+    </a>
+  
+</nav>
+
+  
+</article>
 
 </section>
         

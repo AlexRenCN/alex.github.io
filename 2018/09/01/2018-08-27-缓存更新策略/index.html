@@ -5,19 +5,20 @@
   
 
   
-  <title>Tag: SpringBoot | Alex</title>
+  <title>缓存更新策略 | Alex</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="JAVA之路">
-<meta name="keywords" content="JAVA,MySQL,Linux">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Alex">
-<meta property="og:url" content="https://alexrencn.github.io/tags/SpringBoot/index.html">
+  <meta name="description" content="更新缓存常用的策略及分析">
+<meta name="keywords" content="缓存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="缓存更新策略">
+<meta property="og:url" content="https://alexrencn.github.io/2018/09/01/2018-08-27-缓存更新策略/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JAVA之路">
+<meta property="og:description" content="更新缓存常用的策略及分析">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-09-01T07:31:47.743Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Alex">
-<meta name="twitter:description" content="JAVA之路">
+<meta name="twitter:title" content="缓存更新策略">
+<meta name="twitter:description" content="更新缓存常用的策略及分析">
   
     <link rel="alternate" href="/alex.github.io/atom.xml" title="Alex" type="application/atom+xml">
   
@@ -68,40 +69,118 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/alex.github.io/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/alex.github.io/2018/08/21/2018-08-20-SringBoot自动装配/" class="archive-article-date">
-  <time datetime="2018-08-21T15:11:20.190Z" itemprop="datePublished">8月 21</time>
+        <section id="main"><article id="post-2018-08-27-缓存更新策略" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/alex.github.io/2018/09/01/2018-08-27-缓存更新策略/" class="article-date">
+  <time datetime="2018-09-01T07:31:47.743Z" itemprop="datePublished">2018-09-01</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/alex.github.io/2018/08/21/2018-08-20-SringBoot自动装配/">SringBoot自动装配</a>
+    <h1 class="article-title" itemprop="name">
+      缓存更新策略
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>更新缓存常用的策略及分析<br><a id="more"></a></p>
+<p>####Cache Aside模式</p>
+<ul>
+<li>查询请求全过程</li>
+</ul>
+<ol>
+<li>请求数据</li>
+<li>查询缓存</li>
+<li>查询数据库</li>
+<li>数据库结果放入缓存</li>
+</ol>
+<ul>
+<li>更新请求全过程</li>
+</ul>
+<ol>
+<li>更新数据库</li>
+<li>使缓存失效<blockquote>
+<p>最常用的模式，这个模式下缓存和DB之间的数据同步错误率最小，效率最低</p>
+</blockquote>
+####Read/Write Through模式</li>
+</ol>
+<ul>
+<li>查询请求全过程</li>
+</ul>
+<ol>
+<li>直接访问缓存服务</li>
+<li>缓存服务将数据更新到数据库</li>
+</ol>
+<ul>
+<li>更新请求全过程</li>
+</ul>
+<ol>
+<li>直接访问缓存服务</li>
+<li>缓存服务将数据更新到数据库<blockquote>
+<p>数据依赖主要是来源于缓存，服务依赖于缓存服务的可用性，效率中等</p>
+</blockquote>
+####Write Behind模式</li>
+</ol>
+<ul>
+<li>查询请求全过程</li>
+</ul>
+<ol>
+<li>直接访问缓存服务</li>
+<li>缓存服务开启异步将数据更新到数据库</li>
+</ol>
+<ul>
+<li>更新请求全过程</li>
+</ul>
+<ol>
+<li>直接访问缓存服务</li>
+<li>缓存服务开启异步将数据更新到数据库<blockquote>
+<p>服务完全依赖于缓存，效率最高（只写1次），缓存和DB之间的数据同步错误率最大</p>
+</blockquote>
+</li>
+</ol>
 
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://alexrencn.github.io/2018/09/01/2018-08-27-缓存更新策略/" data-id="cjlkdg78z000xvybbkv9biqjk" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/alex.github.io/tags/缓存/">缓存</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/alex.github.io/2018/09/01/2018-08-22-Eureka源码分析/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Eureka源码分析
+        
+      </div>
+    </a>
+  
+  
+    <a href="/alex.github.io/2018/09/01/2018-08-30-高并发概念描述/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">高并发概念描述</div>
+    </a>
+  
+</nav>
+
+  
+</article>
 
 </section>
         
