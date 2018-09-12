@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/02/2018-09-01-JAVA线程池队列/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-09-12-SpringMVC流程解析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -304,8 +304,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/alex.github.io/2018/09/02/2018-09-01-JAVA线程池队列/" itemprop="url">
-                  JAVA线程池队列
+                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-09-12-SpringMVC流程解析/" itemprop="url">
+                  SpringMVC流程解析
                 </a>
               
             
@@ -331,7 +331,7 @@
                 
               
 
-              <time title="创建时间：2018-09-02 12:44:04" itemprop="dateCreated datePublished" datetime="2018-09-02T12:44:04+08:00">2018-09-02</time>
+              <time title="创建时间：2018-09-12 18:01:00" itemprop="dateCreated datePublished" datetime="2018-09-12T18:01:00+08:00">2018-09-12</time>
             
 
             
@@ -346,8 +346,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/09/02/2018-09-01-JAVA线程池队列/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/02/2018-09-01-JAVA线程池队列/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/09/12/2018-09-12-SpringMVC流程解析/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-09-12-SpringMVC流程解析/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -355,7 +355,7 @@
 
           
           
-             <span id="/alex.github.io/2018/09/02/2018-09-01-JAVA线程池队列/" class="leancloud_visitors" data-flag-title="JAVA线程池队列">
+             <span id="/alex.github.io/2018/09/12/2018-09-12-SpringMVC流程解析/" class="leancloud_visitors" data-flag-title="SpringMVC流程解析">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -387,14 +387,55 @@
 
       
         
-          <p>ThreadPoolExecutor构造器中BlockingQueue<runable>的描述<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/09/02/2018-09-01-JAVA线程池队列/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <a id="more"></a>
+<p>####重要domain说明</p>
+<ul>
+<li>DispatcherServlet     前端控制器，用于接收全部前段请求和分发请求，处理SpringMVC流程</li>
+<li>HandlerMapping        处理器映射器，从容器中获取所有的HandlerMapping并进行遍历，找到请求对应的Handler</li>
+<li>HandlerAdapter        处理器适配器，将参数传递给Handler进行处理</li>
+<li>Handler               处理器，我们平时常提到的Controller就是处理器，实际业务逻辑的地方</li>
+<li>ViewReslover          视图解析器，将ModelAndView转换为View</li>
+<li>HandlerExecutionChain 处理器处理链，包含一个处理器HandlerMethod和多个拦截器HandlerInterceptor</li>
+<li>HandlerIntercepter    处理器拦截器，可以在SpringMVC的某个流程中（请求处理前、请求处理后、渲染视图后等）来实现拦截器功能</li>
+<li>ModelAndView          模型数据，包含着SpringMVC里Model和View对象</li>
+<li>view                  视图，视图解析器解析ModelAndView得出，前端控制器进行渲染<br>####请求流程</li>
+</ul>
+<ol>
+<li>用户发起请求(<strong>client客户端</strong>→<strong>DispatcherServlet前端控制器</strong>)</li>
+<li>查找处理器（<strong>DispatcherServlet前端控制器</strong>与<strong>HandlerMapping处理器映射器</strong>交互）<ol>
+<li>找到处理器映射器查找处理器（<strong>DispatcherServlet前端控制器</strong>→<strong>HandlerMapping处理器映射器</strong>）</li>
+<li>返回<strong>HandlerExecutionChain处理器处理链</strong>（包括<strong>HandlerIntercepter处理器拦截器</strong>和<strong>Handler处理器</strong>）（<strong>HandlerMapping处理器映射器</strong>→DispatcherServlet前端控制器）</li>
+</ol>
+</li>
+<li>调用处理器（<strong>DispatcherServlet前端控制器</strong>与<strong>HandlerAdapter处理器适配器</strong>交互）<ol>
+<li>通过处理器适配器调用具体的处理器（<strong>DispatcherServlet前端控制器</strong>→<strong>HandlerAdapter处理器适配器</strong>）<ol>
+<li>调用处理器Handler（<strong>HandlerAdapter处理器适配器</strong>→<strong>Handler处理器</strong>）</li>
+<li>返回ModelAndView模型数据（<strong>Handler处理器</strong>→<strong>HandlerAdapter处理器适配器</strong>）</li>
+</ol>
+</li>
+<li>返回ModelAndView模型数据（<strong>HandlerAdapter处理器适配器</strong>→<strong>DispatcherServlet前端控制器</strong>）</li>
+</ol>
+</li>
+<li>进行视图解析（<strong>DispatcherServlet前端控制器</strong>与<strong>ViewReslover视图解析器</strong>交互）<ol>
+<li>进行视图解析（<strong>DispatcherServlet前端控制器</strong>→<strong>ViewReslover视图解析器</strong>）</li>
+<li>返回view视图（<strong>ViewReslover视图解析器</strong>→<strong>DispatcherServlet前端控制器</strong>）</li>
+</ol>
+</li>
+<li>渲染视图（<strong>DispatcherServlet前端控制器</strong>）</li>
+<li>返回响应(<strong>DispatcherServlet前端控制器</strong>→<strong>client客户端</strong>)<h4 id="SpringMVC的九大组件"><a href="#SpringMVC的九大组件" class="headerlink" title="SpringMVC的九大组件"></a>SpringMVC的九大组件</h4></li>
+<li>initMultipartResolver();//处理用户请求，把request封装为MultipartHttpServletRequest</li>
+<li>initLocalResolver();//处理国际化以及ViewReslover解析视图</li>
+<li>initThemeResolver();//处理解析主题</li>
+<li>initHandlerMapping();//处理查找Handler</li>
+<li>initHandlerAdapters;//处理参数，将Request和Response处理为Handler可接受的参数</li>
+<li>initHandlerExceptionResolver();//处理其他组件的异常</li>
+<li>initRequestToViewNameTranslator();//处理没有设置view和viewName的请求，从request中获取viewName</li>
+<li>initViewResolver();//用来处理视图解析</li>
+<li>initFlashMapManager();//用来处理redirect重定向时传递参数的FlashMap</li>
+</ol>
+
+          
         
       
     </div>
@@ -446,7 +487,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/01/2018-08-22-Eureka源码分析/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-28-MySQL采用自增列/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -465,491 +506,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/alex.github.io/2018/09/01/2018-08-22-Eureka源码分析/" itemprop="url">
-                  Eureka源码分析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-01 15:31:47" itemprop="dateCreated datePublished" datetime="2018-09-01T15:31:47+08:00">2018-09-01</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/alex.github.io/2018/09/01/2018-08-22-Eureka源码分析/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/01/2018-08-22-Eureka源码分析/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/alex.github.io/2018/09/01/2018-08-22-Eureka源码分析/" class="leancloud_visitors" data-flag-title="Eureka源码分析">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数：</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <blockquote>
-<p>基于InnoDB存储引擎的哈希索引描述，帮助以后再合适的场景下选择正确的索引<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/09/01/2018-08-22-Eureka源码分析/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/01/2018-08-27-缓存更新策略/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alex Ren">
-      <meta itemprop="description" content="JAVA之路">
-      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/alex.github.io/2018/09/01/2018-08-27-缓存更新策略/" itemprop="url">
-                  缓存更新策略
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-01 15:31:47" itemprop="dateCreated datePublished" datetime="2018-09-01T15:31:47+08:00">2018-09-01</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/alex.github.io/2018/09/01/2018-08-27-缓存更新策略/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/01/2018-08-27-缓存更新策略/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/alex.github.io/2018/09/01/2018-08-27-缓存更新策略/" class="leancloud_visitors" data-flag-title="缓存更新策略">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数：</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>更新缓存常用的策略及分析<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/09/01/2018-08-27-缓存更新策略/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/01/2018-08-30-高并发概念描述/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alex Ren">
-      <meta itemprop="description" content="JAVA之路">
-      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/alex.github.io/2018/09/01/2018-08-30-高并发概念描述/" itemprop="url">
-                  高并发概念描述
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-01 00:41:42" itemprop="dateCreated datePublished" datetime="2018-09-01T00:41:42+08:00">2018-09-01</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/alex.github.io/2018/09/01/2018-08-30-高并发概念描述/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/01/2018-08-30-高并发概念描述/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/alex.github.io/2018/09/01/2018-08-30-高并发概念描述/" class="leancloud_visitors" data-flag-title="高并发概念描述">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数：</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>这几天看算法的书籍，学习进度非常缓慢，再次复读一下《JAVA高并发程序设计》,换一下思考的方向并且进行复习<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/09/01/2018-08-30-高并发概念描述/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/08/28/2018-08-28-MySQL采用自增列/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alex Ren">
-      <meta itemprop="description" content="JAVA之路">
-      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/alex.github.io/2018/08/28/2018-08-28-MySQL采用自增列/" itemprop="url">
+                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-08-28-MySQL采用自增列/" itemprop="url">
                   MySQL采用自增列
                 </a>
               
@@ -976,7 +533,7 @@
                 
               
 
-              <time title="创建时间：2018-08-28 16:38:58" itemprop="dateCreated datePublished" datetime="2018-08-28T16:38:58+08:00">2018-08-28</time>
+              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
             
 
             
@@ -991,8 +548,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/08/28/2018-08-28-MySQL采用自增列/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/08/28/2018-08-28-MySQL采用自增列/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/09/12/2018-08-28-MySQL采用自增列/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-28-MySQL采用自增列/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1000,7 +557,7 @@
 
           
           
-             <span id="/alex.github.io/2018/08/28/2018-08-28-MySQL采用自增列/" class="leancloud_visitors" data-flag-title="MySQL采用自增列">
+             <span id="/alex.github.io/2018/09/12/2018-08-28-MySQL采用自增列/" class="leancloud_visitors" data-flag-title="MySQL采用自增列">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1032,14 +589,21 @@
 
       
         
-          <p>生产项目中很久没有使用过自增列，本文针对MySQL的InnoDB引擎对自增列进行分析<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/08/28/2018-08-28-MySQL采用自增列/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <a id="more"></a>
+<p>生产项目中很久没有使用过自增列，本文针对MySQL的InnoDB引擎对自增列进行分析</p>
+<p>####如何使用自增列<br>create table tab (id int auto_increment)</p>
+<p>####优点</p>
+<ul>
+<li>自增列天然有序，作为主键的时候数据分布可以预估</li>
+<li>InnoDB引擎默认会将第一个不包含Null的唯一索引作为主键索引，如果没有符合条件的索引，会创建一个隐含的Rowid，该索引属于聚集索引。</li>
+<li>聚集索引在子叶数据放满的时候回进行页分裂，自增列保证了数据添加只会操作最后的页，数据放满后开辟新的页，不会对之前的数据进行分裂，移动，减少了空间碎片<br>####缺点</li>
+<li>自增列只能针对单个数据库，无法进行数据库的拆分（通过自增量进行区分，但是不灵活，也无法一致扩展）</li>
+<li>可能会出现不连续的问题（ID不做任何业务，只关心是否相等）</li>
+<li>自增列无法保证唯一（通过唯一约束避免）</li>
+</ul>
+
+          
         
       
     </div>
@@ -1091,7 +655,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/08/28/2018-08-27-1.8HashMap链表转红黑树/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-18-缓存可能产生的问题及解决方案/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -1110,8 +674,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/alex.github.io/2018/08/28/2018-08-27-1.8HashMap链表转红黑树/" itemprop="url">
-                  1.8HashMap链表转红黑树
+                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-08-18-缓存可能产生的问题及解决方案/" itemprop="url">
+                  缓存可能产生的问题及解决方案
                 </a>
               
             
@@ -1137,7 +701,7 @@
                 
               
 
-              <time title="创建时间：2018-08-28 00:30:09" itemprop="dateCreated datePublished" datetime="2018-08-28T00:30:09+08:00">2018-08-28</time>
+              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
             
 
             
@@ -1152,8 +716,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/08/28/2018-08-27-1.8HashMap链表转红黑树/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/08/28/2018-08-27-1.8HashMap链表转红黑树/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/09/12/2018-08-18-缓存可能产生的问题及解决方案/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-18-缓存可能产生的问题及解决方案/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1161,7 +725,7 @@
 
           
           
-             <span id="/alex.github.io/2018/08/28/2018-08-27-1.8HashMap链表转红黑树/" class="leancloud_visitors" data-flag-title="1.8HashMap链表转红黑树">
+             <span id="/alex.github.io/2018/09/12/2018-08-18-缓存可能产生的问题及解决方案/" class="leancloud_visitors" data-flag-title="缓存可能产生的问题及解决方案">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1193,14 +757,54 @@
 
       
         
-          <p>ConcurrentHashMap的底层数据为数组加链表，哈希冲突的值会放在链表中，如果哈希冲突严重，对ConcurrentHashMap的操作会变为对长链表的操作，为了解决效率问题，1.8会进行红黑树的转换<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/08/28/2018-08-27-1.8HashMap链表转红黑树/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <a id="more"></a>
+<blockquote>
+<p>在设计和使用缓存的时候，我们必须要考虑到缓存系统的可用性，避免因使用缓存出现的问题，本文涉及到的内容是在整个架构体系正常运行的情况下可能会出现的致命问题，适合使用缓存做具体业务的开发人员进行查看</p>
+</blockquote>
+<p>##缓存击穿</p>
+<blockquote>
+<p>如果我们对于某一个热点数据进行了缓存，在缓存失效的一瞬间有大量的请求进来，这个时候所有的请求都会被系统推到数据库，瞬间的请求完全可以把数据库压垮</p>
+</blockquote>
+<p>根据缓存击穿的发生条件，<strong>频繁</strong>、<strong>失效</strong>和**大量请求共同造成了这个问题，而可以产生缓存击穿的数据必然是极大的热点数据，我们不可能把访问频繁的问题通过任何方式处理掉，只需要考虑剩下两个问题即可</p>
+<ul>
+<li>使用互斥量，如果缓存未能命中，不是直接去访问数据库，而是先去争夺一个锁资源，通过Redis的SetNX或者Memcached的Add操作，都可以保证有一个唯一的请求可以争夺到锁，争夺到锁的线程就可以去访问数据库并且更新缓存，而其他线程没有得到该锁，就应该继续尝试获取缓存内容，做一个自旋锁，这个自旋锁会在其他线程更新缓存失败或者完成数据缓存之后结束，虽然占用了无用的CPU但是实际上自旋的时间很短</li>
+<li>提前更新，还是使用互斥量去争夺更新缓存的锁，不过更新的时间不再是失效时，而是在失效之前，通过在缓存中存储一个预计时效的时间，来判断是否需要更新缓存，而且可以灵活的根据实际场景选择没有得到更新锁的线程是自旋等待还是直接取当前缓存</li>
+<li>修改过期时间，如果业务要求并不严格而且缓存更新实在是屈指可数，我们可以不设定Redis的过期，而是由一个定时任务去定时更新缓存内容，这样可以减少上述因为缓存更新造成的CPU空跑现象和频繁校验，不过一定需要确定，在更新缓存的定时任务挂掉的情况下，业务功能是可以接受缓存不更新的<br>##缓存穿透<blockquote>
+<p>如果有不怀好意的人员针对某个接口进行攻击，不断的查询一个不可能存在的数据，这个时候我们即使使用了缓存，也不会在缓存里完成任何一次命中，这个请求就会到数据访问层进行数据库交互并查询出空结果集，或者发生异常，如果到数据库的查询过多，很可能会使数据库崩溃</p>
+</blockquote>
+</li>
+</ul>
+<p>根据缓存穿透的发生条件，<strong>频繁</strong>和<strong>不可能存在的键</strong>是两个触发此问题的根源，我们只需要限制这两个条件就会使该问题得到缓解<br></p>
+<ul>
+<li>使用限流，任何方式的限流都可以有效的解决这个问题，无论是针对DDOS攻击而购买的高防IP，或者是主流RPC框架提供的限流都会让这个问题得到缓解，进行查询的接口如果有了上线，那么只需要考虑在访问上限的情况下数据库能否承受就好了</li>
+<li>Key值过滤，我们在使用缓存的时候，key值的选择一般是有着一定的命名规范的，比如：系统名-业务名-KEY,这样能够做到避免key值冲突引发的惨案，而我们可以根据我们已知的命名规则，把不可能存在的key值做直接过滤也可以解决这个问题，常见的做法是使用布隆过滤器（一个超大的hashMap），或者直接把结果为空进行缓存，让下一个请求在缓存里命中，但是缓存时间不宜过长，因为我们并没有去考虑这个键是不会存在还是暂时不存在<br>##缓存雪崩<blockquote>
+<p>针对某种业务需要缓存大量的数据，如果这些数据时同时放入的，由于业务规则的一致性，这些缓存将会在某个时刻同时失效，在失效的这一时刻，大量的请求会发生缓存未命中的情况，同时请求数据库而把数据库压垮</p>
+</blockquote>
+</li>
+</ul>
+<p>根据缓存雪崩发生的条件，<strong>大量缓存</strong>和<strong>同时</strong>失效是产生问题的原因</p>
+<ul>
+<li>使用随机失效时间，在预估的失效时间之上做一个分散，比如之前的缓存希望存放60s，我们可以改为40S+随机数的模式，让缓存失效的时间分散在一个时间范围内，这样数据库的访问会得到一定的缓解</li>
+</ul>
+<p>##缓存并发</p>
+<blockquote>
+<p>在访问高并发数据的缓存副本时，如果缓存失效，无法保证设置缓存和更新数据库是同一个线程，可能会造成数据不一致的情况</p>
+</blockquote>
+<p>根据缓存并发发生的条件，<strong>并发更新</strong>和<strong>设置缓存</strong>是产生问题的原因，我们只需要保证这两个操作的原子性即可</p>
+<ul>
+<li>使用互斥量，由争取到分布式更新锁的线程去更新缓存，其他线程自旋等待，只要更新线程能够设置缓存和及时释放更新锁就能达到效果</li>
+</ul>
+<p>##缓存预热</p>
+<blockquote>
+<p>此场景发生在功能上线的时候，如果有大量的请求访问进来，但是刚刚上线的系统还没有任何缓存，这个时候所有请求又会到数据库中进行查询</p>
+</blockquote>
+<p>根据缓存预热发生的条件，<strong>大量请求</strong>和<strong>还未缓存</strong>是产生问题的原因，和此问题的名字一样，我们需要制定一些策略在上线之前对缓存进行预热</p>
+<ul>
+<li>使用预热程序，在系统上线之前先启动预热程序，将可能产生的缓存进行尽可能的放入缓存中，然后再进行部署</li>
+</ul>
+
+          
         
       
     </div>
@@ -1252,7 +856,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/08/23/2018-08-22-支付系统设计/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-17-MySQL的锁/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -1271,8 +875,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/alex.github.io/2018/08/23/2018-08-22-支付系统设计/" itemprop="url">
-                  支付系统的设计
+                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-08-17-MySQL的锁/" itemprop="url">
+                  MySQL的整体架构
                 </a>
               
             
@@ -1298,7 +902,7 @@
                 
               
 
-              <time title="创建时间：2018-08-23 17:22:28" itemprop="dateCreated datePublished" datetime="2018-08-23T17:22:28+08:00">2018-08-23</time>
+              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
             
 
             
@@ -1313,8 +917,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/08/23/2018-08-22-支付系统设计/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/08/23/2018-08-22-支付系统设计/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/09/12/2018-08-17-MySQL的锁/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-17-MySQL的锁/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1322,7 +926,7 @@
 
           
           
-             <span id="/alex.github.io/2018/08/23/2018-08-22-支付系统设计/" class="leancloud_visitors" data-flag-title="支付系统的设计">
+             <span id="/alex.github.io/2018/09/12/2018-08-17-MySQL的锁/" class="leancloud_visitors" data-flag-title="MySQL的整体架构">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1354,15 +958,36 @@
 
       
         
-          <blockquote>
-<p>虽然之前的从业的公司一直和金融息息相关，也与多家支付或者银行系统进行过系统对接，但是支付系统一直没能从整体应用中真正独立<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/08/23/2018-08-22-支付系统设计/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <a id="more"></a>
+<p>本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率</p>
+<h2 id="锁级别分类描述"><a href="#锁级别分类描述" class="headerlink" title="锁级别分类描述"></a>锁级别分类描述</h2><ol>
+<li><strong>共享锁</strong> ，读锁，只有在读和读之间可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事务更新</li>
+<li><strong>排它锁</strong> ，写锁，不可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事物更新和读取</li>
+<li><strong>意向锁</strong> ，有读锁和写锁，由于共享锁和排它锁都可以针对行，在事务中如果涉及到多表操作，可能在不同事务内会造成死锁的问题，MySQL为了避免锁的冲突，使用意向锁，事务A在申请一行的行锁的时候，数据库会先自动申请意向锁，事务B在申请排它锁的时候会先查看表是否被其他事务加了表锁，然后再查看表是否加了意向共享锁，如果有，事务B申请表排它锁的步骤会被堵塞，只存在表锁</li>
+<li><strong>间隙锁</strong> ，写锁，不可以重入，为了避免幻读的情况出现，主要出现在同一个事务先Delete再Insert的情况下，数据库扫描索引，发现Delete的数据是一个间隙锁，然后就会向左右各扫描到一个值，锁住整个区间内的数据，会造成死锁的出现<h2 id="锁粒度分类描述"><a href="#锁粒度分类描述" class="headerlink" title="锁粒度分类描述"></a>锁粒度分类描述</h2></li>
+</ol>
+<table><br>    <thead><br>        <tr><br>            <th></th><br>            <th>行锁</th><br>            <th>页锁</th><br>            <th>表锁</th><br>        </tr><br>    </thead><br>    <body><br>        <tr><br>            <th>锁范围</th><br>            <th>当前操作行</th><br>            <th>当前操作行相邻的一组数据</th><br>            <th>当前表</th><br>        </tr><br>        <tr><br>            <th>开销</th><br>            <th>最大</th><br>            <th>折中</th><br>            <th>最小</th><br>        </tr><br>        <tr><br>            <th>并发度</th><br>            <th>最低</th><br>            <th>折中</th><br>            <th>最高</th><br>        </tr><br>        <tr><br>            <th>死锁</th><br>            <th>会</th><br>            <th>会</th><br>            <th>不会</th><br>        </tr><br>    </body><br></table>
+
+
+<h2 id="加锁方式分类描述"><a href="#加锁方式分类描述" class="headerlink" title="加锁方式分类描述"></a>加锁方式分类描述</h2><ol>
+<li><p>显式加锁</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">1</span> <span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share</span> <span class="keyword">mode</span>;<span class="comment">--共享锁</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">1</span> <span class="keyword">for</span> <span class="keyword">update</span>;<span class="comment">--排它锁</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自动加锁，数据库在执行事务的时候自动进行加锁</p>
+</li>
+</ol>
+<h4 id="操作方式分类描述"><a href="#操作方式分类描述" class="headerlink" title="操作方式分类描述"></a>操作方式分类描述</h4><ol>
+<li><strong>DDL锁</strong> (Data Manipulation Language)数据操控语言，针对数据库中的数据进行操作</li>
+<li><strong>DML锁</strong> (Data Definition Language)数据库定义语言，针对表的结构、数据类型、约束等关系进行操作</li>
+<li><strong>DCL锁</strong> (Data Control Language)数据库控制语言，针对数据库的用户和权限进行操作</li>
+</ol>
+<h4 id="从使用方式进行加锁"><a href="#从使用方式进行加锁" class="headerlink" title="从使用方式进行加锁"></a>从使用方式进行加锁</h4><ol>
+<li><strong>乐观锁</strong></li>
+<li><strong>悲观锁</strong> </li>
+</ol>
+
+          
         
       
     </div>
@@ -1414,7 +1039,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/08/22/2018-08-22-数据库架构优化/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-22-数据库架构优化/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -1433,7 +1058,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/alex.github.io/2018/08/22/2018-08-22-数据库架构优化/" itemprop="url">
+                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-08-22-数据库架构优化/" itemprop="url">
                   数据库架构优化
                 </a>
               
@@ -1460,7 +1085,7 @@
                 
               
 
-              <time title="创建时间：2018-08-22 20:59:01" itemprop="dateCreated datePublished" datetime="2018-08-22T20:59:01+08:00">2018-08-22</time>
+              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
             
 
             
@@ -1475,8 +1100,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/08/22/2018-08-22-数据库架构优化/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/08/22/2018-08-22-数据库架构优化/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/09/12/2018-08-22-数据库架构优化/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-22-数据库架构优化/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1484,7 +1109,7 @@
 
           
           
-             <span id="/alex.github.io/2018/08/22/2018-08-22-数据库架构优化/" class="leancloud_visitors" data-flag-title="数据库架构优化">
+             <span id="/alex.github.io/2018/09/12/2018-08-22-数据库架构优化/" class="leancloud_visitors" data-flag-title="数据库架构优化">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1516,15 +1141,25 @@
 
       
         
-          <blockquote>
-<p>随着项目的发展，访问量和数据量的增大，项目访问数据库的压力会越来越大，如何针对数据库进行优化，满足日益增长的业务呢<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/08/22/2018-08-22-数据库架构优化/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <a id="more"></a>
+<blockquote>
+<p>随着项目的发展，访问量和数据量的增大，项目访问数据库的压力会越来越大，如何针对数据库进行优化，满足日益增长的业务呢</p>
+</blockquote>
+<p>####读写分离<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">应用[应用]--&gt;|读写|主地址[主地址]</span><br><span class="line">应用[应用]--&gt;|读写|读写分离[读写分离]</span><br><span class="line">应用[应用]--&gt;|读|只读1[只读1]</span><br><span class="line">应用[应用]--&gt;|读|只读2[只读2]</span><br><span class="line">主地址[主地址]--&gt;|读写|主实例[主实例]</span><br><span class="line">读写分离[读写分离]--&gt;|写|主实例[主实例]</span><br><span class="line">读写分离[读写分离]--&gt;|读|只读实例1[只读实例1]</span><br><span class="line">读写分离[读写分离]--&gt;|读|只读实例2[只读实例2]</span><br><span class="line">只读1[只读1]--&gt;|读|只读实例1[只读实例1]</span><br><span class="line">只读2[只读2]--&gt;|读|只读实例2[只读实例2]</span><br></pre></td></tr></table></figure></p>
+<p>上图为阿里云数据库的简单设计描述，针对的场景是<strong>读多写少</strong>，把读操作和写操作分开,<br>在一致性要求非常高的情况下，主实例也应该承担一部分读取操作<br><br>实现读写分离的方式：</p>
+<ul>
+<li>使用编码方式，在程序中定义两个数据源并针对不同的数据访问层使用不同的数据源</li>
+<li>使用中间件，在数据访问层和数据库中间添加一个数据库代理服务</li>
+</ul>
+<p>####分库分别</p>
+<p>#####分表<br>随着数据库中的数据增多，对于单表可能出现查询瓶颈，这个时候首先要对数据库表进行分表处理</p>
+<ul>
+<li><strong>垂直拆分</strong>，按照业务模块进行拆分，将原表中的所有字段进行业务划分，分开出存在不同的表、数据库、或者服务器中</li>
+<li><strong>水平拆分</strong>，按照某种规则对单表进行水平切分，进行表分区或者建立多个表，根据规则选择访问</li>
+</ul>
+
+          
         
       
     </div>
@@ -1576,7 +1211,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/08/22/2018-08-23-数据库表连接/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-21-MySQL哈希索引/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -1595,8 +1230,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/alex.github.io/2018/08/22/2018-08-23-数据库表连接/" itemprop="url">
-                  数据库架构优化
+                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-08-21-MySQL哈希索引/" itemprop="url">
+                  MySQL的哈希索引
                 </a>
               
             
@@ -1622,7 +1257,7 @@
                 
               
 
-              <time title="创建时间：2018-08-22 20:59:01" itemprop="dateCreated datePublished" datetime="2018-08-22T20:59:01+08:00">2018-08-22</time>
+              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
             
 
             
@@ -1637,8 +1272,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/08/22/2018-08-23-数据库表连接/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/08/22/2018-08-23-数据库表连接/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/09/12/2018-08-21-MySQL哈希索引/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-21-MySQL哈希索引/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1646,7 +1281,7 @@
 
           
           
-             <span id="/alex.github.io/2018/08/22/2018-08-23-数据库表连接/" class="leancloud_visitors" data-flag-title="数据库架构优化">
+             <span id="/alex.github.io/2018/09/12/2018-08-21-MySQL哈希索引/" class="leancloud_visitors" data-flag-title="MySQL的哈希索引">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1678,15 +1313,28 @@
 
       
         
-          <blockquote>
-<p>随着项目的发展，访问量和数据量的增大，项目访问数据库的压力会越来越大，如何针对数据库进行优化，满足日益增长的业务呢<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/08/22/2018-08-23-数据库表连接/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <a id="more"></a>
+<blockquote>
+<p>基于InnoDB存储引擎的哈希索引描述，帮助以后再合适的场景下选择正确的索引</p>
+</blockquote>
+<p>####什么是哈希索引<br>哈希索引基于哈希表实现，只有命中该索引的所有列时才会生效</p>
+<p>####聚簇索引的数据结构<br>根据所有索引列计算哈希值，把哈希值放在索引中，并记录哈希指向的数据指针<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">哈希1--&gt;数据行1</span><br><span class="line">哈希2--&gt;数据行2</span><br><span class="line">哈希3--&gt;数据行3</span><br><span class="line">哈希4--&gt;数据行4</span><br><span class="line">哈希1--&gt;哈希2</span><br><span class="line">哈希2--&gt;哈希3</span><br><span class="line">哈希3--&gt;哈希4</span><br></pre></td></tr></table></figure></p>
+<p>####优点</p>
+<ul>
+<li>哈希索引只支持等值比较查询，（=、in、&lt;=&gt;、）</li>
+<li>查询速度更快</li>
+</ul>
+<p>####缺点</p>
+<ul>
+<li>哈希索引只存储哈希值和数据行指针，不存储任何字段，所有无法避免数据行的读取</li>
+<li>哈希索引并不存在顺序，无法用于排序</li>
+<li>哈希索引需要根据所有索引列匹配，无法用部分列得到哈希值</li>
+<li>哈希索引没有存储字段，所以无法用于范围查询</li>
+<li>哈希索引在哈希冲突严重的时候，需要遍历所有冲突的数据，影响查询以及删除效率</li>
+</ul>
+
+          
         
       
     </div>
@@ -1738,7 +1386,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/08/22/2018-08-22-Oracle执行计划/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-30-高并发概念描述/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -1757,8 +1405,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/alex.github.io/2018/08/22/2018-08-22-Oracle执行计划/" itemprop="url">
-                  Oracle执行计划
+                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-08-30-高并发概念描述/" itemprop="url">
+                  高并发概念描述
                 </a>
               
             
@@ -1784,7 +1432,7 @@
                 
               
 
-              <time title="创建时间：2018-08-22 20:19:13" itemprop="dateCreated datePublished" datetime="2018-08-22T20:19:13+08:00">2018-08-22</time>
+              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
             
 
             
@@ -1799,8 +1447,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/08/22/2018-08-22-Oracle执行计划/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/08/22/2018-08-22-Oracle执行计划/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/09/12/2018-08-30-高并发概念描述/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-30-高并发概念描述/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -1808,7 +1456,7 @@
 
           
           
-             <span id="/alex.github.io/2018/08/22/2018-08-22-Oracle执行计划/" class="leancloud_visitors" data-flag-title="Oracle执行计划">
+             <span id="/alex.github.io/2018/09/12/2018-08-30-高并发概念描述/" class="leancloud_visitors" data-flag-title="高并发概念描述">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -1840,15 +1488,731 @@
 
       
         
-          <blockquote>
-<p>如何针对Oracle数据库的看到的执行计划分析sql并想办法优化<br>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/08/22/2018-08-22-Oracle执行计划/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <a id="more"></a>
+<p>这几天看算法的书籍，学习进度非常缓慢，再次复读一下《JAVA高并发程序设计》,换一下思考的方向并且进行复习</p>
+<p>####同步&amp;异步</p>
+<ul>
+<li>同步：一旦方法调用开始，必须等到方法调用返回后，才能继续后续的行为</li>
+<li>异步：一旦开始，方法调用就会立即返回，斌能够继续后续的操作<br>####并发&amp;并行</li>
+<li>并发：两个或者多个任务交替执行</li>
+<li>并行：两个或者多个任务同时执行<br>####临界区</li>
+<li>表示一种公共资源或者共享数据，可以被多个线程使用，但是每一次，只能有一个线程使用它，一旦临界区资源被占用，其他线程要想使用这个资源，就必须等待<blockquote>
+<p>在java中主内存便是这样的临界区，对同一个数据的操作只能同时有一个线程执行</p>
+</blockquote>
+####阻塞&amp;非堵塞</li>
+<li>堵塞：一个线程占用临界区资源，其他所有需要这个资源的线程必须在临界区内进行等待</li>
+<li>非堵塞：一个线程占用临界区资源，其他线程会尝试向前执行<br>####死锁<br>集合中的每一个进程都在等待只能由本集合中的其他进程才能引发的事件，那么该组进程是死锁的。<br><br>产生死锁的条件</li>
+</ul>
+<ol>
+<li>互斥条件：一个资源每次只能被一个进程使用。</li>
+<li>请求与保持条件：一个进程因请求资源而阻塞时，对已获得的资源保持不放。</li>
+<li>不剥夺条件:进程已获得的资源，在末使用完之前，不能强行剥夺。</li>
+<li>循环等待条件:若干进程之间形成一种头尾相接的循环等待资源关系。<br>####饥饿<br>线程因为某种原因无法获得所需要的资源，例如优先级太低导致的抢占不到CPU运行时间片<br>####活锁<br>两个或者多个线程谦让自己的资源，导致资源不断在两个线程中跳动，而没有一个线程同时拿到所有资源而正常执行<br>####并发级别</li>
+</ol>
+<ul>
+<li>阻塞：如果拿不到临界区的锁，线程就会被挂起等待，直到其他线程释放</li>
+<li>无饥饿：线程公平，满足先来后到</li>
+<li>无障碍：都可以进入临界区，修改共享数据，一旦检测到数据变得，会对自己的修改进行回滚，直到成功并退出临界区</li>
+<li>无锁：所有的线程都会对临界区进行访问，保证只有一个线程能在有限步里离开临界区</li>
+<li>无等待：要求所有线程都必须在有限步内完成<br>####Amdahl定理<br>加速比定义：加速比=优化前系统耗时/优化后系统耗时<br><br>优化的效果取决于<strong>CPU数量</strong>以及<strong>系统中串行化程序的比重</strong><br>####Gustafson定理<br>执行时间=a串行时间+b并行时间<br><br>执行总时间=a串行时间=n处理器个数b并行时间<br><br>加速比=（a+nb）/(a+b)<br><br>F=a/(a+b)<br><br>如果串行化比例小，并行化比例大，只要添加处理器个数就能得到更快的速度<br>####JVM线程</li>
+<li>原子性：一个不可中断的操作，不会被其他线程所干扰</li>
+<li>可见性：一个线程修改了一个共享变量的值，其他线程能够立即知道这个修改</li>
+<li>有序性：保证运行过程和原有的语义结构一致<ul>
+<li>符合happen-before原则可以保证有序性，包括<ul>
+<li>程序顺序原则，一个县城内保证语义的串行性</li>
+<li>volatile原则，volatile变量的写先发生于读</li>
+<li>锁规则，解锁发生在加锁前</li>
+<li>传递性，A先于B，B先于C，则A先于C</li>
+<li>线程start优先于每个动作</li>
+<li>线程所有操作优先于终结Join</li>
+<li>线程中断优先于被中断的代码</li>
+<li>对象构造函数执行优先于finalize（）方法</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/" itemprop="url">
+                  JVM内存模型
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/" class="leancloud_visitors" data-flag-title="JVM内存模型">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<p>本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我</p>
+<h2 id="堆内存调优"><a href="#堆内存调优" class="headerlink" title="堆内存调优"></a>堆内存调优</h2><ul>
+<li><strong>-XX:NewRatio=2</strong> 设置新生代比例，示例代表着设置新生代:老年代=1:2，即年轻代占堆总空间的三分之一</li>
+<li><strong>-XX:SurvivorRatio=8</strong> 设置新生代eden和Survivor的比例，示例代表着两个Survivor:eden=2比8，一个Survivor占十分之一</li>
+<li><strong>-XX:MaxTenuringThreshold-15</strong> 设置年轻代晋升老年代需要的年龄</li>
+<li><strong>-XX:PretenureSizeThreshold</strong> 设置大对象直接进入老年代的阈值</li>
+<li><strong>-Xms512M</strong>  设置JVM初始化时分配512M堆内存</li>
+<li><strong>-Xms2018M</strong> 设置JVM最大可以分配2G堆内存</li>
+<li><strong>-Xmn256M</strong> 设置JVM最小可以分配256M堆内存</li>
+<li><strong>-Xmn1024M</strong> 设置JVM年轻代大小为1G</li>
+<li><strong>-XX:MinHeapFreeRatio</strong>     设置堆空间最小空闲比例，小于这个比例时尝试扩展</li>
+<li><strong>-XX:MaxHeapFreeRatio</strong>     设置堆空间最大空闲比例，大于这个比例是开始压缩</li>
+<li><strong>-XX:NewSize</strong>   设置新生代的大小</li>
+<li><strong>-XX:TargetSurvivorRatio</strong>   设置Survivor区可使用率，超过这个比例会进行年轻代晋升到老年代，不会等待通过年龄进行晋升<h2 id="方法区调优"><a href="#方法区调优" class="headerlink" title="方法区调优"></a>方法区调优</h2></li>
+<li><strong>-XX:MaxPermSize=128M</strong>    设置方法区/永久代大小为128M</li>
+<li><strong>-XX:PremSize</strong>    设置方法区的初始值</li>
+</ul>
+<p>##虚拟机栈</p>
+<ul>
+<li><strong>-Xss1M</strong>    设置设置每个线程的堆栈大小为1M</li>
+</ul>
+<p>##本地方法栈</p>
+<ul>
+<li><strong>-Xoss10M</strong>   设置本地方法栈的大小为10M</li>
+</ul>
+<p>##垃圾回收</p>
+<ul>
+<li><strong>-XX:+UseSerialGc</strong>    设置对年轻代，老年代使用串行回收器</li>
+<li><strong>-XX:+UseParallelGC</strong>    设置对年轻代使用并行收集器，老年代使用仍使用串行收集器</li>
+<li><strong>-XX:+UseParNewGC</strong>    设置对年轻代使用并行回收收集期，老年代仍使用串行收集器</li>
+<li><strong>-XX:ParallelGCThreads=16</strong>    设置并行收集器的线程数，最好和处理器数目相等</li>
+<li><strong>-XX:+UseParallelOldGC</strong>    设置对年轻代、老年代进行并行回收处理器</li>
+<li><strong>-XX:GCTimeRatio</strong>    设置吞吐量大小，范围在0到100，系统GC时间占总时间的比例不超过 1/（1+n），默认n是99，即1/100=1%</li>
+<li><strong>-XX:+UseAdaptiveSizePolicy</strong>    设置并行收集器会自动选择年轻代区大小和区比例，达到预期的最长回收时间，如果采用并行收集器建议长开启</li>
+<li><strong>-XX:+UseConcMarkSweepGc</strong>    设置对年轻代使用并行收集器，老年代使用CMS</li>
+<li><strong>-XX:ParallelCMSThreads=5</strong>    设置设计CMS回收器的线程数量为5</li>
+<li><strong>-XX:CMSInitiatingOccupancyFraction</strong>    设置CMS回收器在老年代空间占比触发的比例，默认68%</li>
+<li><strong>-XX:+CMSClassUnloadingEnabled</strong>    设置CMS回收器对类元数据进行回收</li>
+<li><strong>-XX:+CMSParallelRemarkEnabled</strong>    设置CMS回收器并行重标记</li>
+<li><strong>-XX:CMSInitiatingPermOccupancyFraction</strong>    设置CMS回收器方法区占用率比例到达时，启动CMS回收，需要支持元数据回收才可以使用</li>
+<li><strong>-XX:UseCMSInitiatingOccupancyOnly</strong>    设置CMS回收器在到达阈值的时候才进行回收</li>
+<li><strong>-XX:+CMSIncrementalMode</strong>    设置使用增量模式，适合单CPU</li>
+<li><strong>-XX:+UseCMSCompactAtFullConnection</strong>    设置开启CMS回收器老年代的压缩，消除碎片</li>
+<li><strong>-XX:CMSFullGCsBeforeCompactioin=5</strong>    设置设置多少次Full GC会产生一次内存压缩</li>
+<li><strong>-XX:+UseG1GC</strong>    设置使用G1回收器</li>
+<li><strong>-XX:+UnlockExperimentalVMPotions</strong>    设置允许使用实验性参数</li>
+<li><strong>-XX:MaxGCpauseMillis=100</strong>    设置G1回收器每次年轻代回收的最长时间，如果无法满足此时间，JVM会自动跳转年轻代大小来满足此值</li>
+<li><strong>-XX:GCPauseIntervalMills</strong>    设置G1会火速停顿间隔时间</li>
+</ul>
+<h2 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h2><ul>
+<li><strong>-XX:+PrintGC</strong>    设置输出GC日志</li>
+<li><strong>-XX:+PrintGCDetails</strong>    设置输出GC的详细日志</li>
+<li><strong>-XX:+PrintGCTimeStamps</strong>    设置输出GC的时间戳（以基准时间的形式）</li>
+<li><strong>-XX:+PrintGCDateStamps</strong>    设置输出GC的时间戳（以日期的形式，如 2017-09-04T21:53:59.234+0800）</li>
+<li><strong>-XX:+PrintGCApplicationConcurrentTime</strong>    设置输出每次垃圾会收取程序未中断的执行时间</li>
+<li><strong>-XX:+PrintGCApplicationStoppedTime</strong>    设置输出每次垃圾回收期间程序暂停的时间</li>
+<li><strong>-XX:+PrintHeapAtGC</strong> 设置在进行GC的前后打印出堆的信息</li>
+<li><strong>-Xloggc:../logs/gc.log</strong> 设置日志文件的输出路径</li>
+<li><strong>-XX:+DisableExplicitGC</strong>    设置禁用显示GC，例如System.GC()</li>
+<li><strong>-Xincgc</strong>    设置使用增量GC让GC和线程交替运行，减少停顿</li>
+</ul>
+<h2 id="JIT编译"><a href="#JIT编译" class="headerlink" title="JIT编译"></a>JIT编译</h2><ul>
+<li><strong>-XX:+CITime</strong>    JIT编译的基本信息</li>
+<li><strong>-XX:CompileThreshold</strong>    运行时将字节码编译成本地代码提高效率</li>
+</ul>
+<h2 id="堆Dump"><a href="#堆Dump" class="headerlink" title="堆Dump"></a>堆Dump</h2><ul>
+<li><strong>-XX:+HeapDumpOnOutOfMemoryError</strong>    程序OOM时进行快照</li>
+<li><strong>-XX:+HeapDumpPath</strong>    指定快照的保存地址</li>
+</ul>
+<h2 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h2><ul>
+<li><strong>-XX:+TraceClassLoading</strong>    追踪类加载</li>
+<li><strong>-XX:+TraceClassUnLoading</strong>    追踪类卸载</li>
+<li><strong>-XX:+PrintClassHistogram</strong>    打开运行时实力信息，统计系统内类</li>
+</ul>
+<h2 id="类校验"><a href="#类校验" class="headerlink" title="类校验"></a>类校验</h2><ul>
+<li><strong>-XX:-UseSplitVerifier</strong>    指定用旧的类教研群</li>
+<li><strong>-XX:-FailOverToOldVerifier</strong>    新校验器失败使用该设置用老校验器再次校验</li>
+</ul>
+<h2 id="Solaris线程控制"><a href="#Solaris线程控制" class="headerlink" title="Solaris线程控制"></a>Solaris线程控制</h2><ul>
+<li><strong>-XX:+UseBoundThreads</strong>    绑定所有用户线程到内核线程，减少饥饿状态次数</li>
+<li><strong>-XX:+UseLWPSynchronization</strong>    使用内核线程替换线程同步</li>
+<li><strong>-XX:+UseVMInterruptibleIO</strong>    允许运行时中断线程</li>
+</ul>
+<h2 id="使用内存大页"><a href="#使用内存大页" class="headerlink" title="使用内存大页"></a>使用内存大页</h2><ul>
+<li><strong>-XX:+UseLargePagess</strong>        使用大页，减少内存分页表项</li>
+<li><strong>-XX:LargePageSizeInBytes</strong>    设置大页的大小，大的内存分页可以提高CPU的内存寻址能力</li>
+</ul>
+<h2 id="压缩指针"><a href="#压缩指针" class="headerlink" title="压缩指针"></a>压缩指针</h2><ul>
+<li><strong>-XX:+UseCompressedOops</strong>    压缩指针减少内存消耗</li>
+</ul>
+<h2 id="DEBUG"><a href="#DEBUG" class="headerlink" title="DEBUG"></a>DEBUG</h2><ul>
+<li><strong>-XDebug</strong>                    通知JVM在Debug模式下工作</li>
+<li><p><strong>-Xrunjdwp</strong>                通知JVM使用java debug wrie protocol模式运行调试环境</p>
+<blockquote>
+<p><strong>transport</strong>            在调试程序和VM使用的进程直接通向<br><br><strong>de_socket</strong>            套接字传输<br><br><strong>de_shmem</strong>            内存共享传输（Windows系统）<br><br><strong>server=y/n</strong>            VM是否需要用来作为调试服务器执行<br><br><strong>address</strong>                调试服务器端口号，客户端用来连接的端口号<br><br><strong>suspend=y/n</strong>            是否在调试客户端简历后启动vm<br><br><strong>-Xnoagent</strong>                禁用默认sun.tools.debug调试器<br><br><strong>一个我使用的参数配置</strong> -Xrunjdwp:server=y,transport=dt_socket,addtess=9416,suspend=n</p>
+</blockquote>
+</li>
+<li><p><strong>-Djava.compiler=None</strong>        禁止JIT编译器行为</p>
+</li>
+</ul>
+<h2 id="JMX远程调优"><a href="#JMX远程调优" class="headerlink" title="JMX远程调优"></a>JMX远程调优</h2><ul>
+<li><strong>-Dcom.sun.management.jmxremote</strong>                                启动远程JMX</li>
+<li><strong>-Dcom.sun.management.jmxremote.authenticate</strong>    true/false        启用鉴权</li>
+<li><strong>-Dcom.sun.management.jmxremote.port</strong>            1-65535            远程端口号</li>
+<li><strong>-Dcom.sun.management.jmxremote.local.only</strong>        true/false        是否只能本地调试</li>
+<li><strong>-Dcom.sun.management.jmxremote.ssl</strong>            true/false        是否支持SSL</li>
+<li><strong>-Dcom.sun.management.jmxremote.access.file</strong>    文件路径            鉴权的账户文件</li>
+<li><strong>-Dcom.sun.management.jmxremote.password.file</strong>    文件路径            鉴权的密码文件</li>
+<li><strong>-Djava.rmi.server.hostname</strong>                        ip/domain        链接IP</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-09-01-JAVA线程池队列/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-09-01-JAVA线程池队列/" itemprop="url">
+                  JAVA线程池队列
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2018/09/12/2018-09-01-JAVA线程池队列/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-09-01-JAVA线程池队列/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2018/09/12/2018-09-01-JAVA线程池队列/" class="leancloud_visitors" data-flag-title="JAVA线程池队列">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<p>ThreadPoolExecutor构造器中BlockingQueue<runable>的描述</runable></p>
+<p>###JDK8中的队列实现</p>
+<p>####SynchronousQueue<br><strong>直接提交的队列</strong><br><strong>默认使用：</strong> newCachedThreadPool</p>
+<blockquote>
+<p>该队列没有容量，只有一个元素存在，每一个插入操作都要等待对应的删除操作，每一个删除操作也需要等待对于的插入操作<br>需要注意最大线程数的设置，避免操作被拒绝,是一个公平队列，先进先出</p>
+</blockquote>
+<p>####ArrayBlockingQueue<br><strong>有界堵塞队列</strong></p>
+<blockquote>
+<p>使用数组实现，任务队列放满之后才会将线程池从corePoolSize进行提升，注重保持在核心数量,是一个公平队列，先进先出</p>
+</blockquote>
+<p>####LinkedBlockingQueue<br><strong>有界堵塞队列</strong><br><strong>默认使用：</strong> newFixedThreadPool、newSingleThreadExecutor</p>
+<blockquote>
+<p>使用链表实现，默认大小是Integer.MAX_VALUE，所以最好手动指定大小，每个提交的任务都会储存在一个node对象中，实现了锁分离，添加和移除任务各有一把锁，是一个公平队列，先进先出</p>
+</blockquote>
+<p>####DelayedWorkQueue<br><strong>无界堵塞队列</strong><br><strong>默认使用：</strong> ScheduledThreadPoolExecutor、newSingleThreadScheduledExecutor</p>
+<blockquote>
+<p>可以按照任务优先级执行，采用消费者-生产者模式进行消费</p>
+</blockquote>
+<p>####PriorityBlockingQueue<br><strong>优先任务队列</strong></p>
+<blockquote>
+<p>是一种特殊的无界队列，可以按照任务优先级执行，元素可以实现Comparable接口，不允许为null</p>
+</blockquote>
+<p>####DelayQueue<br><strong>无界堵塞队列</strong></p>
+<blockquote>
+<p>每个元素都会有一定的延时，然后释放</p>
+</blockquote>
+<p>####LinkedBlockingDueue<br><strong>有界堵塞队列</strong></p>
+<blockquote>
+<p>使用链表实现，允许从双端进行插入和删除，默认大小是Integer.MAX_VALUE，所以最好手动指定大小，每个提交的任务都会储存在一个node对象中，实现了锁分离，添加和移除任务各有一把锁，任务队列放满之后才会将线程池从corePoolSize进行提升，注重保持在核心数量,是一个公平队列，先进先出</p>
+</blockquote>
+<p>####LinkedTransferQueue<br><strong>无界堵塞队列</strong></p>
+<blockquote>
+<p>使用链表实现，采用消费者-生产者模式进行消费，是一个公平队列，先进先出</p>
+</blockquote>
+<p>###线程池不同队列如何运行</p>
+<p>####有界队列工作步骤</p>
+<ol>
+<li>如果实际线程数小于corePoolSize，则优先创建新的线程</li>
+<li>若大于corePoolSize，加入等待队列<br>####无界队列工作步骤</li>
+<li>如果实际线程数小于corePoolSize，则优先创建新的线程</li>
+<li>若大于corePoolSize，加入等待队列</li>
+<li>若等待队列已满，无法加入，并且总线程数不超过maxSize则创建新的进程执行任务</li>
+<li>若大于maxSize则执行拒绝策略<br>####直接提交队列工作步骤</li>
+<li>提交给线程执行</li>
+<li>如果没有空闲线程，则会创建新的线程</li>
+<li>如果已经达到maxSize最大值则执行拒绝策略</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-18-JVM内存模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-08-18-JVM内存模型/" itemprop="url">
+                  JVM内存模型
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2018/09/12/2018-08-18-JVM内存模型/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-18-JVM内存模型/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2018/09/12/2018-08-18-JVM内存模型/" class="leancloud_visitors" data-flag-title="JVM内存模型">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<blockquote>
+<p>JAVA通过JVM实现跨平台，在不同平台上允许不同的虚拟机执行同样的字节码文件，来实现跨平台，这是java编译后的代码和机器指令交互的地方，理解JVM有助于在日常工作中避免JVM可能出现的压力及异常，并且可以在项目出现瓶颈时定位问题并解决</p>
+</blockquote>
+<h2 id="JVM区域划分"><a href="#JVM区域划分" class="headerlink" title="JVM区域划分"></a>JVM区域划分</h2><ol>
+<li>JVM指令系统<blockquote>
+<p>用来指定需要在目标平台上的操作指令</p>
+<ol>
+<li><strong>操作码</strong> 用来执行一条操作的性质</li>
+<li><strong>操作数</strong> 紧随操作码之后，被分为两个以上字节</li>
+</ol>
+</blockquote>
+</li>
+<li>JVM寄存器<blockquote>
+<p>用来保存CPU中包含的保存系统状态和处理信息的寄存器组，减少虚拟机对堆栈的访问，常用的JVM寄存器有四种</p>
+<ol>
+<li>PC程序计数器，用于记录程序的执行</li>
+<li>optop操作数栈顶指针，用于记录JAVA栈的指针</li>
+<li>frame当前执行环境指针，用于记录JAVA栈的指针</li>
+<li>vars当前执行环境第一个局部变量指针，用于记录JAVA栈的指针</li>
+</ol>
+</blockquote>
+</li>
+<li>JVM栈结构<ol>
+<li><strong>局部变量</strong> 存储类方法中的局部变量</li>
+<li><strong>执行环境</strong> 上次调用的方法、局部变量指针、操作数栈、栈底指针</li>
+<li><strong>操作数栈</strong> 存储运算所需要的操作数和结果</li>
+</ol>
+</li>
+<li>JVM碎片回收堆</li>
+<li><p>JVM存储区</p>
+<ol>
+<li><strong>常量缓冲池</strong> 类名、方法名、常量</li>
+<li><strong>方法区</strong> 方法字节码<h2 id="JAVA运行时的内存结构"><a href="#JAVA运行时的内存结构" class="headerlink" title="JAVA运行时的内存结构"></a>JAVA运行时的内存结构</h2><blockquote>
+<p>局部变量表是在编译阶段已经确定的内容，包含已知的基本数据类型，对象引用（指向对象的原始地址或者引用指针、对象句柄、或者用来指向一条字节码指令的returnAddress类型），该区域在方法执行期间不会做出改变大小</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<li><p><strong>方法区</strong> 被所有线程共享，存储加载类时读取的类信息，常量，静态变量以及字节码</p>
+</li>
+<li><strong>JAVA虚拟机栈</strong> 每一个线程都会独享一个栈，为虚拟机执行方法进行服务，存储局部变量表、操作数栈、动态链接、方法出口等</li>
+<li><strong>JAVA虚拟机堆</strong> 被所有线程共享，在虚拟机启动时创建，用于存放对象实例，可以细分为新生代Young和老年代Old，年轻代可以再次划分为Eden、FromSurvivor和ToSurvivor，默认情况下新生代占堆内存的三分之一，随着JIT编译器和逃逸分析的发展，虚拟机可以更好的进行栈上分配和标量替换，所以并不是所有的对象创建都会分配到Heap了</li>
+<li><strong>本地方法栈</strong> 每一个线程都会独享一个栈，为虚拟机执行Native方法进行服务，存储局部变量表、操作数栈、动态链接、方法出口等</li>
+<li><strong>程序计数器</strong> 每一个线程都会独享一个程序计数器，相互之间不会影响，记录当前字节码的行号指令器</li>
+</ol>
+<h2 id="JVM执行程序的过程"><a href="#JVM执行程序的过程" class="headerlink" title="JVM执行程序的过程"></a>JVM执行程序的过程</h2><ol>
+<li>加载Class文件</li>
+<li>管理、分配内存</li>
+<li>进行垃圾回收</li>
+</ol>
+
+          
         
       
     </div>
@@ -1932,7 +2296,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-count">23</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1973,7 +2337,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">13</span>
+                      
+                    
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">标签</span>
                   
                 </div>
