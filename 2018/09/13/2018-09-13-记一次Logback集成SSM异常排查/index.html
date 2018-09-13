@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="更新缓存常用的策略及分析 ####Cache Aside模式  查询请求全过程   请求数据 查询缓存 查询数据库 数据库结果放入缓存   更新请求全过程   更新数据库 使缓存失效 最常用的模式，这个模式下缓存和DB之间的数据同步错误率最小，效率最低  ####Read/Write Through模式   查询请求全过程   直接访问缓存服务 缓存服务将数据更新到数据库   更新请求全过程">
-<meta name="keywords" content="缓存">
+  <meta name="description" content="今天在公司里一个比较老旧的SSM系统中集成logback，目的是为了向ELK发送日志，在配置文件和上下文都添加完毕后出现了启动时的异常：  java.lang.ClassCastException: org.slf4j.impl.Log4jLoggerFactory cannot be cast to ch.qos.logback.classic.LoggerContext  这种异常还是比较常">
+<meta name="keywords" content="debug">
 <meta property="og:type" content="article">
-<meta property="og:title" content="缓存更新策略">
-<meta property="og:url" content="https://alexrencn.github.io/2018/09/12/2018-08-27-缓存更新策略/index.html">
+<meta property="og:title" content="记一次Logback集成SSM异常排查">
+<meta property="og:url" content="https://alexrencn.github.io/2018/09/13/2018-09-13-记一次Logback集成SSM异常排查/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="更新缓存常用的策略及分析 ####Cache Aside模式  查询请求全过程   请求数据 查询缓存 查询数据库 数据库结果放入缓存   更新请求全过程   更新数据库 使缓存失效 最常用的模式，这个模式下缓存和DB之间的数据同步错误率最小，效率最低  ####Read/Write Through模式   查询请求全过程   直接访问缓存服务 缓存服务将数据更新到数据库   更新请求全过程">
+<meta property="og:description" content="今天在公司里一个比较老旧的SSM系统中集成logback，目的是为了向ELK发送日志，在配置文件和上下文都添加完毕后出现了启动时的异常：  java.lang.ClassCastException: org.slf4j.impl.Log4jLoggerFactory cannot be cast to ch.qos.logback.classic.LoggerContext  这种异常还是比较常">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-12T05:54:21.164Z">
+<meta property="og:updated_time" content="2018-09-13T09:03:12.634Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="缓存更新策略">
-<meta name="twitter:description" content="更新缓存常用的策略及分析 ####Cache Aside模式  查询请求全过程   请求数据 查询缓存 查询数据库 数据库结果放入缓存   更新请求全过程   更新数据库 使缓存失效 最常用的模式，这个模式下缓存和DB之间的数据同步错误率最小，效率最低  ####Read/Write Through模式   查询请求全过程   直接访问缓存服务 缓存服务将数据更新到数据库   更新请求全过程">
+<meta name="twitter:title" content="记一次Logback集成SSM异常排查">
+<meta name="twitter:description" content="今天在公司里一个比较老旧的SSM系统中集成logback，目的是为了向ELK发送日志，在配置文件和上下文都添加完毕后出现了启动时的异常：  java.lang.ClassCastException: org.slf4j.impl.Log4jLoggerFactory cannot be cast to ch.qos.logback.classic.LoggerContext  这种异常还是比较常">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/09/12/2018-08-27-缓存更新策略/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2018/09/13/2018-09-13-记一次Logback集成SSM异常排查/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>缓存更新策略 | Alex</title>
+  <title>记一次Logback集成SSM异常排查 | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-27-缓存更新策略/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/13/2018-09-13-记一次Logback集成SSM异常排查/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">缓存更新策略
+          <h1 class="post-title" itemprop="name headline">记一次Logback集成SSM异常排查
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
+              <time title="创建时间：2018-09-13 17:03:12" itemprop="dateCreated datePublished" datetime="2018-09-13T17:03:12+08:00">2018-09-13</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/09/12/2018-08-27-缓存更新策略/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-27-缓存更新策略/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/09/13/2018-09-13-记一次Logback集成SSM异常排查/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/13/2018-09-13-记一次Logback集成SSM异常排查/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/09/12/2018-08-27-缓存更新策略/" class="leancloud_visitors" data-flag-title="缓存更新策略">
+             <span id="/alex.github.io/2018/09/13/2018-09-13-记一次Logback集成SSM异常排查/" class="leancloud_visitors" data-flag-title="记一次Logback集成SSM异常排查">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -383,61 +383,13 @@
 
       
         <a id="more"></a>
-<p>更新缓存常用的策略及分析</p>
-<p>####Cache Aside模式</p>
-<ul>
-<li>查询请求全过程</li>
-</ul>
-<ol>
-<li>请求数据</li>
-<li>查询缓存</li>
-<li>查询数据库</li>
-<li>数据库结果放入缓存</li>
-</ol>
-<ul>
-<li>更新请求全过程</li>
-</ul>
-<ol>
-<li>更新数据库</li>
-<li>使缓存失效<blockquote>
-<p>最常用的模式，这个模式下缓存和DB之间的数据同步错误率最小，效率最低</p>
+<p>今天在公司里一个比较老旧的SSM系统中集成logback，目的是为了向ELK发送日志，在配置文件和上下文都添加完毕后出现了启动时的异常：</p>
+<blockquote>
+<p>java.lang.ClassCastException: org.slf4j.impl.Log4jLoggerFactory cannot be cast to ch.qos.logback.classic.LoggerContext</p>
 </blockquote>
-####Read/Write Through模式</li>
-</ol>
-<ul>
-<li>查询请求全过程</li>
-</ul>
-<ol>
-<li>直接访问缓存服务</li>
-<li>缓存服务将数据更新到数据库</li>
-</ol>
-<ul>
-<li>更新请求全过程</li>
-</ul>
-<ol>
-<li>直接访问缓存服务</li>
-<li>缓存服务将数据更新到数据库<blockquote>
-<p>数据依赖主要是来源于缓存，服务依赖于缓存服务的可用性，效率中等</p>
-</blockquote>
-####Write Behind模式</li>
-</ol>
-<ul>
-<li>查询请求全过程</li>
-</ul>
-<ol>
-<li>直接访问缓存服务</li>
-<li>缓存服务开启异步将数据更新到数据库</li>
-</ol>
-<ul>
-<li>更新请求全过程</li>
-</ul>
-<ol>
-<li>直接访问缓存服务</li>
-<li>缓存服务开启异步将数据更新到数据库<blockquote>
-<p>服务完全依赖于缓存，效率最高（只写1次），缓存和DB之间的数据同步错误率最大</p>
-</blockquote>
-</li>
-</ol>
+<p>这种异常还是比较常见的，多出现在maven管理中两个或多个jar版本冲突的情况下，于是开始拆除项目中其他maven引用里的slf4j引用，使用的方法也比较简单，找到对应的jar包（关于如何查找不再描述，可以自行搜索自己使用的编译器如何查看maven引用关系），然后添加以下代码：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span> </span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>asm<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>asm<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>花了很久拆除了其他引用下的slf4j，再次启动还是报错，此时注意到slf4j的报错<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SLF4J: Class path contains multiple SLF4J bindings.</span><br><span class="line">SLF4J: Found binding in [jar:file:/河蟹下项目名/webapps/ROOT/WEB-INF/lib/activemq-all-5.11.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]</span><br><span class="line">SLF4J: Found binding in [jar:file:/河蟹下项目名/webapps/ROOT/WEB-INF/lib/logback-classic-1.1.1.jar!/org/slf4j/impl/StaticLoggerBinder.class]</span><br><span class="line">SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation.</span><br></pre></td></tr></table></figure></p>
+<p>原来问题出在activemq-all这个引用上。点击pom文件里对应的artifactId仔细看了下这个jar包，发现他已经把其他jar包作为自己的文件，而不是引用，怪不得可视试图中没有看到，处理的方式也很简单，把active-mq里的所有引用复制出来，建一个maven的空jar包，复制进去，删除slf4j和log4j的部分，然后把activemq-all的引用替换掉，再次启动就没有问题了，当然也可以直接放在项目对应的pom里，我这么只是觉得有点长</p>
 
       
     </div>
@@ -458,7 +410,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/缓存/" rel="tag"># 缓存</a>
+            <a href="/alex.github.io/tags/debug/" rel="tag"># debug</a>
           
         </div>
       
@@ -471,8 +423,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/09/12/2018-08-21-MySQL聚簇索引/" rel="next" title="MySQL的聚簇索引">
-                <i class="fa fa-chevron-left"></i> MySQL的聚簇索引
+              <a href="/alex.github.io/2018/09/12/2018-09-12-SpringMVC流程解析/" rel="next" title="SpringMVC流程解析">
+                <i class="fa fa-chevron-left"></i> SpringMVC流程解析
               </a>
             
           </div>
@@ -480,10 +432,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/alex.github.io/2018/09/12/2018-08-22-Eureka源码分析/" rel="prev" title="Eureka源码分析">
-                Eureka源码分析 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
