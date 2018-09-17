@@ -285,6 +285,210 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-09-01-JAVA线程池队列/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-09-01-JAVA线程池队列/" itemprop="url">
+                  JAVA线程池队列
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2018/09/12/2018-09-01-JAVA线程池队列/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-09-01-JAVA线程池队列/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2018/09/12/2018-09-01-JAVA线程池队列/" class="leancloud_visitors" data-flag-title="JAVA线程池队列">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<p>ThreadPoolExecutor构造器中BlockingQueue<runable>的描述</runable></p>
+<p>###JDK8中的队列实现</p>
+<p>####SynchronousQueue<br><strong>直接提交的队列</strong><br><strong>默认使用：</strong> newCachedThreadPool</p>
+<blockquote>
+<p>该队列没有容量，只有一个元素存在，每一个插入操作都要等待对应的删除操作，每一个删除操作也需要等待对于的插入操作<br>需要注意最大线程数的设置，避免操作被拒绝,是一个公平队列，先进先出</p>
+</blockquote>
+<p>####ArrayBlockingQueue<br><strong>有界堵塞队列</strong></p>
+<blockquote>
+<p>使用数组实现，任务队列放满之后才会将线程池从corePoolSize进行提升，注重保持在核心数量,是一个公平队列，先进先出</p>
+</blockquote>
+<p>####LinkedBlockingQueue<br><strong>有界堵塞队列</strong><br><strong>默认使用：</strong> newFixedThreadPool、newSingleThreadExecutor</p>
+<blockquote>
+<p>使用链表实现，默认大小是Integer.MAX_VALUE，所以最好手动指定大小，每个提交的任务都会储存在一个node对象中，实现了锁分离，添加和移除任务各有一把锁，是一个公平队列，先进先出</p>
+</blockquote>
+<p>####DelayedWorkQueue<br><strong>无界堵塞队列</strong><br><strong>默认使用：</strong> ScheduledThreadPoolExecutor、newSingleThreadScheduledExecutor</p>
+<blockquote>
+<p>可以按照任务优先级执行，采用消费者-生产者模式进行消费</p>
+</blockquote>
+<p>####PriorityBlockingQueue<br><strong>优先任务队列</strong></p>
+<blockquote>
+<p>是一种特殊的无界队列，可以按照任务优先级执行，元素可以实现Comparable接口，不允许为null</p>
+</blockquote>
+<p>####DelayQueue<br><strong>无界堵塞队列</strong></p>
+<blockquote>
+<p>每个元素都会有一定的延时，然后释放</p>
+</blockquote>
+<p>####LinkedBlockingDueue<br><strong>有界堵塞队列</strong></p>
+<blockquote>
+<p>使用链表实现，允许从双端进行插入和删除，默认大小是Integer.MAX_VALUE，所以最好手动指定大小，每个提交的任务都会储存在一个node对象中，实现了锁分离，添加和移除任务各有一把锁，任务队列放满之后才会将线程池从corePoolSize进行提升，注重保持在核心数量,是一个公平队列，先进先出</p>
+</blockquote>
+<p>####LinkedTransferQueue<br><strong>无界堵塞队列</strong></p>
+<blockquote>
+<p>使用链表实现，采用消费者-生产者模式进行消费，是一个公平队列，先进先出</p>
+</blockquote>
+<p>###线程池不同队列如何运行</p>
+<p>####有界队列工作步骤</p>
+<ol>
+<li>如果实际线程数小于corePoolSize，则优先创建新的线程</li>
+<li>若大于corePoolSize，加入等待队列<br>####无界队列工作步骤</li>
+<li>如果实际线程数小于corePoolSize，则优先创建新的线程</li>
+<li>若大于corePoolSize，加入等待队列</li>
+<li>若等待队列已满，无法加入，并且总线程数不超过maxSize则创建新的进程执行任务</li>
+<li>若大于maxSize则执行拒绝策略<br>####直接提交队列工作步骤</li>
+<li>提交给线程执行</li>
+<li>如果没有空闲线程，则会创建新的线程</li>
+<li>如果已经达到maxSize最大值则执行拒绝策略</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-18-JVM内存模型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -438,206 +642,6 @@
 <li>加载Class文件</li>
 <li>管理、分配内存</li>
 <li>进行垃圾回收</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-19-分布式系统如何保证幂等性/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alex Ren">
-      <meta itemprop="description" content="JAVA之路">
-      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-08-19-分布式系统如何保证幂等性/" itemprop="url">
-                  分布式系统如何保证幂等性
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/alex.github.io/2018/09/12/2018-08-19-分布式系统如何保证幂等性/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-19-分布式系统如何保证幂等性/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/alex.github.io/2018/09/12/2018-08-19-分布式系统如何保证幂等性/" class="leancloud_visitors" data-flag-title="分布式系统如何保证幂等性">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数：</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<blockquote>
-<p>近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，重复处理了一些订单</p>
-</blockquote>
-<p>##幂等性<br>什么是幂等性:系统针对同样的请求(包括参数，地址)，无论发生多少次请求，得到的结果都是一致的，接口的幂等性保证了分布式系统在复杂的环境中不会因为重复请求而发生重复处理，简化了系统处理故障的步骤</p>
-<p>######常用解决方案</p>
-<ul>
-<li><strong>MVCC多版本并发控制</strong>，使用乐观锁来保证数据不会被重复处理，一个Version只有一次成功机会</li>
-<li><strong>去重表</strong>，使用数据库对数据行的唯一约束来保证数据不会被重复处理，一个行对于一次成功</li>
-<li><strong>TOKEN</strong>，长流程业务在处理中常用的机制，根据某个标识在系统间进行传递，每个业务在同一标识上只有一次成功机会</li>
-<li><strong>悲观锁</strong>，将数据行锁住，防止其他线程的事务进行提交，通过串行化保证只有一次成功</li>
-<li><strong>分布式锁</strong>，使用Redis或者ZK节点等方式，防止其他线程的事务进行提交，通过串行化保证只有一次成功</li>
-<li><strong>异步处理</strong>，对Insert操作不保证幂等性，使用定时任务或者其他方式对数据进行筛选处理</li>
-<li><strong>状态机幂</strong>，在处理长流程的时候，如果状态字段已经变更，不应处理之前所有字段的业务请求<br>######Rest请求的幂等性(针对相同的操作进行描述，不考虑多接口并行)</li>
-<li><strong>GET</strong>不用额外处理，进行数据查询的接口本身就是幂等性的，不管请求多少次，数据都是一样的</li>
-<li><strong>POST</strong>POST请求并不能保证幂等性，在HTTP的规范中都没有保证POST的幂等，但是实际场景中经常碰到需要处理的例子</li>
-<li><strong>PUT</strong>需要保证幂等性，需要保证数据不会重复提交以及重复更新</li>
-<li><strong>DELETE</strong>删除一个资源的请求需要保证幂等性，对一个资源多次请求删除，结果都是删除成功</li>
-</ul>
-<p>##回到主题</p>
-<p>######进行排查</p>
-<ol>
-<li>首先进行日志排查，针对某一订单号查询生产者和消费者的日志，发现生产者只发生过一次调用，而消费者在三台集群下共发生了7次消费，相互间隔10S</li>
-<li>线程在接收请求之后全部发生了阻塞，直到某一时刻，7次处理结果同时打印出来</li>
-<li>生产者得到一次响应结果并继续处理</li>
-</ol>
-<p>Eureka+Fegin+Ribbon这种RPC模式，最后在两个系统还是使用的Spring的RestTemplate进行的HTTP调用，而一次HTTP调用是不可能有7个服务端链接的，出现这个问题的原因是因为我所看到的1次请求只不过是1次日志打印，而实际上Fegin的默认实现里，超过10秒没有接收到响应的请求就会被抛弃，Fegin会根据事先设定好的访问规则选取另一台服务器再次发起请求，多次请求因为数据库而堵塞，但是HTTP链接结束并没有把线程给结束，造成了这次的问题出现</p>
-<p>######原先的幂等性设计</p>
-<ol>
-<li>根据订单号作为幂等性的标识</li>
-<li>每次请求第一步操作是根据订单号进行查询，发现有数据则将原结果返回</li>
-<li>进行业务处理，处理此交易的所有流水和余额</li>
-<li>提交事务<br>######原因分析<br>这是就可以清楚的看到问题所在的地方了，数据库堵塞导致了上述3、4步没有继续进行，但是线程实际上都是在运行的，目前不得而知当时是哪一条数据导致的锁，但是此问题并不能通过排查数据库死锁去解决，出现该问题的原因是处理超过10S，内存、CPU、磁盘IO、网络等许多情况都会影响到响应时间，这时需要将幂等性重新进行设计<br>######入手方向<br>这个操作是一个INSERT+UPDATE操作，本身属于一个POST请求，但是需要保证幂等性来满足上游系统，原本的幂等性设计是根据数据库中有没有记录来确定是否有过处理记录，而数据库的数据改变是事务提交之后的，这样的设计是完全无法保证高并发下的幂等的，而此次的入手点就是改变如何判断请求有没有处理过<br>######进行修改<br>在业务处理之前，需要保证只有一个线程进行业务处理和数据提交，我们采用Redis做一个分布式锁，将执行操作和分布式锁结合，修改后的步骤如下</li>
-<li>根据订单号作为幂等性的标识</li>
-<li><strong>使用Redis的SetNX把订单号放在Redis里，设置一个中等的过期时间1分钟，如果没有拿到分布式锁则进行自旋</strong></li>
-<li>每次请求第一步操作是根据订单号进行查询，发现有数据则将原结果返回</li>
-<li>进行业务处理，处理此交易的所有流水和余额</li>
-<li>提交事务</li>
-<li><strong>释放Redis锁</strong><br>######再次分析<br>这并不是一个好的解决方案，我甚至认为这样扩大了可能产生问题的范围，这个方案有着很大的问题</li>
-<li>Redis已经和业务代码深深的耦合在了一起，如果Redis挂掉了，那么账户的处理直接会发生异常</li>
-<li>或者Redis重启后没能恢复数据，那么分布式锁会失效</li>
-<li>如果1分钟内没有完成操作，那么分布式锁会失效</li>
-<li>如果分布式锁释放时出现了异常，那么其他的请求会一直等待到锁自己释放<br>######我的想法<br>我的想法是不要增加系统的耦合，使用数据库如何做到唯一呢？当然是使用唯一索引了，但是唯一索引需要建立在单独的表中，这个时候因为唯一性插入失败的线程就可以确定是并发操作引起的，需要进行再次处理，而另一个问题是唯一性标识的选择问题，使用订单号作为唯一标识可真的不是一个好的选择，比如用户A给用户B转账10000，两个人的处理订单号是相同的，如果根据交易类型+订单号去做唯一索引会降低系统的可扩展性，比较好的做法是尽可能的传递一个请求唯一标示，用标识去做幂等性处理</li>
 </ol>
 
           

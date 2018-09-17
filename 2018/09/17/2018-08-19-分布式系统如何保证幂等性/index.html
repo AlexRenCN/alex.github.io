@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="虽然之前的从业的公司一直和金融息息相关，也与多家支付或者银行系统进行过系统对接，但是支付系统一直没能从整体应用中真正独立  ####业务场景描述 #####混沌初开1234567graph LR[业务流程1]--&amp;gt;[业务1][业务流程2]--&amp;gt;[业务2][业务流程3]--&amp;gt;[业务3][业务1]--&amp;gt;[支付][业务2]--&amp;gt;[支付][业务3]--&amp;gt;[支付] 在">
-<meta name="keywords" content="架构设计">
+  <meta name="description" content="近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，账户系统重复处理了一些订单  ##幂等性什么是幂等性:系统针对同样的请求(包括参数，地址)，无论发生多少次请求，得到的结果都是一致的，接口的幂等性保证了分布式系统在复杂的环境中不会因为重复请求而发生重复处理，简化了系统处理故">
+<meta name="keywords" content="幂等性,分布式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="支付系统的设计">
-<meta property="og:url" content="https://alexrencn.github.io/2018/09/12/2018-08-22-支付系统设计/index.html">
+<meta property="og:title" content="分布式系统如何保证幂等性">
+<meta property="og:url" content="https://alexrencn.github.io/2018/09/17/2018-08-19-分布式系统如何保证幂等性/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="虽然之前的从业的公司一直和金融息息相关，也与多家支付或者银行系统进行过系统对接，但是支付系统一直没能从整体应用中真正独立  ####业务场景描述 #####混沌初开1234567graph LR[业务流程1]--&amp;gt;[业务1][业务流程2]--&amp;gt;[业务2][业务流程3]--&amp;gt;[业务3][业务1]--&amp;gt;[支付][业务2]--&amp;gt;[支付][业务3]--&amp;gt;[支付] 在">
+<meta property="og:description" content="近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，账户系统重复处理了一些订单  ##幂等性什么是幂等性:系统针对同样的请求(包括参数，地址)，无论发生多少次请求，得到的结果都是一致的，接口的幂等性保证了分布式系统在复杂的环境中不会因为重复请求而发生重复处理，简化了系统处理故">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-12T05:54:21.193Z">
+<meta property="og:updated_time" content="2018-09-17T14:42:32.149Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="支付系统的设计">
-<meta name="twitter:description" content="虽然之前的从业的公司一直和金融息息相关，也与多家支付或者银行系统进行过系统对接，但是支付系统一直没能从整体应用中真正独立  ####业务场景描述 #####混沌初开1234567graph LR[业务流程1]--&amp;gt;[业务1][业务流程2]--&amp;gt;[业务2][业务流程3]--&amp;gt;[业务3][业务1]--&amp;gt;[支付][业务2]--&amp;gt;[支付][业务3]--&amp;gt;[支付] 在">
+<meta name="twitter:title" content="分布式系统如何保证幂等性">
+<meta name="twitter:description" content="近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，账户系统重复处理了一些订单  ##幂等性什么是幂等性:系统针对同样的请求(包括参数，地址)，无论发生多少次请求，得到的结果都是一致的，接口的幂等性保证了分布式系统在复杂的环境中不会因为重复请求而发生重复处理，简化了系统处理故">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/09/12/2018-08-22-支付系统设计/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2018/09/17/2018-08-19-分布式系统如何保证幂等性/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>支付系统的设计 | Alex</title>
+  <title>分布式系统如何保证幂等性 | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-22-支付系统设计/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/17/2018-08-19-分布式系统如何保证幂等性/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">支付系统的设计
+          <h1 class="post-title" itemprop="name headline">分布式系统如何保证幂等性
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
+              <time title="创建时间：2018-09-17 22:42:32" itemprop="dateCreated datePublished" datetime="2018-09-17T22:42:32+08:00">2018-09-17</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/09/12/2018-08-22-支付系统设计/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-22-支付系统设计/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/09/17/2018-08-19-分布式系统如何保证幂等性/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/17/2018-08-19-分布式系统如何保证幂等性/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/09/12/2018-08-22-支付系统设计/" class="leancloud_visitors" data-flag-title="支付系统的设计">
+             <span id="/alex.github.io/2018/09/17/2018-08-19-分布式系统如何保证幂等性/" class="leancloud_visitors" data-flag-title="分布式系统如何保证幂等性">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -384,79 +384,67 @@
       
         <a id="more"></a>
 <blockquote>
-<p>虽然之前的从业的公司一直和金融息息相关，也与多家支付或者银行系统进行过系统对接，但是支付系统一直没能从整体应用中真正独立</p>
+<p>近期有一个项目使用了Spring Cloud微服务的框架，利用Eureka+Fegin+Ribbon的方式进行RPC调用，并进行了幂等性设计，在使用的过程中还是出现了问题，账户系统重复处理了一些订单</p>
 </blockquote>
-<p>####业务场景描述</p>
-<p>#####混沌初开<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">[业务流程1]--&gt;[业务1]</span><br><span class="line">[业务流程2]--&gt;[业务2]</span><br><span class="line">[业务流程3]--&gt;[业务3]</span><br><span class="line">[业务1]--&gt;[支付]</span><br><span class="line">[业务2]--&gt;[支付]</span><br><span class="line">[业务3]--&gt;[支付]</span><br></pre></td></tr></table></figure></p>
-<p>在这个阶段，一般公司只会确认一家公司作为自己的第三方支付，而此时公司的技术人员架构还并不完整，很难找得到完全熟悉支付业务和支付系统的开发人员，在我接触过的第三方对接的系统里，大部分的基础类来自于支付公司的样例，这部分代码不能保障效率但是可以大大解决开发进度的问题，针对这部分代码也很难有人会维护</p>
-<p>#####业务冲突<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">[业务流程1]--&gt;[业务1]</span><br><span class="line">[业务流程2]--&gt;[业务2]</span><br><span class="line">[业务流程3]--&gt;[业务3]</span><br><span class="line">[业务1]--&gt;[支付1]</span><br><span class="line">[业务2]--&gt;[支付1]</span><br><span class="line">[业务3]--&gt;[支付2]</span><br></pre></td></tr></table></figure></p>
-<p>经过一定时间的发展，因为支付公司提供的某个接口可用性不高，或者某种业务需求无法满足，可能会新引进一家支付公司，这个时候回针对部分业务进行替换</p>
-<p>#####逐渐独立<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">[业务流程1]--&gt;[业务1]</span><br><span class="line">[业务流程2]--&gt;[业务2]</span><br><span class="line">[业务流程3]--&gt;[业务3]</span><br><span class="line">[业务1]--&gt;[支付代理]</span><br><span class="line">[业务2]--&gt;[支付代理]</span><br><span class="line">[业务3]--&gt;[支付代理]</span><br><span class="line">[支付代理]--&gt;[支付1]</span><br><span class="line">[支付代理]--&gt;[支付2]</span><br><span class="line">[支付代理]--&gt;[支付3]</span><br></pre></td></tr></table></figure></p>
-<p>随着第三方支付的增加和业务规则的不断变化，需要将业务模型进程抽象剥离，将交易过程进行委托代理，由代理进行实际的链接，简单介绍下这个调用链的各部分组成<br></p>
+<p>##幂等性<br>什么是幂等性:系统针对同样的请求(包括参数，地址)，无论发生多少次请求，得到的结果都是一致的，接口的幂等性保证了分布式系统在复杂的环境中不会因为重复请求而发生重复处理，简化了系统处理故障的步骤</p>
+<p>######常用解决方案</p>
 <ul>
-<li>业务：业务模块只需要关心自己要执行的交易类型，以及业务所需要的支付方式<ul>
-<li>该部分属于一个统称，业务选择支付方式的部分也可以进行封装，避免耦合</li>
+<li><strong>MVCC多版本并发控制</strong>，使用乐观锁来保证数据不会被重复处理，一个Version只有一次成功机会</li>
+<li><strong>去重表</strong>，使用数据库对数据行的唯一约束来保证数据不会被重复处理，一个行对于一次成功</li>
+<li><strong>TOKEN</strong>，长流程业务在处理中常用的机制，根据某个标识在系统间进行传递，每个业务在同一标识上只有一次成功机会</li>
+<li><strong>悲观锁</strong>，将数据行锁住，防止其他线程的事务进行提交，通过串行化保证只有一次成功</li>
+<li><strong>分布式锁</strong>，使用Redis或者ZK节点等方式，防止其他线程的事务进行提交，通过串行化保证只有一次成功</li>
+<li><strong>异步处理</strong>，对Insert操作不保证幂等性，使用定时任务或者其他方式对数据进行筛选处理</li>
+<li><strong>状态机幂</strong>，在处理长流程的时候，如果状态字段已经变更，不应处理之前所有字段的业务请求<br>######Rest请求的幂等性</li>
+<li><strong>GET</strong>不用额外处理，进行数据查询的接口本身就是幂等性的，不管请求多少次，数据都是一样的</li>
+<li><strong>POST</strong>POST请求并不能保证幂等性，在HTTP的规范中都没有保证POST的幂等，但是实际场景中经常碰到需要处理的例子</li>
+<li><strong>PUT</strong>需要保证幂等性，需要保证数据不会重复提交以及重复更新</li>
+<li><strong>DELETE</strong>删除一个资源的请求需要保证幂等性，对一个资源多次请求删除，结果都是删除成功</li>
 </ul>
+<p>##回到主题</p>
+<p>######进行排查</p>
+<ol>
+<li>进行日志排查，针对某一订单号查询Client和Server的日志，发现Client只发生过一次调用，而Server在三台集群下共发生了7次消费，相互间隔10S</li>
+<li>Server端7个线程在接收请求之后全部发生了阻塞，直到某一时刻，7次请求全部成功并打印出成功日志</li>
+<li>Client得到一次响应结果并继续处理</li>
+</ol>
+<p>问题的原因很容易思考出来，在框架选型的时候，远程RPC架构使用了Eureka+Fegin+Ribbon，在实现方式上Spring的RestTemplate进行的HTTP协议的调用，而一次HTTP调用是不可能有7个服务端链接的，出现这个问题的原因是因为我所看到的1次请求只不过是1次业务端日志打印，而实际上Fegin的默认实现里，超过10秒没有接收到响应的请求就会被抛弃（可以配置），Fegin会根据事先设定好的访问规则选取另一台服务器再次发起请求，我们没有主动设置规则，默认的实现是轮询的方式，多次请求全都因为数据库而堵塞，在轮询的时候其实已经抛弃了上一个Http链接的结果，但是HTTP链接结束并没有把Server端线程给结束，造成了这次的问题出现</p>
+<p>######幂等性设计1.0出错版本</p>
+<ol>
+<li>根据交易订单号作为幂等性的标识</li>
+<li>每次请求第一步操作是根据订单号进行查询，发现有数据则将原结果返回</li>
+<li>进行业务处理，获取所有交易方的账户信息，增加流水，进行余额变更<br>######原因分析<br>数据库堵塞导致了上述3、4步没有继续进行下去，但是Server端线程实际上都是在运行状态的，本次出现该问题的原因是数据库操作超过10S，而内存、CPU、磁盘IO、网络等许多情况都会影响到响应时间，这时需要将幂等性重新进行设计<br>######入手方向<br>这个操作是一个INSERT+UPDATE操作，本身属于一个POST请求，但是需要保证幂等性来满足上游系统，原本的幂等性设计是根据数据库中有没有记录来确定是否有过处理记录，而数据库的数据改变是事务提交之后的，这样的设计是完全无法保证高并发下的幂等的，而此次的入手点就是改变如何判断请求有没有处理过<br>######幂等性设计2.0未暴露版本<br>在业务处理之前，需要保证Server端只有一个线程进行业务处理和数据提交，我们采用Redis做一个分布式锁，将执行操作和分布式锁结合，修改后的Server端步骤如下</li>
+<li>根据订单号作为幂等性的标识</li>
+<li><strong>使用Redis的SetNX把订单号放在Redis里，设置一个中等的过期时间1分钟，如果没有拿到分布式锁则进行自旋</strong></li>
+<li>每次请求第一步操作是根据订单号进行查询，发现有数据则将原结果返回</li>
+<li>进行业务处理，处理此交易的所有流水和余额</li>
+<li>提交事务</li>
+<li><strong>释放Redis锁</strong><br>######再次发现问题<br>最近在看《逆流而上，阿里巴巴技术成长之路的时候》，其中有一个章节提到阿里因为幂等性原因不完善导致的重复入账，和我们遇到的情况基本一致，而我们修改后的场景竟然完全符合阿里的错误场景，对原方案进行再次分析，存在的问题有：</li>
+<li>Redis的SetNx方法并不能同时设置超时时间，所以原方案其实是两步操作，没有保证原子性（自己发现）</li>
+<li>分布式锁的时间和数据库事务的等待时间不一致，分布式锁的1分钟等待时间远远低于设置的数据库事务等待时间，所以在超过1分钟的时候仍有可能绕过幂等性校验</li>
+</ol>
+<p>解决方案</p>
+<ol>
+<li>如果想要解决第一个问题，有三种可行方案：<ol>
+<li>开启Redis事务</li>
+<li>使用Lua脚本</li>
+<li>在Redis锁中添加过期时间</li>
+</ol>
 </li>
-<li>支付代理：作为业务模块和支付模块的HTTP代理负责处理多对多模型下的网关路由，提供规范统一的API接口<ul>
-<li>在提供统一API的时候，使用建造者模式是一个不错的选择</li>
-<li>不要试图通过任何方式来确定具体参数的合法性，只需要通过合适的机制比如token来确定请求的合法性即可</li>
-<li>尽量简化该步骤以增加吞吐量，并且把一切控制权交由支付系统处理</li>
-<li>作为一个网络代理，可以添加客户端负载均衡、熔断等策略来避免网络因素导致的资源不释放</li>
-</ul>
-</li>
-<li>支付：作为第三方支付系统的真实对接系统，使用适配器模式将来自支付代理的统一API入参进行转换并进行实际处理，并将结果通过支付代理再次返回给业务系统，需要保证该服务的自治理，避免数据状态不同步造成的事故<ul>
-<li>秘钥：基本采用第三方支付提供的非对称性加密方案</li>
-<li>渠道：这里的渠道代表着第三方支付对本公司系统的渠道标识</li>
-<li>接口：提供具体的业务模块，比如红包，退款</li>
-<li>同步通知：在双方的系统内进行一次HTTP链接，实时通知结果</li>
-<li>异步通知：在某些接口上需要跳转到第三方页面进行密码输入等操作，此时用户行为发生在浏览器中，第三方支付会使用异步通知的方式发送到一个指定的接口中</li>
-<li>其他通知：如果该交易发生在线下，第三方支付会将结果发送到协商的接口中，通知本公司系统该交易的发生</li>
-<li>幂等性：针对同一笔交易有且仅有一个结果，</li>
-<li>自治理：自治理分为两部分，一部分是对第三方支付，需要保证长时间未明确结果的交易和第三方支付状态同步，另一部分是对业务系统，在返回结果时未收到响应应该及时切断链接避免木桶效应，并使用延时队列等方式再次发送结果，避免上游系统崩溃导致的系统性能占用</li>
-</ul>
-</li>
-</ul>
-<p>######API变化问题</p>
-<blockquote>
-<p>第三方支付系统的API升级不可控，在生产环境中进行版本升级需要在编码中添加参数并进行灰度发布，为了保证7*24小时服务，不可能频繁进行发布，此时应该动态获取参数</p>
+<li>将事务等待时间和分布式锁生效时间全部设置N，在这个时间内只有一个线程会争夺到锁并处理，如果失败就会发起重试，线程处理+M次重试的总时间和也为N<blockquote>
+<p>考虑到我司的开发人员水平参差不齐，在解决上述问题1于是我选择使用第三种方式对Redis进行了封装，避免前两种解决方案下因为环境问题造成的潜在风险。<br>解决第二个</p>
 </blockquote>
-<p>业务支付配置表</p>
-<ul>
-<li>规则ID</li>
-<li>业务ID</li>
-<li>支付系统ID</li>
-</ul>
-<p>第三方支付配置表 </p>
-<ul>
-<li>支付系统ID</li>
-<li>请求方式</li>
-<li>秘钥规则ID</li>
-</ul>
-<p>第三方支付秘钥表</p>
-<ul>
-<li>秘钥规则ID</li>
-<li>加密方式</li>
-<li>公钥</li>
-<li>私钥</li>
-</ul>
-<p>第三方支付参数表</p>
-<ul>
-<li>参数表ID</li>
-<li>支付系统ID</li>
-<li>功能接口ID</li>
-<li>商户号</li>
-<li>版本号</li>
-<li>同步地址</li>
-<li>异步地址</li>
-</ul>
-<p>第三方支付个性化参数表</p>
-<ul>
-<li>参数表ID</li>
-<li>参数名</li>
-<li>默认值</li>
-</ul>
-<p>把具体对接时的参数以表的形式存储，提供合适的缓存机制，保证效率，以及更新的速度</p>
+</li>
+</ol>
+<p>######幂等性设计3.0</p>
+<ol>
+<li>根据订单号作为幂等性的标识</li>
+<li>使用Redis的SetNX把订单号放在Redis里，<strong>设置对应的值为预估过期时间，如果获得锁即进行处理，如果发现超时锁就用CAS操作更新锁，更新成功进行处理，更新失败退出更新并再次争夺</strong></li>
+<li>每次请求第一步操作是根据订单号进行查询，发现有数据则将原结果返回</li>
+<li>进行业务处理，处理此交易的所有流水和余额</li>
+<li>提交事务</li>
+<li>释放Redis锁</li>
+</ol>
 
       
     </div>
@@ -477,7 +465,9 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/架构设计/" rel="tag"># 架构设计</a>
+            <a href="/alex.github.io/tags/幂等性/" rel="tag"># 幂等性</a>
+          
+            <a href="/alex.github.io/tags/分布式/" rel="tag"># 分布式</a>
           
         </div>
       
@@ -490,8 +480,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/09/12/2018-08-18-JAVA的对象锁/" rel="next" title="JAVA的对象锁">
-                <i class="fa fa-chevron-left"></i> JAVA的对象锁
+              <a href="/alex.github.io/2018/09/13/2018-09-13-记一次Logback集成SSM异常排查/" rel="next" title="记一次Logback集成SSM异常排查">
+                <i class="fa fa-chevron-left"></i> 记一次Logback集成SSM异常排查
               </a>
             
           </div>
@@ -499,10 +489,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/alex.github.io/2018/09/12/2018-08-18-JVM内存模型/" rel="prev" title="JVM内存模型">
-                JVM内存模型 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
