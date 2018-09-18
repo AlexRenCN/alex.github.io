@@ -285,6 +285,322 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/18/2018-09-13-常用JVM参数清单/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-09-13-常用JVM参数清单/" itemprop="url">
+                  未命名
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-18 22:08:34" itemprop="dateCreated datePublished" datetime="2018-09-18T22:08:34+08:00">2018-09-18</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2018/09/18/2018-09-13-常用JVM参数清单/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/18/2018-09-13-常用JVM参数清单/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2018/09/18/2018-09-13-常用JVM参数清单/" class="leancloud_visitors" data-flag-title="">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<blockquote>
+<p>记录本人曾经接触过的部分JVM参数，以便于之后查阅，在不同版本和运行环境上，可能会出现部分指令无效的情况，还需自行验证，部分指令涉及到两个或者多个分类，只存放在最贴近的分类</p>
+</blockquote>
+<p>####JAVA堆</p>
+<ul>
+<li>-XX:NewRatio=2    设定新生代：老年代比例为1比2，即年轻代占堆三分之一</li>
+<li>-XX:SurvivorRatio=8    设定两个Survivor：eden比例为2比8，即一个Survivor占十分之一</li>
+<li>-XX:MaxTenuringThreshold-15    设置年轻代晋升老年代需要的年龄</li>
+<li>-XX:PretenureSizeThreshold    设置大对象直接进入老年代的阈值</li>
+<li>-Xms512M    初始化时512M堆内存</li>
+<li>-Xms2018M    最大分配2G堆内存</li>
+<li>-Xmn256M    最小分配256M堆内存</li>
+<li>-Xmn1024M 设置年轻代大小为1G</li>
+<li>-XX:MinHeapFreeRatio    堆空间最小空闲比例，小于这个比例时尝试扩展</li>
+<li>-XX:MaxHeapFreeRatio    堆空间最大空闲比例，大于这个比例是开始压缩</li>
+<li>-XX:NewSize    设定新生代的大小</li>
+<li>-XX:TargetSurvivorRatio    设置Survivor去可使用率，超过这个比例会进行年轻代晋升到老年代</li>
+</ul>
+<p>####方法区</p>
+<ul>
+<li>-XX:MaxPermSize=128M    方法区/永久代大小最大分配128M</li>
+<li>-XX:PremSize    初始化时方法区的大小</li>
+</ul>
+<p>####虚拟机栈</p>
+<ul>
+<li>-Xss1M    设置每个线程的栈大小为1M</li>
+<li>-XX:ThreadStackSize=512 线程栈大小</li>
+</ul>
+<p>####本地方法栈<br>-Xoss10M</p>
+<p>####垃圾回收</p>
+<ul>
+<li>-XX:+UseSerialGc    对年轻代，老年代使用串行回收器</li>
+<li>-XX:+UseParallelGC    对年轻代使用并行收集器，老年代使用仍使用单线程Mark-Sweep-Compact垃圾会收取</li>
+<li>-XX:+UseParNewGC    对年轻代使用并行回收收集期，老年代仍使用串行收集器</li>
+<li>-XX:ParallelGCThreads=16    设置并行收集器的线程数，最好和处理器数目相等</li>
+<li>-XX:+UseParallelOldGC    对年轻代、老年代进行并行回收处理器</li>
+<li>-XX:GCTimeRatio    吞吐量大小，范围在0到100，系统GC时间占总时间的比例不超过 1/（1+n），默认n是99，即1/100=1%</li>
+<li>-XX:+UseAdaptiveSizePolicy    并行收集器会自动选择年轻代区大小和区比例，达到预期的最长回收时间，如果采用并行收集器建议长开启</li>
+<li>-XX:+UseConcMarkSweepGc    对年轻代使用并行收集器，老年代使用CMS</li>
+<li>-XX:ParallelCMSThreads=5        设计CMS回收器的线程数量为5</li>
+<li>-XX:CMSInitiatingOccupancyFraction    设置CMS回收器在老年代空间占比触发的比例，默认68%</li>
+<li>-XX:+CMSClassUnloadingEnabled    设置CMS回收器对类元数据进行回收</li>
+<li>-XX:+CMSParallelRemarkEnabled    设置CMS回收器并行重标记</li>
+<li>-XX:CMSInitiatingPermOccupancyFraction    设置CMS回收器方法区占用率比例到达时，启动CMS回收，需要支持元数据回收才可以使用</li>
+<li>-XX:UseCMSInitiatingOccupancyOnly    设置CMS回收器在到达阈值的时候才进行回收</li>
+<li>-XX:+CMSIncrementalMode    使用增量模式，适合单CPU</li>
+<li>-XX:+UseCMSCompactAtFullConnection    开启CMS回收器老年代的压缩，消除碎片</li>
+<li>-XX:CMSFullGCsBeforeCompactioin=5    设置多少次Full GC会产生一次内存压缩</li>
+<li>-XX:+UseG1GC    使用G1回收器</li>
+<li>-XX:+UnlockExperimentalVMPotions    允许使用实验性参数</li>
+<li>-XX:MaxGCpauseMillis=100    设置G1回收器每次年轻代回收的最长时间，如果无法满足此时间，JVM会自动跳转年轻代大小来满足此值</li>
+<li>-XX:GCPauseIntervalMills    设置G1会火速停顿间隔时间</li>
+<li>-XX:+HandlePromotionFailure    关闭新生代的收集担保</li>
+<li>-XX:+ScavengeBeforeFullGC    在FullGC前先出发一次Minor GC</li>
+<li>-XX:+UseGCOverheadLimit    GC运行时间上限。如果超过就抛出OOM</li>
+<li>-XX:OnOutOfMemoryError    发生OOM异常时触发的指令</li>
+</ul>
+<p>####GC追踪</p>
+<ul>
+<li>-XX:+PrintGC        输出GC日志</li>
+<li>-XX:+PrintGCDetails    输出GC的详细日志</li>
+<li>-XX:+PrintGCTimeStamps    输出GC的时间戳（以基准时间的形式）</li>
+<li>-XX:+PrintGCDateStamps    输出GC的时间戳（以日期的形式，如 2017-09-04T21:53:59.234+0800）</li>
+<li>-XX:+PrintGCApplicationConcurrentTime    输出每次垃圾会收取程序未中断的执行时间</li>
+<li>-XX:+PrintGCApplicationStoppedTime    输出每次垃圾回收期间程序暂停的时间</li>
+<li>-XX:+PrintHeapAtGC 在进行GC的前后打印出堆的信息</li>
+<li>-Xloggc:../logs/gc.log 日志文件的输出路径</li>
+<li>-XX:+DisableExplicitGC    禁用显示GC，例如System.GC()</li>
+<li>-Xincgc    使用增量GC让GC和线程交替运行，减少停顿</li>
+<li>-XX:-PrintTenuringDistribution         打印Tenuring年龄</li>
+</ul>
+<p>####JIT编译</p>
+<ul>
+<li>-XX:+CITime    JIT编译的基本信息</li>
+<li>-XX:CompileThreshold    运行时将字节码编译成本地代码提高效率</li>
+<li>-Djava.compiler=None        禁止JIT编译器行为</li>
+<li>-XX:CompileThreshold=10000    java代码执行10000次后会编译成NativeCode</li>
+<li>-XX:InitialCodeCacheSize 初始代码缓存大小</li>
+<li>-XX:ReservedCodeCacheSize 预留缓存代码大小</li>
+<li>-XX:+UseCodeCacheFlushing 缓存空间不足时放弃部分本地缓存代码</li>
+<li>-XX:+TieredCompilation 开启分层编译</li>
+<li>-XX:InlineSmallCode=         当编译的代码小于指定的值时,内联编译的代码</li>
+<li>-XX:MaxInlineSize=35         内联方法的最大字节数</li>
+<li>-XX:FreqInlineSize=         内联频繁执行的方法的最大字节码大小</li>
+</ul>
+<p>####堆Dump</p>
+<ul>
+<li>-XX:+HeapDumpOnOutOfMemoryError    程序OOM时进行快照</li>
+<li>-XX:+HeapDumpPath    指定快照的保存地址</li>
+</ul>
+<p>####类加载</p>
+<ul>
+<li>-XX:+TraceClassLoading    追踪类加载</li>
+<li>-XX:+TraceClassUnLoading    追踪类卸载</li>
+<li>-XX:+PrintClassHistogram    打开运行时实例信息，统计系统内类</li>
+</ul>
+<p>####类校验</p>
+<ul>
+<li>-XX:-UseSplitVerifier    指定用旧的类校验器</li>
+<li>-XX:-FailOverToOldVerifier    新校验器失败使用该设置用老校验器再次校验</li>
+<li>-XX:-RelaxAccessControlCheck    放松对访问控制的检查</li>
+</ul>
+<p>####Solaris系统线程控制</p>
+<ul>
+<li>-XX:+UseBoundThreads    绑定所有用户线程到内核线程，减少饥饿状态次数</li>
+<li>-XX:+UseLWPSynchronization    使用内核线程替换线程同步</li>
+<li>-XX:+UseVMInterruptibleIO    允许运行时中断线程</li>
+<li>-XX:+MaxFDLimit    设置java进程可用文件描述符为操作系统允许的最大值</li>
+<li>-XX:+UseAltSigs    防止与其他发送信号的应用程序冲突，允许使用候补信号替代</li>
+<li>-XX:-UseISM    启用ISM</li>
+<li>-XX:+UseMPSS    启用MPSS，不能与ISM同时使用</li>
+<li>-XX:-ExtendedDTraceProbes 开启dtrace探针</li>
+</ul>
+<p>####内存大页</p>
+<ul>
+<li>-XX:+UseLargePagess        使用大页，减少内存分页表项</li>
+<li>-XX:LargePageSizeInBytes    设置大页的大小，大的内存分页可以提高CPU的内存寻址能力</li>
+</ul>
+<p>####压缩指针</p>
+<ul>
+<li>-XX:+UseCompressedOops    压缩指针减少内存消耗</li>
+</ul>
+<p>####DEBUG</p>
+<ul>
+<li>-XDebug                    通知JVM在Debug模式下工作</li>
+<li>-Xrunjdwp                通知JVM使用java debug wrie protocol模式运行调试环境<blockquote>
+<p>该配置参数比较多，详细记一下<br><br>transport            在调试程序和VM使用的进程直接通向<br><br>de_socket            套接字传输<br><br>de_shmem            内存共享传输（Windows系统）<br><br>server=y/n            VM是否需要用来作为调试服务器执行<br><br>address                调试服务器端口号，客户端用来连接的端口号<br><br>suspend=y/n            是否在调试客户端简历后启动vm<br><br>本人在测试环境配置的一个可用配置：-Xrunjdwp:server=y,transport=dt_socket,addtess=9416,suspend=n</p>
+</blockquote>
+</li>
+<li>-Xnoagent                 禁用默认sun.tools.debug调试器</li>
+</ul>
+<p>####JMX</p>
+<ul>
+<li>-Dcom.sun.management.jmxremote                                启动远程JMX</li>
+<li>-Dcom.sun.management.jmxremote.authenticate    true/false        启用鉴权</li>
+<li>-Dcom.sun.management.jmxremote.port            1-65535            远程端口号</li>
+<li>-Dcom.sun.management.jmxremote.local.only        true/false        是否只能本地调试</li>
+<li>-Dcom.sun.management.jmxremote.ssl            true/false        是否支持SSL</li>
+<li>-Dcom.sun.management.jmxremote.access.file    文件路径            鉴权的账户文件</li>
+<li>-Dcom.sun.management.jmxremote.password.file    文件路径            鉴权的密码文件</li>
+<li>-Djava.rmi.server.hostname                        ip/domain        链接IP</li>
+</ul>
+<p>####特殊</p>
+<p>####其他</p>
+<ul>
+<li>-XX:+UseFastAccessorMethods    优化原始类型的getter方法性能</li>
+<li>-XX:+UseBiasedLocking    开启偏向锁</li>
+<li>-XX:+AllowUserSignalHandlers 允许应用使用信号处理器</li>
+<li>-XX:-UseSpinning    开启多线程自旋锁优化</li>
+<li>-XX:PreBlockSpin=10    多线程自旋锁优化的自旋次数</li>
+<li>-XX:+UseTLAB    开启线程本地缓存区</li>
+<li>-XX:+UseThreadPriorities    使用本地线程的优先级</li>
+<li>-XX:+AggressiveOpts    启用当前版本新添加的调优功能</li>
+<li>-XX:+UseStringCache    缓存常用的字符串</li>
+<li>-XX:+UseCompressedStrings 字节数组能够以纯ASCII码来描述字符</li>
+<li>-XX:+OptimizeStringConcat 提高字符串拼接的性能</li>
+<li>-XX:ErrorFile= jvm错误日志</li>
+<li>-XX:-TraceClassResolution    跟踪常量池的变化</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/17/2018-08-19-分布式系统如何保证幂等性/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1954,273 +2270,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alex Ren">
-      <meta itemprop="description" content="JAVA之路">
-      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/" itemprop="url">
-                  JVM内存模型
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/" class="leancloud_visitors" data-flag-title="JVM内存模型">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数：</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<p>本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我</p>
-<h2 id="堆内存调优"><a href="#堆内存调优" class="headerlink" title="堆内存调优"></a>堆内存调优</h2><ul>
-<li><strong>-XX:NewRatio=2</strong> 设置新生代比例，示例代表着设置新生代:老年代=1:2，即年轻代占堆总空间的三分之一</li>
-<li><strong>-XX:SurvivorRatio=8</strong> 设置新生代eden和Survivor的比例，示例代表着两个Survivor:eden=2比8，一个Survivor占十分之一</li>
-<li><strong>-XX:MaxTenuringThreshold-15</strong> 设置年轻代晋升老年代需要的年龄</li>
-<li><strong>-XX:PretenureSizeThreshold</strong> 设置大对象直接进入老年代的阈值</li>
-<li><strong>-Xms512M</strong>  设置JVM初始化时分配512M堆内存</li>
-<li><strong>-Xms2018M</strong> 设置JVM最大可以分配2G堆内存</li>
-<li><strong>-Xmn256M</strong> 设置JVM最小可以分配256M堆内存</li>
-<li><strong>-Xmn1024M</strong> 设置JVM年轻代大小为1G</li>
-<li><strong>-XX:MinHeapFreeRatio</strong>     设置堆空间最小空闲比例，小于这个比例时尝试扩展</li>
-<li><strong>-XX:MaxHeapFreeRatio</strong>     设置堆空间最大空闲比例，大于这个比例是开始压缩</li>
-<li><strong>-XX:NewSize</strong>   设置新生代的大小</li>
-<li><strong>-XX:TargetSurvivorRatio</strong>   设置Survivor区可使用率，超过这个比例会进行年轻代晋升到老年代，不会等待通过年龄进行晋升<h2 id="方法区调优"><a href="#方法区调优" class="headerlink" title="方法区调优"></a>方法区调优</h2></li>
-<li><strong>-XX:MaxPermSize=128M</strong>    设置方法区/永久代大小为128M</li>
-<li><strong>-XX:PremSize</strong>    设置方法区的初始值</li>
-</ul>
-<p>##虚拟机栈</p>
-<ul>
-<li><strong>-Xss1M</strong>    设置设置每个线程的堆栈大小为1M</li>
-</ul>
-<p>##本地方法栈</p>
-<ul>
-<li><strong>-Xoss10M</strong>   设置本地方法栈的大小为10M</li>
-</ul>
-<p>##垃圾回收</p>
-<ul>
-<li><strong>-XX:+UseSerialGc</strong>    设置对年轻代，老年代使用串行回收器</li>
-<li><strong>-XX:+UseParallelGC</strong>    设置对年轻代使用并行收集器，老年代使用仍使用串行收集器</li>
-<li><strong>-XX:+UseParNewGC</strong>    设置对年轻代使用并行回收收集期，老年代仍使用串行收集器</li>
-<li><strong>-XX:ParallelGCThreads=16</strong>    设置并行收集器的线程数，最好和处理器数目相等</li>
-<li><strong>-XX:+UseParallelOldGC</strong>    设置对年轻代、老年代进行并行回收处理器</li>
-<li><strong>-XX:GCTimeRatio</strong>    设置吞吐量大小，范围在0到100，系统GC时间占总时间的比例不超过 1/（1+n），默认n是99，即1/100=1%</li>
-<li><strong>-XX:+UseAdaptiveSizePolicy</strong>    设置并行收集器会自动选择年轻代区大小和区比例，达到预期的最长回收时间，如果采用并行收集器建议长开启</li>
-<li><strong>-XX:+UseConcMarkSweepGc</strong>    设置对年轻代使用并行收集器，老年代使用CMS</li>
-<li><strong>-XX:ParallelCMSThreads=5</strong>    设置设计CMS回收器的线程数量为5</li>
-<li><strong>-XX:CMSInitiatingOccupancyFraction</strong>    设置CMS回收器在老年代空间占比触发的比例，默认68%</li>
-<li><strong>-XX:+CMSClassUnloadingEnabled</strong>    设置CMS回收器对类元数据进行回收</li>
-<li><strong>-XX:+CMSParallelRemarkEnabled</strong>    设置CMS回收器并行重标记</li>
-<li><strong>-XX:CMSInitiatingPermOccupancyFraction</strong>    设置CMS回收器方法区占用率比例到达时，启动CMS回收，需要支持元数据回收才可以使用</li>
-<li><strong>-XX:UseCMSInitiatingOccupancyOnly</strong>    设置CMS回收器在到达阈值的时候才进行回收</li>
-<li><strong>-XX:+CMSIncrementalMode</strong>    设置使用增量模式，适合单CPU</li>
-<li><strong>-XX:+UseCMSCompactAtFullConnection</strong>    设置开启CMS回收器老年代的压缩，消除碎片</li>
-<li><strong>-XX:CMSFullGCsBeforeCompactioin=5</strong>    设置设置多少次Full GC会产生一次内存压缩</li>
-<li><strong>-XX:+UseG1GC</strong>    设置使用G1回收器</li>
-<li><strong>-XX:+UnlockExperimentalVMPotions</strong>    设置允许使用实验性参数</li>
-<li><strong>-XX:MaxGCpauseMillis=100</strong>    设置G1回收器每次年轻代回收的最长时间，如果无法满足此时间，JVM会自动跳转年轻代大小来满足此值</li>
-<li><strong>-XX:GCPauseIntervalMills</strong>    设置G1会火速停顿间隔时间</li>
-</ul>
-<h2 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h2><ul>
-<li><strong>-XX:+PrintGC</strong>    设置输出GC日志</li>
-<li><strong>-XX:+PrintGCDetails</strong>    设置输出GC的详细日志</li>
-<li><strong>-XX:+PrintGCTimeStamps</strong>    设置输出GC的时间戳（以基准时间的形式）</li>
-<li><strong>-XX:+PrintGCDateStamps</strong>    设置输出GC的时间戳（以日期的形式，如 2017-09-04T21:53:59.234+0800）</li>
-<li><strong>-XX:+PrintGCApplicationConcurrentTime</strong>    设置输出每次垃圾会收取程序未中断的执行时间</li>
-<li><strong>-XX:+PrintGCApplicationStoppedTime</strong>    设置输出每次垃圾回收期间程序暂停的时间</li>
-<li><strong>-XX:+PrintHeapAtGC</strong> 设置在进行GC的前后打印出堆的信息</li>
-<li><strong>-Xloggc:../logs/gc.log</strong> 设置日志文件的输出路径</li>
-<li><strong>-XX:+DisableExplicitGC</strong>    设置禁用显示GC，例如System.GC()</li>
-<li><strong>-Xincgc</strong>    设置使用增量GC让GC和线程交替运行，减少停顿</li>
-</ul>
-<h2 id="JIT编译"><a href="#JIT编译" class="headerlink" title="JIT编译"></a>JIT编译</h2><ul>
-<li><strong>-XX:+CITime</strong>    JIT编译的基本信息</li>
-<li><strong>-XX:CompileThreshold</strong>    运行时将字节码编译成本地代码提高效率</li>
-</ul>
-<h2 id="堆Dump"><a href="#堆Dump" class="headerlink" title="堆Dump"></a>堆Dump</h2><ul>
-<li><strong>-XX:+HeapDumpOnOutOfMemoryError</strong>    程序OOM时进行快照</li>
-<li><strong>-XX:+HeapDumpPath</strong>    指定快照的保存地址</li>
-</ul>
-<h2 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h2><ul>
-<li><strong>-XX:+TraceClassLoading</strong>    追踪类加载</li>
-<li><strong>-XX:+TraceClassUnLoading</strong>    追踪类卸载</li>
-<li><strong>-XX:+PrintClassHistogram</strong>    打开运行时实力信息，统计系统内类</li>
-</ul>
-<h2 id="类校验"><a href="#类校验" class="headerlink" title="类校验"></a>类校验</h2><ul>
-<li><strong>-XX:-UseSplitVerifier</strong>    指定用旧的类教研群</li>
-<li><strong>-XX:-FailOverToOldVerifier</strong>    新校验器失败使用该设置用老校验器再次校验</li>
-</ul>
-<h2 id="Solaris线程控制"><a href="#Solaris线程控制" class="headerlink" title="Solaris线程控制"></a>Solaris线程控制</h2><ul>
-<li><strong>-XX:+UseBoundThreads</strong>    绑定所有用户线程到内核线程，减少饥饿状态次数</li>
-<li><strong>-XX:+UseLWPSynchronization</strong>    使用内核线程替换线程同步</li>
-<li><strong>-XX:+UseVMInterruptibleIO</strong>    允许运行时中断线程</li>
-</ul>
-<h2 id="使用内存大页"><a href="#使用内存大页" class="headerlink" title="使用内存大页"></a>使用内存大页</h2><ul>
-<li><strong>-XX:+UseLargePagess</strong>        使用大页，减少内存分页表项</li>
-<li><strong>-XX:LargePageSizeInBytes</strong>    设置大页的大小，大的内存分页可以提高CPU的内存寻址能力</li>
-</ul>
-<h2 id="压缩指针"><a href="#压缩指针" class="headerlink" title="压缩指针"></a>压缩指针</h2><ul>
-<li><strong>-XX:+UseCompressedOops</strong>    压缩指针减少内存消耗</li>
-</ul>
-<h2 id="DEBUG"><a href="#DEBUG" class="headerlink" title="DEBUG"></a>DEBUG</h2><ul>
-<li><strong>-XDebug</strong>                    通知JVM在Debug模式下工作</li>
-<li><p><strong>-Xrunjdwp</strong>                通知JVM使用java debug wrie protocol模式运行调试环境</p>
-<blockquote>
-<p><strong>transport</strong>            在调试程序和VM使用的进程直接通向<br><br><strong>de_socket</strong>            套接字传输<br><br><strong>de_shmem</strong>            内存共享传输（Windows系统）<br><br><strong>server=y/n</strong>            VM是否需要用来作为调试服务器执行<br><br><strong>address</strong>                调试服务器端口号，客户端用来连接的端口号<br><br><strong>suspend=y/n</strong>            是否在调试客户端简历后启动vm<br><br><strong>-Xnoagent</strong>                禁用默认sun.tools.debug调试器<br><br><strong>一个我使用的参数配置</strong> -Xrunjdwp:server=y,transport=dt_socket,addtess=9416,suspend=n</p>
-</blockquote>
-</li>
-<li><p><strong>-Djava.compiler=None</strong>        禁止JIT编译器行为</p>
-</li>
-</ul>
-<h2 id="JMX远程调优"><a href="#JMX远程调优" class="headerlink" title="JMX远程调优"></a>JMX远程调优</h2><ul>
-<li><strong>-Dcom.sun.management.jmxremote</strong>                                启动远程JMX</li>
-<li><strong>-Dcom.sun.management.jmxremote.authenticate</strong>    true/false        启用鉴权</li>
-<li><strong>-Dcom.sun.management.jmxremote.port</strong>            1-65535            远程端口号</li>
-<li><strong>-Dcom.sun.management.jmxremote.local.only</strong>        true/false        是否只能本地调试</li>
-<li><strong>-Dcom.sun.management.jmxremote.ssl</strong>            true/false        是否支持SSL</li>
-<li><strong>-Dcom.sun.management.jmxremote.access.file</strong>    文件路径            鉴权的账户文件</li>
-<li><strong>-Dcom.sun.management.jmxremote.password.file</strong>    文件路径            鉴权的密码文件</li>
-<li><strong>-Djava.rmi.server.hostname</strong>                        ip/domain        链接IP</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2268,7 +2317,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-count">25</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

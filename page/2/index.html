@@ -285,6 +285,273 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/" itemprop="url">
+                  JVM内存模型
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2018/09/12/2018-08-18-JVM参数优化/" class="leancloud_visitors" data-flag-title="JVM内存模型">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <a id="more"></a>
+<p>本文记录了自己在JVM调优的时候曾经使用或者经过对比后舍弃的JVM参数，如果你已经了解需要调优的部分，可以通过本文检索，如果有不全的地方希望联系我</p>
+<h2 id="堆内存调优"><a href="#堆内存调优" class="headerlink" title="堆内存调优"></a>堆内存调优</h2><ul>
+<li><strong>-XX:NewRatio=2</strong> 设置新生代比例，示例代表着设置新生代:老年代=1:2，即年轻代占堆总空间的三分之一</li>
+<li><strong>-XX:SurvivorRatio=8</strong> 设置新生代eden和Survivor的比例，示例代表着两个Survivor:eden=2比8，一个Survivor占十分之一</li>
+<li><strong>-XX:MaxTenuringThreshold-15</strong> 设置年轻代晋升老年代需要的年龄</li>
+<li><strong>-XX:PretenureSizeThreshold</strong> 设置大对象直接进入老年代的阈值</li>
+<li><strong>-Xms512M</strong>  设置JVM初始化时分配512M堆内存</li>
+<li><strong>-Xms2018M</strong> 设置JVM最大可以分配2G堆内存</li>
+<li><strong>-Xmn256M</strong> 设置JVM最小可以分配256M堆内存</li>
+<li><strong>-Xmn1024M</strong> 设置JVM年轻代大小为1G</li>
+<li><strong>-XX:MinHeapFreeRatio</strong>     设置堆空间最小空闲比例，小于这个比例时尝试扩展</li>
+<li><strong>-XX:MaxHeapFreeRatio</strong>     设置堆空间最大空闲比例，大于这个比例是开始压缩</li>
+<li><strong>-XX:NewSize</strong>   设置新生代的大小</li>
+<li><strong>-XX:TargetSurvivorRatio</strong>   设置Survivor区可使用率，超过这个比例会进行年轻代晋升到老年代，不会等待通过年龄进行晋升<h2 id="方法区调优"><a href="#方法区调优" class="headerlink" title="方法区调优"></a>方法区调优</h2></li>
+<li><strong>-XX:MaxPermSize=128M</strong>    设置方法区/永久代大小为128M</li>
+<li><strong>-XX:PremSize</strong>    设置方法区的初始值</li>
+</ul>
+<p>##虚拟机栈</p>
+<ul>
+<li><strong>-Xss1M</strong>    设置设置每个线程的堆栈大小为1M</li>
+</ul>
+<p>##本地方法栈</p>
+<ul>
+<li><strong>-Xoss10M</strong>   设置本地方法栈的大小为10M</li>
+</ul>
+<p>##垃圾回收</p>
+<ul>
+<li><strong>-XX:+UseSerialGc</strong>    设置对年轻代，老年代使用串行回收器</li>
+<li><strong>-XX:+UseParallelGC</strong>    设置对年轻代使用并行收集器，老年代使用仍使用串行收集器</li>
+<li><strong>-XX:+UseParNewGC</strong>    设置对年轻代使用并行回收收集期，老年代仍使用串行收集器</li>
+<li><strong>-XX:ParallelGCThreads=16</strong>    设置并行收集器的线程数，最好和处理器数目相等</li>
+<li><strong>-XX:+UseParallelOldGC</strong>    设置对年轻代、老年代进行并行回收处理器</li>
+<li><strong>-XX:GCTimeRatio</strong>    设置吞吐量大小，范围在0到100，系统GC时间占总时间的比例不超过 1/（1+n），默认n是99，即1/100=1%</li>
+<li><strong>-XX:+UseAdaptiveSizePolicy</strong>    设置并行收集器会自动选择年轻代区大小和区比例，达到预期的最长回收时间，如果采用并行收集器建议长开启</li>
+<li><strong>-XX:+UseConcMarkSweepGc</strong>    设置对年轻代使用并行收集器，老年代使用CMS</li>
+<li><strong>-XX:ParallelCMSThreads=5</strong>    设置设计CMS回收器的线程数量为5</li>
+<li><strong>-XX:CMSInitiatingOccupancyFraction</strong>    设置CMS回收器在老年代空间占比触发的比例，默认68%</li>
+<li><strong>-XX:+CMSClassUnloadingEnabled</strong>    设置CMS回收器对类元数据进行回收</li>
+<li><strong>-XX:+CMSParallelRemarkEnabled</strong>    设置CMS回收器并行重标记</li>
+<li><strong>-XX:CMSInitiatingPermOccupancyFraction</strong>    设置CMS回收器方法区占用率比例到达时，启动CMS回收，需要支持元数据回收才可以使用</li>
+<li><strong>-XX:UseCMSInitiatingOccupancyOnly</strong>    设置CMS回收器在到达阈值的时候才进行回收</li>
+<li><strong>-XX:+CMSIncrementalMode</strong>    设置使用增量模式，适合单CPU</li>
+<li><strong>-XX:+UseCMSCompactAtFullConnection</strong>    设置开启CMS回收器老年代的压缩，消除碎片</li>
+<li><strong>-XX:CMSFullGCsBeforeCompactioin=5</strong>    设置设置多少次Full GC会产生一次内存压缩</li>
+<li><strong>-XX:+UseG1GC</strong>    设置使用G1回收器</li>
+<li><strong>-XX:+UnlockExperimentalVMPotions</strong>    设置允许使用实验性参数</li>
+<li><strong>-XX:MaxGCpauseMillis=100</strong>    设置G1回收器每次年轻代回收的最长时间，如果无法满足此时间，JVM会自动跳转年轻代大小来满足此值</li>
+<li><strong>-XX:GCPauseIntervalMills</strong>    设置G1会火速停顿间隔时间</li>
+</ul>
+<h2 id="GC"><a href="#GC" class="headerlink" title="GC"></a>GC</h2><ul>
+<li><strong>-XX:+PrintGC</strong>    设置输出GC日志</li>
+<li><strong>-XX:+PrintGCDetails</strong>    设置输出GC的详细日志</li>
+<li><strong>-XX:+PrintGCTimeStamps</strong>    设置输出GC的时间戳（以基准时间的形式）</li>
+<li><strong>-XX:+PrintGCDateStamps</strong>    设置输出GC的时间戳（以日期的形式，如 2017-09-04T21:53:59.234+0800）</li>
+<li><strong>-XX:+PrintGCApplicationConcurrentTime</strong>    设置输出每次垃圾会收取程序未中断的执行时间</li>
+<li><strong>-XX:+PrintGCApplicationStoppedTime</strong>    设置输出每次垃圾回收期间程序暂停的时间</li>
+<li><strong>-XX:+PrintHeapAtGC</strong> 设置在进行GC的前后打印出堆的信息</li>
+<li><strong>-Xloggc:../logs/gc.log</strong> 设置日志文件的输出路径</li>
+<li><strong>-XX:+DisableExplicitGC</strong>    设置禁用显示GC，例如System.GC()</li>
+<li><strong>-Xincgc</strong>    设置使用增量GC让GC和线程交替运行，减少停顿</li>
+</ul>
+<h2 id="JIT编译"><a href="#JIT编译" class="headerlink" title="JIT编译"></a>JIT编译</h2><ul>
+<li><strong>-XX:+CITime</strong>    JIT编译的基本信息</li>
+<li><strong>-XX:CompileThreshold</strong>    运行时将字节码编译成本地代码提高效率</li>
+</ul>
+<h2 id="堆Dump"><a href="#堆Dump" class="headerlink" title="堆Dump"></a>堆Dump</h2><ul>
+<li><strong>-XX:+HeapDumpOnOutOfMemoryError</strong>    程序OOM时进行快照</li>
+<li><strong>-XX:+HeapDumpPath</strong>    指定快照的保存地址</li>
+</ul>
+<h2 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h2><ul>
+<li><strong>-XX:+TraceClassLoading</strong>    追踪类加载</li>
+<li><strong>-XX:+TraceClassUnLoading</strong>    追踪类卸载</li>
+<li><strong>-XX:+PrintClassHistogram</strong>    打开运行时实力信息，统计系统内类</li>
+</ul>
+<h2 id="类校验"><a href="#类校验" class="headerlink" title="类校验"></a>类校验</h2><ul>
+<li><strong>-XX:-UseSplitVerifier</strong>    指定用旧的类教研群</li>
+<li><strong>-XX:-FailOverToOldVerifier</strong>    新校验器失败使用该设置用老校验器再次校验</li>
+</ul>
+<h2 id="Solaris线程控制"><a href="#Solaris线程控制" class="headerlink" title="Solaris线程控制"></a>Solaris线程控制</h2><ul>
+<li><strong>-XX:+UseBoundThreads</strong>    绑定所有用户线程到内核线程，减少饥饿状态次数</li>
+<li><strong>-XX:+UseLWPSynchronization</strong>    使用内核线程替换线程同步</li>
+<li><strong>-XX:+UseVMInterruptibleIO</strong>    允许运行时中断线程</li>
+</ul>
+<h2 id="使用内存大页"><a href="#使用内存大页" class="headerlink" title="使用内存大页"></a>使用内存大页</h2><ul>
+<li><strong>-XX:+UseLargePagess</strong>        使用大页，减少内存分页表项</li>
+<li><strong>-XX:LargePageSizeInBytes</strong>    设置大页的大小，大的内存分页可以提高CPU的内存寻址能力</li>
+</ul>
+<h2 id="压缩指针"><a href="#压缩指针" class="headerlink" title="压缩指针"></a>压缩指针</h2><ul>
+<li><strong>-XX:+UseCompressedOops</strong>    压缩指针减少内存消耗</li>
+</ul>
+<h2 id="DEBUG"><a href="#DEBUG" class="headerlink" title="DEBUG"></a>DEBUG</h2><ul>
+<li><strong>-XDebug</strong>                    通知JVM在Debug模式下工作</li>
+<li><p><strong>-Xrunjdwp</strong>                通知JVM使用java debug wrie protocol模式运行调试环境</p>
+<blockquote>
+<p><strong>transport</strong>            在调试程序和VM使用的进程直接通向<br><br><strong>de_socket</strong>            套接字传输<br><br><strong>de_shmem</strong>            内存共享传输（Windows系统）<br><br><strong>server=y/n</strong>            VM是否需要用来作为调试服务器执行<br><br><strong>address</strong>                调试服务器端口号，客户端用来连接的端口号<br><br><strong>suspend=y/n</strong>            是否在调试客户端简历后启动vm<br><br><strong>-Xnoagent</strong>                禁用默认sun.tools.debug调试器<br><br><strong>一个我使用的参数配置</strong> -Xrunjdwp:server=y,transport=dt_socket,addtess=9416,suspend=n</p>
+</blockquote>
+</li>
+<li><p><strong>-Djava.compiler=None</strong>        禁止JIT编译器行为</p>
+</li>
+</ul>
+<h2 id="JMX远程调优"><a href="#JMX远程调优" class="headerlink" title="JMX远程调优"></a>JMX远程调优</h2><ul>
+<li><strong>-Dcom.sun.management.jmxremote</strong>                                启动远程JMX</li>
+<li><strong>-Dcom.sun.management.jmxremote.authenticate</strong>    true/false        启用鉴权</li>
+<li><strong>-Dcom.sun.management.jmxremote.port</strong>            1-65535            远程端口号</li>
+<li><strong>-Dcom.sun.management.jmxremote.local.only</strong>        true/false        是否只能本地调试</li>
+<li><strong>-Dcom.sun.management.jmxremote.ssl</strong>            true/false        是否支持SSL</li>
+<li><strong>-Dcom.sun.management.jmxremote.access.file</strong>    文件路径            鉴权的账户文件</li>
+<li><strong>-Dcom.sun.management.jmxremote.password.file</strong>    文件路径            鉴权的密码文件</li>
+<li><strong>-Djava.rmi.server.hostname</strong>                        ip/domain        链接IP</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-09-01-JAVA线程池队列/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2014,242 +2281,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/12/2018-08-22-Oracle执行计划/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alex Ren">
-      <meta itemprop="description" content="JAVA之路">
-      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/alex.github.io/2018/09/12/2018-08-22-Oracle执行计划/" itemprop="url">
-                  Oracle执行计划
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-12 13:54:21" itemprop="dateCreated datePublished" datetime="2018-09-12T13:54:21+08:00">2018-09-12</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/alex.github.io/2018/09/12/2018-08-22-Oracle执行计划/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/12/2018-08-22-Oracle执行计划/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/alex.github.io/2018/09/12/2018-08-22-Oracle执行计划/" class="leancloud_visitors" data-flag-title="Oracle执行计划">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数：</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <a id="more"></a>
-<blockquote>
-<p>如何针对Oracle数据库的看到的执行计划分析sql并想办法优化</p>
-</blockquote>
-<h4 id="查询Oracle语句的执行计划"><a href="#查询Oracle语句的执行计划" class="headerlink" title="查询Oracle语句的执行计划"></a>查询Oracle语句的执行计划</h4><ul>
-<li>在工具→首选项→窗口类型→计划窗口选择需要查看的列</li>
-<li>在窗口列表→右键→新建→解释计划窗口</li>
-<li>输入需要分析的SQL，执行查询</li>
-</ul>
-<h4 id="分析Oracle语句的执行计划"><a href="#分析Oracle语句的执行计划" class="headerlink" title="分析Oracle语句的执行计划"></a>分析Oracle语句的执行计划</h4><h5 id="什么样的执行计划是优秀的"><a href="#什么样的执行计划是优秀的" class="headerlink" title="什么样的执行计划是优秀的"></a>什么样的执行计划是优秀的</h5><ul>
-<li>对于串行执行，关注的是开销</li>
-<li>对于并行执行，关注的是性能</li>
-</ul>
-<ol>
-<li>开销指使用的<strong>工作单元</strong>或<strong>资源的数量</strong> <ol>
-<li>工作单元：CPU、内存、IO</li>
-<li>资源的数量：对执行操作需要使用的CPU、内存、IO数量预估</li>
-</ol>
-</li>
-<li>性能指对查询的最快响应时间，不关心占用资源</li>
-</ol>
-<h5 id="执行计划是否正确"><a href="#执行计划是否正确" class="headerlink" title="执行计划是否正确"></a>执行计划是否正确</h5><h6 id="基数"><a href="#基数" class="headerlink" title="基数"></a>基数</h6><p>基数用来返回预估的行数，计算方式为行的总数/不同值的总数<br><br>基数影响访问方法、联接类型、联接顺序等<br></p>
-<ol>
-<li>解决错误<ul>
-<li>统计信息陈旧缺少  DBMS_STATS</li>
-<li>数据偏差  创建柱状图</li>
-<li>一个表有多个单列谓词  使用DBMS_STATS.CREATE_EXTENDED_STATS创建一个列组</li>
-<li>一个联结中使用多个列  使用DBMS_STATS.CREATE_EXTENDED_STATS创建一个列组</li>
-<li>包含函数的列  使用DBMS_STATS.CREATE_EXTENDED_STATS创建有关包含函数列的统计信息</li>
-<li>复杂表达式，包含多个表的列    采用4级或更高的动态抽样级别</li>
-</ul>
-</li>
-</ol>
-<h6 id="访问方法"><a href="#访问方法" class="headerlink" title="访问方法"></a>访问方法</h6><ul>
-<li><strong>完整表扫描</strong>，读取全部数据行，过滤不符合where字句谓词的行，用于索引，DOP集等</li>
-<li><strong>按RowID访问</strong>，包含数据行所在的数据文件、数据块、数据块位置的信息，之后where条件里带rowid时使用</li>
-<li><strong>索引唯一扫描</strong>，语句中包含UNIQUE索引或者PRIMARY KEY主键约束条件时使用，确定访问数据只有一行</li>
-<li><strong>索引范围扫描</strong>，访问相邻索引项，可以返回多个rowid值，与等式一起用于非唯一索引，或与范围谓词一起用于唯一索引（&lt;、&gt;、between等）</li>
-<li><strong>索引跳过扫描</strong>，如果前导列中只有很少的不同值，非前导列中有很多不同值，跳过前导列，使用其余有用的部分</li>
-<li><strong>完整索引扫描</strong>，处理索引所有的页块，当所有需要的列都在索引中而且order by字句和索引结构匹配，或者排序合并链接完成可以使用</li>
-<li><strong>快速完整索引扫描</strong>，扫描索引中的所有块，在所有需要的列都在索引中时提到FTS，使用多块IO并行允许</li>
-<li><strong>索引链接</strong>，散列链接多个索引，这些索引一起包含查询中所有表列，不会消除排序操作</li>
-<li><strong>位图索引</strong>，使用键值位图和映射函数，映射函数可以将每个比特转换为一个rowid，可以有效合并where字句中多个条件的索引<blockquote>
-<p>解决错误，检查基数，联结顺序</p>
-</blockquote>
-</li>
-</ul>
-<ol>
-<li>使用表扫描<ul>
-<li>DOP针对表，而不是索引或者MBRC</li>
-</ul>
-</li>
-<li>采用错误的索引<ul>
-<li>统计信息陈旧、缺少</li>
-<li>采用了匹配最多列的索引</li>
-<li>完整索引访问方式的开销比索引查找后根表访问方式的开销低</li>
-</ul>
-</li>
-</ol>
-<h6 id="链接类型"><a href="#链接类型" class="headerlink" title="链接类型"></a>链接类型</h6><ul>
-<li><strong>嵌套循环链接</strong>：外部表的每一行，访问内部表的所有行，在链接小型内部表或者使用索引查找时有用</li>
-<li><strong>散列链接</strong>：对连个较小的表执行扫描，使用结果行根据内存中的链接创建散列表，对结果航的联结列执行散列操作，用于较大的表和if、equality谓词时有用</li>
-<li><strong>排序合并链接</strong>：包括两步骤，1排序联结操作，基于联结键对两个输入都进行排序，2.合并链接操作，将排序的列表结合在一起，在表连接条件是不相等条件时非常有用</li>
-<li><strong>笛卡尔链接</strong>：两个数据源，其中一个数据源的每一行和另一个数据源每一行都进行链接，生成笛卡尔乘积的数据集，在两个数据集间没有任何条件是是唯一选择</li>
-<li><strong>外连接</strong>：返回所有满足联结条件的行，并从没有（+）的表中返回所有这样的行，在另一个表中没有满足联结条件的行</li>
-</ul>
-<blockquote>
-<p>建议</p>
-</blockquote>
-<ul>
-<li>从可消除最多行数的表进行操作</li>
-<li>将受可用访问方法的很大影响<blockquote>
-<p>基本规则</p>
-</blockquote>
-</li>
-<li>总先执行生成最多生成一行的链接</li>
-<li>使用外联结时，在谓词中，含有此外连接运算符的表必须在其他表之后</li>
-<li>如果不能执行试图合并，在链接视图外部的表之前链接视图内部的表</li>
-</ul>
-<h6 id="分区修剪"><a href="#分区修剪" class="headerlink" title="分区修剪"></a>分区修剪</h6><p>根据数据表的数据量是否需要分区，需要考虑在分区后的查询中能否过滤大部分的数据行，以及范围查询会不会命中多个分区</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2297,7 +2328,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-count">25</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
