@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="如何针对Oracle数据库的看到的执行计划分析sql并想办法优化  查询Oracle语句的执行计划 在工具→首选项→窗口类型→计划窗口选择需要查看的列 在窗口列表→右键→新建→解释计划窗口 输入需要分析的SQL，执行查询  分析Oracle语句的执行计划什么样的执行计划是优秀的 对于串行执行，关注的是开销 对于并行执行，关注的是性能   开销指使用的工作单元或资源的数量  工作单元：CPU、内">
-<meta name="keywords" content="数据库">
+  <meta name="description" content="原文https://mp.weixin.qq.com/s/D-lmaFwJBsiWIPmFIcfJnQ">
+<meta name="keywords" content="TOMCAT">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Oracle执行计划">
-<meta property="og:url" content="https://alexrencn.github.io/2018/09/18/2018-08-22-Oracle执行计划/index.html">
+<meta property="og:title" content="TOMCAT结构分析">
+<meta property="og:url" content="https://alexrencn.github.io/2018/09/29/2018-09-29-TOMCAT结构分析/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="如何针对Oracle数据库的看到的执行计划分析sql并想办法优化  查询Oracle语句的执行计划 在工具→首选项→窗口类型→计划窗口选择需要查看的列 在窗口列表→右键→新建→解释计划窗口 输入需要分析的SQL，执行查询  分析Oracle语句的执行计划什么样的执行计划是优秀的 对于串行执行，关注的是开销 对于并行执行，关注的是性能   开销指使用的工作单元或资源的数量  工作单元：CPU、内">
+<meta property="og:description" content="原文https://mp.weixin.qq.com/s/D-lmaFwJBsiWIPmFIcfJnQ">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-18T14:36:07.531Z">
+<meta property="og:updated_time" content="2018-09-29T05:57:17.511Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Oracle执行计划">
-<meta name="twitter:description" content="如何针对Oracle数据库的看到的执行计划分析sql并想办法优化  查询Oracle语句的执行计划 在工具→首选项→窗口类型→计划窗口选择需要查看的列 在窗口列表→右键→新建→解释计划窗口 输入需要分析的SQL，执行查询  分析Oracle语句的执行计划什么样的执行计划是优秀的 对于串行执行，关注的是开销 对于并行执行，关注的是性能   开销指使用的工作单元或资源的数量  工作单元：CPU、内">
+<meta name="twitter:title" content="TOMCAT结构分析">
+<meta name="twitter:description" content="原文https://mp.weixin.qq.com/s/D-lmaFwJBsiWIPmFIcfJnQ">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/09/18/2018-08-22-Oracle执行计划/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2018/09/29/2018-09-29-TOMCAT结构分析/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>Oracle执行计划 | Alex</title>
+  <title>TOMCAT结构分析 | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/18/2018-08-22-Oracle执行计划/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/29/2018-09-29-TOMCAT结构分析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Oracle执行计划
+          <h1 class="post-title" itemprop="name headline">TOMCAT结构分析
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-09-18 22:36:07" itemprop="dateCreated datePublished" datetime="2018-09-18T22:36:07+08:00">2018-09-18</time>
+              <time title="创建时间：2018-09-29 13:57:17" itemprop="dateCreated datePublished" datetime="2018-09-29T13:57:17+08:00">2018-09-29</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/09/18/2018-08-22-Oracle执行计划/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/18/2018-08-22-Oracle执行计划/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/09/29/2018-09-29-TOMCAT结构分析/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/29/2018-09-29-TOMCAT结构分析/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/09/18/2018-08-22-Oracle执行计划/" class="leancloud_visitors" data-flag-title="Oracle执行计划">
+             <span id="/alex.github.io/2018/09/29/2018-09-29-TOMCAT结构分析/" class="leancloud_visitors" data-flag-title="TOMCAT结构分析">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -382,86 +382,22 @@
       
 
       
-        <a id="more"></a>
-<blockquote>
-<p>如何针对Oracle数据库的看到的执行计划分析sql并想办法优化</p>
-</blockquote>
-<h4 id="查询Oracle语句的执行计划"><a href="#查询Oracle语句的执行计划" class="headerlink" title="查询Oracle语句的执行计划"></a>查询Oracle语句的执行计划</h4><ul>
-<li>在工具→首选项→窗口类型→计划窗口选择需要查看的列</li>
-<li>在窗口列表→右键→新建→解释计划窗口</li>
-<li>输入需要分析的SQL，执行查询</li>
-</ul>
-<h4 id="分析Oracle语句的执行计划"><a href="#分析Oracle语句的执行计划" class="headerlink" title="分析Oracle语句的执行计划"></a>分析Oracle语句的执行计划</h4><h5 id="什么样的执行计划是优秀的"><a href="#什么样的执行计划是优秀的" class="headerlink" title="什么样的执行计划是优秀的"></a>什么样的执行计划是优秀的</h5><ul>
-<li>对于串行执行，关注的是开销</li>
-<li>对于并行执行，关注的是性能</li>
-</ul>
-<ol>
-<li>开销指使用的<strong>工作单元</strong>或<strong>资源的数量</strong> <ol>
-<li>工作单元：CPU、内存、IO</li>
-<li>资源的数量：对执行操作需要使用的CPU、内存、IO数量预估</li>
-</ol>
-</li>
-<li>性能指对查询的最快响应时间，不关心占用资源</li>
-</ol>
-<h5 id="执行计划是否正确"><a href="#执行计划是否正确" class="headerlink" title="执行计划是否正确"></a>执行计划是否正确</h5><h6 id="基数"><a href="#基数" class="headerlink" title="基数"></a>基数</h6><p>基数用来返回预估的行数，计算方式为行的总数/不同值的总数<br><br>基数影响访问方法、联接类型、联接顺序等<br></p>
-<ol>
-<li>解决错误<ul>
-<li>统计信息陈旧缺少  DBMS_STATS</li>
-<li>数据偏差  创建柱状图</li>
-<li>一个表有多个单列谓词  使用DBMS_STATS.CREATE_EXTENDED_STATS创建一个列组</li>
-<li>一个联结中使用多个列  使用DBMS_STATS.CREATE_EXTENDED_STATS创建一个列组</li>
-<li>包含函数的列  使用DBMS_STATS.CREATE_EXTENDED_STATS创建有关包含函数列的统计信息</li>
-<li>复杂表达式，包含多个表的列    采用4级或更高的动态抽样级别</li>
-</ul>
-</li>
-</ol>
-<h6 id="访问方法"><a href="#访问方法" class="headerlink" title="访问方法"></a>访问方法</h6><ul>
-<li><strong>完整表扫描</strong>，读取全部数据行，过滤不符合where字句谓词的行，用于索引，DOP集等</li>
-<li><strong>按RowID访问</strong>，包含数据行所在的数据文件、数据块、数据块位置的信息，之后where条件里带rowid时使用</li>
-<li><strong>索引唯一扫描</strong>，语句中包含UNIQUE索引或者PRIMARY KEY主键约束条件时使用，确定访问数据只有一行</li>
-<li><strong>索引范围扫描</strong>，访问相邻索引项，可以返回多个rowid值，与等式一起用于非唯一索引，或与范围谓词一起用于唯一索引（&lt;、&gt;、between等）</li>
-<li><strong>索引跳过扫描</strong>，如果前导列中只有很少的不同值，非前导列中有很多不同值，跳过前导列，使用其余有用的部分</li>
-<li><strong>完整索引扫描</strong>，处理索引所有的页块，当所有需要的列都在索引中而且order by字句和索引结构匹配，或者排序合并链接完成可以使用</li>
-<li><strong>快速完整索引扫描</strong>，扫描索引中的所有块，在所有需要的列都在索引中时提到FTS，使用多块IO并行允许</li>
-<li><strong>索引链接</strong>，散列链接多个索引，这些索引一起包含查询中所有表列，不会消除排序操作</li>
-<li><strong>位图索引</strong>，使用键值位图和映射函数，映射函数可以将每个比特转换为一个rowid，可以有效合并where字句中多个条件的索引<blockquote>
-<p>解决错误，检查基数，联结顺序</p>
-</blockquote>
-</li>
-</ul>
-<ol>
-<li>使用表扫描<ul>
-<li>DOP针对表，而不是索引或者MBRC</li>
-</ul>
-</li>
-<li>采用错误的索引<ul>
-<li>统计信息陈旧、缺少</li>
-<li>采用了匹配最多列的索引</li>
-<li>完整索引访问方式的开销比索引查找后根表访问方式的开销低</li>
-</ul>
-</li>
-</ol>
-<h6 id="链接类型"><a href="#链接类型" class="headerlink" title="链接类型"></a>链接类型</h6><ul>
-<li><strong>嵌套循环链接</strong>：外部表的每一行，访问内部表的所有行，在链接小型内部表或者使用索引查找时有用</li>
-<li><strong>散列链接</strong>：对连个较小的表执行扫描，使用结果行根据内存中的链接创建散列表，对结果航的联结列执行散列操作，用于较大的表和if、equality谓词时有用</li>
-<li><strong>排序合并链接</strong>：包括两步骤，1排序联结操作，基于联结键对两个输入都进行排序，2.合并链接操作，将排序的列表结合在一起，在表连接条件是不相等条件时非常有用</li>
-<li><strong>笛卡尔链接</strong>：两个数据源，其中一个数据源的每一行和另一个数据源每一行都进行链接，生成笛卡尔乘积的数据集，在两个数据集间没有任何条件是是唯一选择</li>
-<li><strong>外连接</strong>：返回所有满足联结条件的行，并从没有（+）的表中返回所有这样的行，在另一个表中没有满足联结条件的行</li>
-</ul>
-<blockquote>
-<p>建议</p>
-</blockquote>
+        <p>原文<a href="https://mp.weixin.qq.com/s/D-lmaFwJBsiWIPmFIcfJnQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/D-lmaFwJBsiWIPmFIcfJnQ</a><br><a id="more"></a></p>
+<h4 id="server"><a href="#server" class="headerlink" title="server"></a>server</h4><p>每个TOMCAT只有一个Server组件，用来负责tomcat的运行，每个server可以包含多个service</p>
+<h4 id="service"><a href="#service" class="headerlink" title="service"></a>service</h4><p>运行在server组件内，代表着每个应用程序的抽象，负责对外提供服务<br><br>每个service内部包含Connector和Container</p>
 <ul>
-<li>从可消除最多行数的表进行操作</li>
-<li>将受可用访问方法的很大影响<blockquote>
-<p>基本规则</p>
-</blockquote>
-</li>
-<li>总先执行生成最多生成一行的链接</li>
-<li>使用外联结时，在谓词中，含有此外连接运算符的表必须在其他表之后</li>
-<li>如果不能执行试图合并，在链接视图外部的表之前链接视图内部的表</li>
+<li>Connector用于处理socket链接，对request和response进行转换，每个service拥有一个</li>
+<li>Container负责对Servlet进行封装，每个service可以拥有多个<h4 id="Connector"><a href="#Connector" class="headerlink" title="Connector"></a>Connector</h4></li>
 </ul>
-<h6 id="分区修剪"><a href="#分区修剪" class="headerlink" title="分区修剪"></a>分区修剪</h6><p>根据数据表的数据量是否需要分区，需要考虑在分区后的查询中能否过滤大部分的数据行，以及范围查询会不会命中多个分区</p>
+<ol>
+<li>Endpoint用来处理底层Socket的网络连接，Processor用于将Endpoint接收到的Socket封装成Request，Adapter用于将Request交给Container进行具体的处理。</li>
+<li>Endpoint由于是处理底层的Socket网络连接，因此Endpoint是用来实现TCP/IP协议的，而Processor用来实现HTTP协议的，Adapter将请求适配到Servlet容器进行具体的处理。</li>
+<li>Endpoint的抽象实现AbstractEndpoint里面定义的Acceptor和AsyncTimeout两个内部类和一个Handler接口。Acceptor用于监听请求，AsyncTimeout用于检查异步Request的超时，Handler用于处理接收到的Socket，在内部调用Processor进行处理<h4 id="Container"><a href="#Container" class="headerlink" title="Container"></a>Container</h4></li>
+<li>Engine：引擎，用来管理多个站点，一个Service最多只能有一个Engine； </li>
+<li>Host：代表一个站点，也可以叫虚拟主机，通过配置Host就可以添加站点； </li>
+<li>Context：代表一个应用程序，对应着平时开发的一套程序，或者一个WEB-INF目录以及下面的web.xml文件； </li>
+<li>Wrapper：每一Wrapper封装着一个Servlet；</li>
+</ol>
 
       
     </div>
@@ -482,7 +418,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/数据库/" rel="tag"># 数据库</a>
+            <a href="/alex.github.io/tags/TOMCAT/" rel="tag"># TOMCAT</a>
           
         </div>
       
@@ -495,14 +431,18 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/alex.github.io/2018/09/27/2018-09-27-MySQL覆盖索引/" rel="next" title="MySQL覆盖索引">
+                <i class="fa fa-chevron-left"></i> MySQL覆盖索引
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/alex.github.io/2018/09/18/2018-09-13-记一次Logback集成SSM异常排查/" rel="prev" title="记一次Logback集成SSM异常排查">
-                记一次Logback集成SSM异常排查 <i class="fa fa-chevron-right"></i>
+              <a href="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一（Serial收集器）/" rel="prev" title="JVM垃圾收集器之一（Serial收集器）">
+                JVM垃圾收集器之一（Serial收集器） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -666,7 +606,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#查询Oracle语句的执行计划"><span class="nav-number">1.</span> <span class="nav-text">查询Oracle语句的执行计划</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析Oracle语句的执行计划"><span class="nav-number">2.</span> <span class="nav-text">分析Oracle语句的执行计划</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#什么样的执行计划是优秀的"><span class="nav-number">2.1.</span> <span class="nav-text">什么样的执行计划是优秀的</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#执行计划是否正确"><span class="nav-number">2.2.</span> <span class="nav-text">执行计划是否正确</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#基数"><span class="nav-number">2.2.1.</span> <span class="nav-text">基数</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#访问方法"><span class="nav-number">2.2.2.</span> <span class="nav-text">访问方法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#链接类型"><span class="nav-number">2.2.3.</span> <span class="nav-text">链接类型</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#分区修剪"><span class="nav-number">2.2.4.</span> <span class="nav-text">分区修剪</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#server"><span class="nav-number">1.</span> <span class="nav-text">server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#service"><span class="nav-number">2.</span> <span class="nav-text">service</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Connector"><span class="nav-number">3.</span> <span class="nav-text">Connector</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Container"><span class="nav-number">4.</span> <span class="nav-text">Container</span></a></li></ol></div>
             
 
           </div>
