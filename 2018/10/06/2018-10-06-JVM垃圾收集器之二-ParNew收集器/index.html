@@ -108,24 +108,25 @@
 
 
 
-  <meta name="description" content="JAVA之路">
-<meta name="keywords" content="JAVA,MySQL,Linux">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Alex">
-<meta property="og:url" content="https://alexrencn.github.io/archives/2018/page/2/index.html">
+  <meta name="description" content="ParNew收集器是多线程版本的Serial收集器，两者在配置参数，算法，甚至代码上都有很多重叠的地方，该回收器具有以下特点：  使用多线程进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对新生代，采用复制算法 可以和CMS收集器以及Serial Old（MSC）收集器结合使用 开启方式-XX:+UseParNewGC">
+<meta name="keywords" content="JVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM垃圾收集器之一（ParNew收集器）">
+<meta property="og:url" content="https://alexrencn.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二-ParNew收集器/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JAVA之路">
+<meta property="og:description" content="ParNew收集器是多线程版本的Serial收集器，两者在配置参数，算法，甚至代码上都有很多重叠的地方，该回收器具有以下特点：  使用多线程进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对新生代，采用复制算法 可以和CMS收集器以及Serial Old（MSC）收集器结合使用 开启方式-XX:+UseParNewGC">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-10-06T13:56:39.375Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Alex">
-<meta name="twitter:description" content="JAVA之路">
+<meta name="twitter:title" content="JVM垃圾收集器之一（ParNew收集器）">
+<meta name="twitter:description" content="ParNew收集器是多线程版本的Serial收集器，两者在配置参数，算法，甚至代码上都有很多重叠的地方，该回收器具有以下特点：  使用多线程进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对新生代，采用复制算法 可以和CMS收集器以及Serial Old（MSC）收集器结合使用 开启方式-XX:+UseParNewGC">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/archives/2018/page/2/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二-ParNew收集器/"/>
 
 
 
@@ -135,7 +136,7 @@
   };
 </script>
 
-  <title>归档 | Alex</title>
+  <title>JVM垃圾收集器之一（ParNew收集器） | Alex</title>
   
 
 
@@ -182,7 +183,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -231,7 +232,7 @@
         
         
           
-          <li class="menu-item menu-item-archives menu-item-active">
+          <li class="menu-item menu-item-archives">
     <a href="/alex.github.io/archives/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
   </li>
@@ -243,19 +244,6 @@
 
   
     
-
-    
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
 
   
 
@@ -281,417 +269,201 @@
           <div id="content" class="content">
             
 
-  
-  
-  
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+  <div id="posts" class="posts-expand">
+    
 
-      
-      <span class="archive-page-counter">
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二-ParNew收集器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
         
         
+          <h1 class="post-title" itemprop="name headline">JVM垃圾收集器之一（ParNew收集器）
+              
+            
+          </h1>
         
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-06 21:56:39" itemprop="dateCreated datePublished" datetime="2018-10-06T21:56:39+08:00">2018-10-06</time>
+            
+
+            
+          </span>
+
           
-        
-        嗯..! 目前共计 29 篇日志。 继续努力。
-      </span>
-      
 
-      
-
-        
-        
-        
-
-        
           
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
-          </div>
-        
-        
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二-ParNew收集器/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二-ParNew收集器/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
 
-        
+          
+          
+             <span id="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二-ParNew收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之一（ParNew收集器）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+          
 
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/" itemprop="url">
-              
-                <span itemprop="name">MySQL的聚簇索引</span>
-              
-            </a>
-        
-      </h2>
+          
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-09-18T23:07:23+08:00"
-              content="2018-09-18" >
-          09-18
-        </time>
-      </div>
+          
 
-    </header>
-  </article>
+        </div>
+      </header>
+    
 
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-08-27-1.8HashMap链表转红黑树/" itemprop="url">
-              
-                <span itemprop="name">1.8HashMap链表转红黑树</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-09-18T23:07:23+08:00"
-              content="2018-09-18" >
-          09-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-08-28-MySQL自增列优缺点/" itemprop="url">
-              
-                <span itemprop="name">MySQL自增列优缺点</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-09-18T23:07:23+08:00"
-              content="2018-09-18" >
-          09-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-08-22-支付系统设计/" itemprop="url">
-              
-                <span itemprop="name">支付系统的设计</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-09-18T23:07:23+08:00"
-              content="2018-09-18" >
-          09-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
+      
+        <a id="more"></a>
+<p>ParNew收集器是多线程版本的Serial收集器，两者在配置参数，算法，甚至代码上都有很多重叠的地方，该回收器具有以下特点：</p>
+<ol>
+<li>使用多线程进行垃圾回收</li>
+<li>进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成</li>
+<li>针对新生代，采用复制算法</li>
+<li>可以和CMS收集器以及Serial Old（MSC）收集器结合使用</li>
+<li>开启方式-XX:+UseParNewGC</li>
+</ol>
 
       
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-08-30-高并发概念描述/" itemprop="url">
-              
-                <span itemprop="name">高并发概念描述</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-09-18T23:07:23+08:00"
-              content="2018-09-18" >
-          09-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-08-21-MySQL哈希索引/" itemprop="url">
-              
-                <span itemprop="name">MySQL的哈希索引</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-09-18T23:02:19+08:00"
-              content="2018-09-18" >
-          09-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-08-20-微服务架构设计及解答/" itemprop="url">
-              
-                <span itemprop="name">微服务架构设计及解答</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-09-18T22:59:21+08:00"
-              content="2018-09-18" >
-          09-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-08-18-使用Redis可能会出现的系统异常及解决方案/" itemprop="url">
-              
-                <span itemprop="name">使用Redis可能会出现的系统异常及解决方案</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-09-18T22:59:21+08:00"
-              content="2018-09-18" >
-          09-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-08-18-常用JVM参数清单/" itemprop="url">
-              
-                <span itemprop="name">未命名</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-09-18T22:59:21+08:00"
-              content="2018-09-18" >
-          09-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-08-20-SringBoot自动装配过程分析/" itemprop="url">
-              
-                <span itemprop="name">SringBoot自动装配过程分析</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-09-18T22:59:21+08:00"
-              content="2018-09-18" >
-          09-18
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-      
-
     </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/alex.github.io/tags/JVM/" rel="tag"># JVM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/" rel="next" title="JVM垃圾收集器之一（Serial收集器）">
+                <i class="fa fa-chevron-left"></i> JVM垃圾收集器之一（Serial收集器）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/" rel="prev" title="JVM垃圾收集器之一（Serial Old 收集器）">
+                JVM垃圾收集器之一（Serial Old 收集器） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
   </div>
   
   
   
-
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/alex.github.io/archives/2018/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/alex.github.io/archives/2018/">1</a><span class="page-number current">2</span><a class="page-number" href="/alex.github.io/archives/2018/page/3/">3</a><a class="extend next" rel="next" href="/alex.github.io/archives/2018/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
+  </article>
 
 
+  </div>
 
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
 
         </div>
         
@@ -947,6 +719,10 @@
   
 
   
+  <script type="text/javascript" src="/alex.github.io/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/alex.github.io/js/src/post-details.js?v=6.4.1"></script>
+
+
 
   
 

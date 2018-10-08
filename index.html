@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二（ParNew收集器）/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之三-Parallel Scavenge并行回收收集器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -304,8 +304,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二（ParNew收集器）/" itemprop="url">
-                  JVM垃圾收集器之一（ParNew收集器）
+                <a class="post-title-link" href="/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之三-Parallel Scavenge并行回收收集器/" itemprop="url">
+                  JVM垃圾收集器之一（Parallel Scavenge（并行回收）收集器）
                 </a>
               
             
@@ -331,7 +331,7 @@
                 
               
 
-              <time title="创建时间：2018-10-06 21:56:39" itemprop="dateCreated datePublished" datetime="2018-10-06T21:56:39+08:00">2018-10-06</time>
+              <time title="创建时间：2018-10-08 21:01:29" itemprop="dateCreated datePublished" datetime="2018-10-08T21:01:29+08:00">2018-10-08</time>
             
 
             
@@ -346,8 +346,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二（ParNew收集器）/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二（ParNew收集器）/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之三-Parallel Scavenge并行回收收集器/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之三-Parallel Scavenge并行回收收集器/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -355,7 +355,7 @@
 
           
           
-             <span id="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二（ParNew收集器）/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之一（ParNew收集器）">
+             <span id="/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之三-Parallel Scavenge并行回收收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之一（Parallel Scavenge（并行回收）收集器）">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -389,14 +389,15 @@
         
           
           
-ParNew收集器是多线程版本的Serial收集器，两者在配置参数，算法，甚至代码上都有很多重叠的地方，该回收器具有以下特点：
+Parallel Scavenge（并行回收）收集器目的是为了达到一个预估的吞吐量，吞吐量=运行用户代码时间/（运行用户代码时间+垃圾收集时间）
 
 使用多线程进行垃圾回收
-进行垃圾收集的时候，其他工作线程必须暂停，直
+针对新生代，采用复制算法
+
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二（ParNew收集器）/#more" rel="contents">
+            <a class="btn" href="/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之三-Parallel Scavenge并行回收收集器/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -452,7 +453,7 @@ ParNew收集器是多线程版本的Serial收集器，两者在配置参数，�
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一（Serial收集器）/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -471,7 +472,341 @@ ParNew收集器是多线程版本的Serial收集器，两者在配置参数，�
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一（Serial收集器）/" itemprop="url">
+                <a class="post-title-link" href="/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/" itemprop="url">
+                  JVM垃圾收集器之一（Serial Old 收集器）
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-08 21:01:29" itemprop="dateCreated datePublished" datetime="2018-10-08T21:01:29+08:00">2018-10-08</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之一（Serial Old 收集器）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          
+Serial Old收集器和Serial收集器类似，采用单线程进行垃圾收集，并且在工作室需要stop the world，两者的区别再去前者针对老年代，后者针对新生代
+
+使用单线程进行垃圾回收
+进行
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二-ParNew收集器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二-ParNew收集器/" itemprop="url">
+                  JVM垃圾收集器之一（ParNew收集器）
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-06 21:56:39" itemprop="dateCreated datePublished" datetime="2018-10-06T21:56:39+08:00">2018-10-06</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二-ParNew收集器/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二-ParNew收集器/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二-ParNew收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之一（ParNew收集器）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          
+ParNew收集器是多线程版本的Serial收集器，两者在配置参数，算法，甚至代码上都有很多重叠的地方，该回收器具有以下特点：
+
+使用多线程进行垃圾回收
+进行垃圾收集的时候，其他工作线程必须暂停，直
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/alex.github.io/2018/10/06/2018-10-06-JVM垃圾收集器之二-ParNew收集器/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/" itemprop="url">
                   JVM垃圾收集器之一（Serial收集器）
                 </a>
               
@@ -513,8 +848,8 @@ ParNew收集器是多线程版本的Serial收集器，两者在配置参数，�
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一（Serial收集器）/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一（Serial收集器）/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -522,7 +857,7 @@ ParNew收集器是多线程版本的Serial收集器，两者在配置参数，�
 
           
           
-             <span id="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一（Serial收集器）/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之一（Serial收集器）">
+             <span id="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之一（Serial收集器）">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -564,7 +899,7 @@ Serial收集器是java最古老，最基础的垃圾回收器，该回收器具�
           ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一（Serial收集器）/#more" rel="contents">
+            <a class="btn" href="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1607,338 +1942,6 @@ Cache Aside模式
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alex Ren">
-      <meta itemprop="description" content="JAVA之路">
-      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/" itemprop="url">
-                  MySQL的聚簇索引
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-18 23:07:23" itemprop="dateCreated datePublished" datetime="2018-09-18T23:07:23+08:00">2018-09-18</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/alex.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/alex.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/" class="leancloud_visitors" data-flag-title="MySQL的聚簇索引">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数：</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          
-
-记录一个有意思的，平时没有显示使用过的索引
-
-什么是聚簇索引聚簇索引不是一种单独的索引类型，而是一种数据存储方式，以InnoDB为例，聚簇索引的数据结构为在同一个结构中保存Btree索引和数据行
-
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/18/2018-08-27-1.8HashMap链表转红黑树/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alex Ren">
-      <meta itemprop="description" content="JAVA之路">
-      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-08-27-1.8HashMap链表转红黑树/" itemprop="url">
-                  1.8HashMap链表转红黑树
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-18 23:07:23" itemprop="dateCreated datePublished" datetime="2018-09-18T23:07:23+08:00">2018-09-18</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/alex.github.io/2018/09/18/2018-08-27-1.8HashMap链表转红黑树/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/18/2018-08-27-1.8HashMap链表转红黑树/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/alex.github.io/2018/09/18/2018-08-27-1.8HashMap链表转红黑树/" class="leancloud_visitors" data-flag-title="1.8HashMap链表转红黑树">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数：</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          
-ConcurrentHashMap的底层数据为数组加链表，哈希冲突的值会放在链表中，如果哈希冲突严重，对ConcurrentHashMap的操作会变为对长链表的操作，为了解决效率问题，1.8会进行红
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/09/18/2018-08-27-1.8HashMap链表转红黑树/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1986,7 +1989,7 @@ ConcurrentHashMap的底层数据为数组加链表，哈希冲突的值会放在
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-count">29</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
