@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/alex.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/alex.github.io/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/alex.github.io/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/alex.github.io/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/alex.github.io/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/alex.github.io/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/alex.github.io/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言近期在工作中需要自己搭建公司项目的ELK系统，ELK 是 elastic 公司旗下三款产品 ElasticSearch 、Logstash 、Kibana 的首字母组合。在下文中会简单介绍其作用。ELK方案主要分文两种，区别在于是否使用中间件来接收日志（redis，kafka），方案大体顺序为  Logstash 中间件 ElasticSearch Kibana本次选取的策略不包含中间件，原">
+<meta name="keywords" content="JVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ELK搭建以及项目整合记录">
+<meta property="og:url" content="https://alexrencn.github.io/2018/10/10/2018-10-10-ELK搭建以及项目整合记录/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="前言近期在工作中需要自己搭建公司项目的ELK系统，ELK 是 elastic 公司旗下三款产品 ElasticSearch 、Logstash 、Kibana 的首字母组合。在下文中会简单介绍其作用。ELK方案主要分文两种，区别在于是否使用中间件来接收日志（redis，kafka），方案大体顺序为  Logstash 中间件 ElasticSearch Kibana本次选取的策略不包含中间件，原">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-10-10T13:11:28.165Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ELK搭建以及项目整合记录">
+<meta name="twitter:description" content="前言近期在工作中需要自己搭建公司项目的ELK系统，ELK 是 elastic 公司旗下三款产品 ElasticSearch 、Logstash 、Kibana 的首字母组合。在下文中会简单介绍其作用。ELK方案主要分文两种，区别在于是否使用中间件来接收日志（redis，kafka），方案大体顺序为  Logstash 中间件 ElasticSearch Kibana本次选取的策略不包含中间件，原">
+
+
+
+
+
+
+  <link rel="canonical" href="https://alexrencn.github.io/2018/10/10/2018-10-10-ELK搭建以及项目整合记录/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>ELK搭建以及项目整合记录 | Alex</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/alex.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alex</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">可达鸭眉头一紧，发现编程并不简单</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/alex.github.io/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/alex.github.io/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/10/2018-10-10-ELK搭建以及项目整合记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ELK搭建以及项目整合记录
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-10 21:11:28" itemprop="dateCreated datePublished" datetime="2018-10-10T21:11:28+08:00">2018-10-10</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2018/10/10/2018-10-10-ELK搭建以及项目整合记录/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/10/2018-10-10-ELK搭建以及项目整合记录/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2018/10/10/2018-10-10-ELK搭建以及项目整合记录/" class="leancloud_visitors" data-flag-title="ELK搭建以及项目整合记录">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <a id="more"></a>
+<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>近期在工作中需要自己搭建公司项目的ELK系统，ELK 是 elastic 公司旗下三款产品 ElasticSearch 、Logstash 、Kibana 的首字母组合。在下文中会简单介绍其作用。<br><br>ELK方案主要分文两种，区别在于是否使用中间件来接收日志（redis，kafka），方案大体顺序为</p>
+<ol>
+<li>Logstash</li>
+<li>中间件</li>
+<li>ElasticSearch</li>
+<li>Kibana<br>本次选取的策略不包含中间件，原因主要有以下几点：</li>
+<li>集群规模不大</li>
+<li>日志量不大</li>
+<li>日志允许在ELK中丢失</li>
+<li>日志依然持久化到磁盘</li>
+<li>更简洁，容易维护，出错率更低</li>
+<li>各个部分相互比较独立，集群扩大后修改起来较为方便<br>下面介绍下各个组件的安装过程及整合项目的要素<h4 id="jdk环境"><a href="#jdk环境" class="headerlink" title="jdk环境"></a>jdk环境</h4>作用：为其他组件提供依赖运行的java环境<br><br>安装说明：yum -y install java-1.8.0<br><br>检查环境：java -version<h4 id="Logstash"><a href="#Logstash" class="headerlink" title="Logstash"></a>Logstash</h4>作用：接收收集到的日志并发送给ElasticSearch<br><br>安装说明：wget <a href="https://artifacts.elastic.co/downloads/logstash/logstash-6.4.0.tar.gz" target="_blank" rel="noopener">https://artifacts.elastic.co/downloads/logstash/logstash-6.4.0.tar.gz</a> –no-check-certificate<br><br>解压说明：tar zxf logstash-6.4.0.tar.gz -C /usr/local/<br><br>配置文件：vim /etc/logrotate.conf<br><br>检查配置：/usr/local/logstash-1.5.4/bin/logstash -f /usr/local/logstash-1.5.4/bin/logstash.conf -t<br><br>示例配置文件，从4569端口监听数据并简单格式化发送给ElasticSearch<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">input &#123;</span><br><span class="line">  	tcp &#123;</span><br><span class="line">	    	port =&gt; <span class="number">4569</span></span><br><span class="line">	    	codec =&gt; <span class="string">"json"</span></span><br><span class="line">  	&#125;</span><br><span class="line">&#125;</span><br><span class="line">output &#123;</span><br><span class="line">    elasticsearch &#123;</span><br><span class="line">	      hosts =&gt; [<span class="string">"11.111.11.11:9200"</span>]</span><br><span class="line">	      codec =&gt; <span class="string">"json"</span></span><br><span class="line">	      action =&gt; <span class="string">"index"</span></span><br><span class="line">	      index =&gt; <span class="string">"%&#123;appname&#125;-%&#123;+YYYY.MM.dd&#125;"</span></span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h4 id="Elasticsearch"><a href="#Elasticsearch" class="headerlink" title="Elasticsearch"></a>Elasticsearch</h4><p>作用：存储日志，提供给开发者进行分析<br><br>安装说明：wget <a href="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.0.tar.gz" target="_blank" rel="noopener">https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.0.tar.gz</a> –no-check-certificate<br><br>解压说明：tar zxf elasticsearch-6.4.0.tar.gz -C /usr/local/<br><br>配置文件：需要补充vim /usr/local/elasticsearch-1.7.2/config/elasticsearch.yml<br><br>环境变量：为使用的用户修改权限<br><br>vim /etc/security/limits.conf<br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">username soft nofile 65536</span><br><span class="line">username hard nofile 131072</span><br><span class="line">username soft nproc 2048</span><br><span class="line">username hard nproc 4096</span><br></pre></td></tr></table></figure></p>
+<p>验收：ulimit –Hn  结果131072<br><br>vim /etc/security/limits.d/90-nproc.conf<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vm.max_map_count= 262144</span><br></pre></td></tr></table></figure></p>
+<p>sysctl -p<br><br>验收sysctl -a|grep vm.max_map_count结果262144<br>示例配置文件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br></pre></td><td class="code"><pre><span class="line">##################### Elasticsearch Configuration Example #####################</span><br><span class="line"></span><br><span class="line"># This file contains an overview of various configuration settings,</span><br><span class="line"># targeted at operations staff. Application developers should</span><br><span class="line"># consult the guide at &lt;http://elasticsearch.org/guide&gt;.</span><br><span class="line">#</span><br><span class="line"># The installation procedure is covered at</span><br><span class="line"># &lt;http://elasticsearch.org/guide/en/elasticsearch/reference/current/setup.html&gt;.</span><br><span class="line">#</span><br><span class="line"># Elasticsearch comes with reasonable defaults for most settings,</span><br><span class="line"># so you can try it out without bothering with configuration.</span><br><span class="line">#</span><br><span class="line"># Most of the time, these defaults are just fine for running a production</span><br><span class="line"># cluster. If you&apos;re fine-tuning your cluster, or wondering about the</span><br><span class="line"># effect of certain configuration option, please _do ask_ on the</span><br><span class="line"># mailing list or IRC channel [http://elasticsearch.org/community].</span><br><span class="line"></span><br><span class="line"># Any element in the configuration can be replaced with environment variables</span><br><span class="line"># by placing them in $&#123;...&#125; notation. For example:</span><br><span class="line">#</span><br><span class="line">#node.rack: $&#123;RACK_ENV_VAR&#125;</span><br><span class="line"></span><br><span class="line"># For information on supported formats and syntax for the config file, see</span><br><span class="line"># &lt;http://elasticsearch.org/guide/en/elasticsearch/reference/current/setup-configuration.html&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">################################### Cluster ###################################</span><br><span class="line"></span><br><span class="line"># Cluster name identifies your cluster for auto-discovery. If you&apos;re running</span><br><span class="line"># multiple clusters on the same network, make sure you&apos;re using unique names.</span><br><span class="line">#</span><br><span class="line">#cluster.name: elasticsearch</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#################################### Node #####################################</span><br><span class="line"></span><br><span class="line"># Node names are generated dynamically on startup, so you&apos;re relieved</span><br><span class="line"># from configuring them manually. You can tie this node to a specific name:</span><br><span class="line">#</span><br><span class="line">#node.name: &quot;Franz Kafka&quot;</span><br><span class="line"></span><br><span class="line"># Every node can be configured to allow or deny being eligible as the master,</span><br><span class="line"># and to allow or deny to store the data.</span><br><span class="line">#</span><br><span class="line"># Allow this node to be eligible as a master node (enabled by default):</span><br><span class="line">#</span><br><span class="line">#node.master: true</span><br><span class="line">#</span><br><span class="line"># Allow this node to store data (enabled by default):</span><br><span class="line">#</span><br><span class="line">#node.data: true</span><br><span class="line"></span><br><span class="line"># You can exploit these settings to design advanced cluster topologies.</span><br><span class="line">#</span><br><span class="line"># 1. You want this node to never become a master node, only to hold data.</span><br><span class="line">#    This will be the &quot;workhorse&quot; of your cluster.</span><br><span class="line">#</span><br><span class="line">#node.master: false</span><br><span class="line">#node.data: true</span><br><span class="line">#</span><br><span class="line"># 2. You want this node to only serve as a master: to not store any data and</span><br><span class="line">#    to have free resources. This will be the &quot;coordinator&quot; of your cluster.</span><br><span class="line">#</span><br><span class="line">#node.master: true</span><br><span class="line">#node.data: false</span><br><span class="line">#</span><br><span class="line"># 3. You want this node to be neither master nor data node, but</span><br><span class="line">#    to act as a &quot;search load balancer&quot; (fetching data from nodes,</span><br><span class="line">#    aggregating results, etc.)</span><br><span class="line">#</span><br><span class="line">#node.master: false</span><br><span class="line">#node.data: false</span><br><span class="line"></span><br><span class="line"># Use the Cluster Health API [http://localhost:9200/_cluster/health], the</span><br><span class="line"># Node Info API [http://localhost:9200/_nodes] or GUI tools</span><br><span class="line"># such as &lt;http://www.elasticsearch.org/overview/marvel/&gt;,</span><br><span class="line"># &lt;http://github.com/karmi/elasticsearch-paramedic&gt;,</span><br><span class="line"># &lt;http://github.com/lukas-vlcek/bigdesk&gt; and</span><br><span class="line"># &lt;http://mobz.github.com/elasticsearch-head&gt; to inspect the cluster state.</span><br><span class="line"></span><br><span class="line"># A node can have generic attributes associated with it, which can later be used</span><br><span class="line"># for customized shard allocation filtering, or allocation awareness. An attribute</span><br><span class="line"># is a simple key value pair, similar to node.key: value, here is an example:</span><br><span class="line">#</span><br><span class="line">#node.rack: rack314</span><br><span class="line"></span><br><span class="line"># By default, multiple nodes are allowed to start from the same installation location</span><br><span class="line"># to disable it, set the following:</span><br><span class="line">#node.max_local_storage_nodes: 1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#################################### Index ####################################</span><br><span class="line"></span><br><span class="line"># You can set a number of options (such as shard/replica options, mapping</span><br><span class="line"># or analyzer definitions, translog settings, ...) for indices globally,</span><br><span class="line"># in this file.</span><br><span class="line">#</span><br><span class="line"># Note, that it makes more sense to configure index settings specifically for</span><br><span class="line"># a certain index, either when creating it or by using the index templates API.</span><br><span class="line">#</span><br><span class="line"># See &lt;http://elasticsearch.org/guide/en/elasticsearch/reference/current/index-modules.html&gt; and</span><br><span class="line"># &lt;http://elasticsearch.org/guide/en/elasticsearch/reference/current/indices-create-index.html&gt;</span><br><span class="line"># for more information.</span><br><span class="line"></span><br><span class="line"># Set the number of shards (splits) of an index (5 by default):</span><br><span class="line">#</span><br><span class="line">#index.number_of_shards: 5</span><br><span class="line"></span><br><span class="line"># Set the number of replicas (additional copies) of an index (1 by default):</span><br><span class="line">#</span><br><span class="line">#index.number_of_replicas: 1</span><br><span class="line"></span><br><span class="line"># Note, that for development on a local machine, with small indices, it usually</span><br><span class="line"># makes sense to &quot;disable&quot; the distributed features:</span><br><span class="line">#</span><br><span class="line">#index.number_of_shards: 1</span><br><span class="line">#index.number_of_replicas: 0</span><br><span class="line"></span><br><span class="line"># These settings directly affect the performance of index and search operations</span><br><span class="line"># in your cluster. Assuming you have enough machines to hold shards and</span><br><span class="line"># replicas, the rule of thumb is:</span><br><span class="line">#</span><br><span class="line"># 1. Having more *shards* enhances the _indexing_ performance and allows to</span><br><span class="line">#    _distribute_ a big index across machines.</span><br><span class="line"># 2. Having more *replicas* enhances the _search_ performance and improves the</span><br><span class="line">#    cluster _availability_.</span><br><span class="line">#</span><br><span class="line"># The &quot;number_of_shards&quot; is a one-time setting for an index.</span><br><span class="line">#</span><br><span class="line"># The &quot;number_of_replicas&quot; can be increased or decreased anytime,</span><br><span class="line"># by using the Index Update Settings API.</span><br><span class="line">#</span><br><span class="line"># Elasticsearch takes care about load balancing, relocating, gathering the</span><br><span class="line"># results from nodes, etc. Experiment with different settings to fine-tune</span><br><span class="line"># your setup.</span><br><span class="line"></span><br><span class="line"># Use the Index Status API (&lt;http://localhost:9200/A/_status&gt;) to inspect</span><br><span class="line"># the index status.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#################################### Paths ####################################</span><br><span class="line"></span><br><span class="line"># Path to directory containing configuration (this file and logging.yml):</span><br><span class="line">#</span><br><span class="line">#path.conf: /path/to/conf</span><br><span class="line"></span><br><span class="line"># Path to directory where to store index data allocated for this node.</span><br><span class="line">#</span><br><span class="line">#path.data: /path/to/data</span><br><span class="line">#</span><br><span class="line"># Can optionally include more than one location, causing data to be striped across</span><br><span class="line"># the locations (a la RAID 0) on a file level, favouring locations with most free</span><br><span class="line"># space on creation. For example:</span><br><span class="line">#</span><br><span class="line">#path.data: /path/to/data1,/path/to/data2</span><br><span class="line"></span><br><span class="line"># Path to temporary files:</span><br><span class="line">#</span><br><span class="line">#path.work: /path/to/work</span><br><span class="line"></span><br><span class="line"># Path to log files:</span><br><span class="line">#</span><br><span class="line">#path.logs: /path/to/logs</span><br><span class="line"></span><br><span class="line"># Path to where plugins are installed:</span><br><span class="line">#</span><br><span class="line">#path.plugins: /path/to/plugins</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#################################### Plugin ###################################</span><br><span class="line"></span><br><span class="line"># If a plugin listed here is not installed for current node, the node will not start.</span><br><span class="line">#</span><br><span class="line">#plugin.mandatory: mapper-attachments,lang-groovy</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">################################### Memory ####################################</span><br><span class="line"></span><br><span class="line"># Elasticsearch performs poorly when JVM starts swapping: you should ensure that</span><br><span class="line"># it _never_ swaps.</span><br><span class="line">#</span><br><span class="line"># Set this property to true to lock the memory:</span><br><span class="line">#</span><br><span class="line">#bootstrap.mlockall: true</span><br><span class="line"></span><br><span class="line"># Make sure that the ES_MIN_MEM and ES_MAX_MEM environment variables are set</span><br><span class="line"># to the same value, and that the machine has enough memory to allocate</span><br><span class="line"># for Elasticsearch, leaving enough memory for the operating system itself.</span><br><span class="line">#</span><br><span class="line"># You should also make sure that the Elasticsearch process is allowed to lock</span><br><span class="line"># the memory, eg. by using `ulimit -l unlimited`.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">############################## Network And HTTP ###############################</span><br><span class="line"></span><br><span class="line"># Elasticsearch, by default, binds itself to the 0.0.0.0 address, and listens</span><br><span class="line"># on port [9200-9300] for HTTP traffic and on port [9300-9400] for node-to-node</span><br><span class="line"># communication. (the range means that if the port is busy, it will automatically</span><br><span class="line"># try the next port).</span><br><span class="line"></span><br><span class="line"># Set the bind address specifically (IPv4 or IPv6):</span><br><span class="line">#</span><br><span class="line">#network.bind_host: 192.168.0.1</span><br><span class="line"></span><br><span class="line"># Set the address other nodes will use to communicate with this node. If not</span><br><span class="line"># set, it is automatically derived. It must point to an actual IP address.</span><br><span class="line">#</span><br><span class="line">#network.publish_host: 192.168.0.1</span><br><span class="line"></span><br><span class="line"># Set both &apos;bind_host&apos; and &apos;publish_host&apos;:</span><br><span class="line">#</span><br><span class="line">network.host: 11.111.11.11 </span><br><span class="line"></span><br><span class="line"># Set a custom port for the node to node communication (9300 by default):</span><br><span class="line">#</span><br><span class="line">#transport.tcp.port: 9300</span><br><span class="line"></span><br><span class="line"># Enable compression for all communication between nodes (disabled by default):</span><br><span class="line">#</span><br><span class="line">#transport.tcp.compress: true</span><br><span class="line"></span><br><span class="line"># Set a custom port to listen for HTTP traffic:</span><br><span class="line">#</span><br><span class="line">#http.port: 9200</span><br><span class="line"></span><br><span class="line"># Set a custom allowed content length:</span><br><span class="line">#</span><br><span class="line">#http.max_content_length: 100mb</span><br><span class="line"></span><br><span class="line"># Disable HTTP completely:</span><br><span class="line">#</span><br><span class="line">#http.enabled: false</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">################################### Gateway ###################################</span><br><span class="line"></span><br><span class="line"># The gateway allows for persisting the cluster state between full cluster</span><br><span class="line"># restarts. Every change to the state (such as adding an index) will be stored</span><br><span class="line"># in the gateway, and when the cluster starts up for the first time,</span><br><span class="line"># it will read its state from the gateway.</span><br><span class="line"></span><br><span class="line"># There are several types of gateway implementations. For more information, see</span><br><span class="line"># &lt;http://elasticsearch.org/guide/en/elasticsearch/reference/current/modules-gateway.html&gt;.</span><br><span class="line"></span><br><span class="line"># The default gateway type is the &quot;local&quot; gateway (recommended):</span><br><span class="line">#</span><br><span class="line">#gateway.type: local</span><br><span class="line"></span><br><span class="line"># Settings below control how and when to start the initial recovery process on</span><br><span class="line"># a full cluster restart (to reuse as much local data as possible when using shared</span><br><span class="line"># gateway).</span><br><span class="line"></span><br><span class="line"># Allow recovery process after N nodes in a cluster are up:</span><br><span class="line">#</span><br><span class="line">#gateway.recover_after_nodes: 1</span><br><span class="line"></span><br><span class="line"># Set the timeout to initiate the recovery process, once the N nodes</span><br><span class="line"># from previous setting are up (accepts time value):</span><br><span class="line">#</span><br><span class="line">#gateway.recover_after_time: 5m</span><br><span class="line"></span><br><span class="line"># Set how many nodes are expected in this cluster. Once these N nodes</span><br><span class="line"># are up (and recover_after_nodes is met), begin recovery process immediately</span><br><span class="line"># (without waiting for recover_after_time to expire):</span><br><span class="line">#</span><br><span class="line">#gateway.expected_nodes: 2</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">############################# Recovery Throttling #############################</span><br><span class="line"></span><br><span class="line"># These settings allow to control the process of shards allocation between</span><br><span class="line"># nodes during initial recovery, replica allocation, rebalancing,</span><br><span class="line"># or when adding and removing nodes.</span><br><span class="line"></span><br><span class="line"># Set the number of concurrent recoveries happening on a node:</span><br><span class="line">#</span><br><span class="line"># 1. During the initial recovery</span><br><span class="line">#</span><br><span class="line">#cluster.routing.allocation.node_initial_primaries_recoveries: 4</span><br><span class="line">#</span><br><span class="line"># 2. During adding/removing nodes, rebalancing, etc</span><br><span class="line">#</span><br><span class="line">#cluster.routing.allocation.node_concurrent_recoveries: 2</span><br><span class="line"></span><br><span class="line"># Set to throttle throughput when recovering (eg. 100mb, by default 20mb):</span><br><span class="line">#</span><br><span class="line">#indices.recovery.max_bytes_per_sec: 20mb</span><br><span class="line"></span><br><span class="line"># Set to limit the number of open concurrent streams when</span><br><span class="line"># recovering a shard from a peer:</span><br><span class="line">#</span><br><span class="line">#indices.recovery.concurrent_streams: 5</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">################################## Discovery ##################################</span><br><span class="line"></span><br><span class="line"># Discovery infrastructure ensures nodes can be found within a cluster</span><br><span class="line"># and master node is elected. Multicast discovery is the default.</span><br><span class="line"></span><br><span class="line"># Set to ensure a node sees N other master eligible nodes to be considered</span><br><span class="line"># operational within the cluster. This should be set to a quorum/majority of </span><br><span class="line"># the master-eligible nodes in the cluster.</span><br><span class="line">#</span><br><span class="line">#discovery.zen.minimum_master_nodes: 1</span><br><span class="line"></span><br><span class="line"># Set the time to wait for ping responses from other nodes when discovering.</span><br><span class="line"># Set this option to a higher value on a slow or congested network</span><br><span class="line"># to minimize discovery failures:</span><br><span class="line">#</span><br><span class="line">#discovery.zen.ping.timeout: 3s</span><br><span class="line"></span><br><span class="line"># For more information, see</span><br><span class="line"># &lt;http://elasticsearch.org/guide/en/elasticsearch/reference/current/modules-discovery-zen.html&gt;</span><br><span class="line"></span><br><span class="line"># Unicast discovery allows to explicitly control which nodes will be used</span><br><span class="line"># to discover the cluster. It can be used when multicast is not present,</span><br><span class="line"># or to restrict the cluster communication-wise.</span><br><span class="line">#</span><br><span class="line"># 1. Disable multicast discovery (enabled by default):</span><br><span class="line">#</span><br><span class="line">discovery.zen.ping.multicast.enabled: false</span><br><span class="line">#</span><br><span class="line"># 2. Configure an initial list of master nodes in the cluster</span><br><span class="line">#    to perform discovery when new nodes (master or data) are started:</span><br><span class="line">#</span><br><span class="line">#discovery.zen.ping.unicast.hosts: [&quot;host1&quot;, &quot;host2:port&quot;]</span><br><span class="line"></span><br><span class="line"># EC2 discovery allows to use AWS EC2 API in order to perform discovery.</span><br><span class="line">#</span><br><span class="line"># You have to install the cloud-aws plugin for enabling the EC2 discovery.</span><br><span class="line">#</span><br><span class="line"># For more information, see</span><br><span class="line"># &lt;http://elasticsearch.org/guide/en/elasticsearch/reference/current/modules-discovery-ec2.html&gt;</span><br><span class="line">#</span><br><span class="line"># See &lt;http://elasticsearch.org/tutorials/elasticsearch-on-ec2/&gt;</span><br><span class="line"># for a step-by-step tutorial.</span><br><span class="line"></span><br><span class="line"># GCE discovery allows to use Google Compute Engine API in order to perform discovery.</span><br><span class="line">#</span><br><span class="line"># You have to install the cloud-gce plugin for enabling the GCE discovery.</span><br><span class="line">#</span><br><span class="line"># For more information, see &lt;https://github.com/elasticsearch/elasticsearch-cloud-gce&gt;.</span><br><span class="line"></span><br><span class="line"># Azure discovery allows to use Azure API in order to perform discovery.</span><br><span class="line">#</span><br><span class="line"># You have to install the cloud-azure plugin for enabling the Azure discovery.</span><br><span class="line">#</span><br><span class="line"># For more information, see &lt;https://github.com/elasticsearch/elasticsearch-cloud-azure&gt;.</span><br><span class="line"></span><br><span class="line">################################## Slow Log ##################################</span><br><span class="line"></span><br><span class="line"># Shard level query and fetch threshold logging.</span><br><span class="line"></span><br><span class="line">#index.search.slowlog.threshold.query.warn: 10s</span><br><span class="line">#index.search.slowlog.threshold.query.info: 5s</span><br><span class="line">#index.search.slowlog.threshold.query.debug: 2s</span><br><span class="line">#index.search.slowlog.threshold.query.trace: 500ms</span><br><span class="line"></span><br><span class="line">#index.search.slowlog.threshold.fetch.warn: 1s</span><br><span class="line">#index.search.slowlog.threshold.fetch.info: 800ms</span><br><span class="line">#index.search.slowlog.threshold.fetch.debug: 500ms</span><br><span class="line">#index.search.slowlog.threshold.fetch.trace: 200ms</span><br><span class="line"></span><br><span class="line">#index.indexing.slowlog.threshold.index.warn: 10s</span><br><span class="line">#index.indexing.slowlog.threshold.index.info: 5s</span><br><span class="line">#index.indexing.slowlog.threshold.index.debug: 2s</span><br><span class="line">#index.indexing.slowlog.threshold.index.trace: 500ms</span><br><span class="line"></span><br><span class="line">################################## GC Logging ################################</span><br><span class="line"></span><br><span class="line">#monitor.jvm.gc.young.warn: 1000ms</span><br><span class="line">#monitor.jvm.gc.young.info: 700ms</span><br><span class="line">#monitor.jvm.gc.young.debug: 400ms</span><br><span class="line"></span><br><span class="line">#monitor.jvm.gc.old.warn: 10s</span><br><span class="line">#monitor.jvm.gc.old.info: 5s</span><br><span class="line">#monitor.jvm.gc.old.debug: 2s</span><br><span class="line"></span><br><span class="line">################################## Security ################################</span><br><span class="line"></span><br><span class="line"># Uncomment if you want to enable JSONP as a valid return transport on the</span><br><span class="line"># http server. With this enabled, it may pose a security risk, so disabling</span><br><span class="line"># it unless you need it is recommended (it is disabled by default).</span><br><span class="line">#</span><br><span class="line">#http.jsonp.enable: true </span><br><span class="line">http.cors.allow-origin: &quot;/.*/&quot;</span><br><span class="line">http.cors.enabled: true</span><br></pre></td></tr></table></figure></p>
+<h4 id="Kinaba"><a href="#Kinaba" class="headerlink" title="Kinaba"></a>Kinaba</h4><p>作用：作为日志分析的可视化界面<br><br>安装说明：wget <a href="https://artifacts.elastic.co/downloads/kibana/kibana-6.3.2-linux-x86_64.tar.gz" target="_blank" rel="noopener">https://artifacts.elastic.co/downloads/kibana/kibana-6.3.2-linux-x86_64.tar.gz</a> –no-check-certificate<br><br>解压说明：tar zxf  kibana-6.3.2-linux-x86_64.tar.gz -C /usr/local<br><br>修改配置：vim /usr/local/kibana-6.3.2-linux-x86_64/config/kibana.yml<br><br>启动说明：nohup /usr/local/kibana-6.3.2-linux-x86_64/bin/kibana &amp; <br><br>示例配置文件:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"># Kibana is served by a back end server. This setting specifies the port to use.</span><br><span class="line">server.port: 5601</span><br><span class="line"></span><br><span class="line"># Specifies the address to which the Kibana server will bind. IP addresses and host names are both valid values.</span><br><span class="line"># The default is &apos;localhost&apos;, which usually means remote machines will not be able to connect.</span><br><span class="line"># To allow connections from remote users, set this parameter to a non-loopback address.</span><br><span class="line">server.host: &quot;11.111.11.11&quot;</span><br><span class="line"></span><br><span class="line"># Enables you to specify a path to mount Kibana at if you are running behind a proxy.</span><br><span class="line"># Use the `server.rewriteBasePath` setting to tell Kibana if it should remove the basePath</span><br><span class="line"># from requests it receives, and to prevent a deprecation warning at startup.</span><br><span class="line"># This setting cannot end in a slash.</span><br><span class="line">#server.basePath: &quot;&quot;</span><br><span class="line"></span><br><span class="line"># Specifies whether Kibana should rewrite requests that are prefixed with</span><br><span class="line"># `server.basePath` or require that they are rewritten by your reverse proxy.</span><br><span class="line"># This setting was effectively always `false` before Kibana 6.3 and will</span><br><span class="line"># default to `true` starting in Kibana 7.0.</span><br><span class="line">#server.rewriteBasePath: false</span><br><span class="line"></span><br><span class="line"># The maximum payload size in bytes for incoming server requests.</span><br><span class="line">#server.maxPayloadBytes: 1048576</span><br><span class="line"></span><br><span class="line"># The Kibana server&apos;s name.  This is used for display purposes.</span><br><span class="line">#server.name: &quot;your-hostname&quot;</span><br><span class="line"></span><br><span class="line"># The URL of the Elasticsearch instance to use for all your queries.</span><br><span class="line">elasticsearch.url: &quot;http://11.111.11.11:9200&quot;</span><br><span class="line"></span><br><span class="line"># When this setting&apos;s value is true Kibana uses the hostname specified in the server.host</span><br><span class="line"># setting. When the value of this setting is false, Kibana uses the hostname of the host</span><br><span class="line"># that connects to this Kibana instance.</span><br><span class="line">#elasticsearch.preserveHost: true</span><br><span class="line"></span><br><span class="line"># Kibana uses an index in Elasticsearch to store saved searches, visualizations and</span><br><span class="line"># dashboards. Kibana creates a new index if the index doesn&apos;t already exist.</span><br><span class="line">#kibana.index: &quot;.kibana&quot;</span><br><span class="line"></span><br><span class="line"># The default application to load.</span><br><span class="line">#kibana.defaultAppId: &quot;home&quot;</span><br><span class="line"></span><br><span class="line"># If your Elasticsearch is protected with basic authentication, these settings provide</span><br><span class="line"># the username and password that the Kibana server uses to perform maintenance on the Kibana</span><br><span class="line"># index at startup. Your Kibana users still need to authenticate with Elasticsearch, which</span><br><span class="line"># is proxied through the Kibana server.</span><br><span class="line">#elasticsearch.username: &quot;user&quot;</span><br><span class="line">#elasticsearch.password: &quot;pass&quot;</span><br><span class="line"></span><br><span class="line"># Enables SSL and paths to the PEM-format SSL certificate and SSL key files, respectively.</span><br><span class="line"># These settings enable SSL for outgoing requests from the Kibana server to the browser.</span><br><span class="line">#server.ssl.enabled: false</span><br><span class="line">#server.ssl.certificate: /path/to/your/server.crt</span><br><span class="line">#server.ssl.key: /path/to/your/server.key</span><br><span class="line"></span><br><span class="line"># Optional settings that provide the paths to the PEM-format SSL certificate and key files.</span><br><span class="line"># These files validate that your Elasticsearch backend uses the same key files.</span><br><span class="line">#elasticsearch.ssl.certificate: /path/to/your/client.crt</span><br><span class="line">#elasticsearch.ssl.key: /path/to/your/client.key</span><br><span class="line"></span><br><span class="line"># Optional setting that enables you to specify a path to the PEM file for the certificate</span><br><span class="line"># authority for your Elasticsearch instance.</span><br><span class="line">#elasticsearch.ssl.certificateAuthorities: [ &quot;/path/to/your/CA.pem&quot; ]</span><br><span class="line"></span><br><span class="line"># To disregard the validity of SSL certificates, change this setting&apos;s value to &apos;none&apos;.</span><br><span class="line">#elasticsearch.ssl.verificationMode: full</span><br><span class="line"></span><br><span class="line"># Time in milliseconds to wait for Elasticsearch to respond to pings. Defaults to the value of</span><br><span class="line"># the elasticsearch.requestTimeout setting.</span><br><span class="line">#elasticsearch.pingTimeout: 1500</span><br><span class="line"></span><br><span class="line"># Time in milliseconds to wait for responses from the back end or Elasticsearch. This value</span><br><span class="line"># must be a positive integer.</span><br><span class="line">#elasticsearch.requestTimeout: 30000</span><br><span class="line"></span><br><span class="line"># List of Kibana client-side headers to send to Elasticsearch. To send *no* client-side</span><br><span class="line"># headers, set this value to [] (an empty list).</span><br><span class="line">#elasticsearch.requestHeadersWhitelist: [ authorization ]</span><br><span class="line"></span><br><span class="line"># Header names and values that are sent to Elasticsearch. Any custom headers cannot be overwritten</span><br><span class="line"># by client-side headers, regardless of the elasticsearch.requestHeadersWhitelist configuration.</span><br><span class="line">#elasticsearch.customHeaders: &#123;&#125;</span><br><span class="line"></span><br><span class="line"># Time in milliseconds for Elasticsearch to wait for responses from shards. Set to 0 to disable.</span><br><span class="line">#elasticsearch.shardTimeout: 30000</span><br><span class="line"></span><br><span class="line"># Time in milliseconds to wait for Elasticsearch at Kibana startup before retrying.</span><br><span class="line">#elasticsearch.startupTimeout: 5000</span><br><span class="line"></span><br><span class="line"># Logs queries sent to Elasticsearch. Requires logging.verbose set to true.</span><br><span class="line">#elasticsearch.logQueries: false</span><br><span class="line"></span><br><span class="line"># Specifies the path where Kibana creates the process ID file.</span><br><span class="line">#pid.file: /var/run/kibana.pid</span><br><span class="line"></span><br><span class="line"># Enables you specify a file where Kibana stores log output.</span><br><span class="line">#logging.dest: stdout</span><br><span class="line"></span><br><span class="line"># Set the value of this setting to true to suppress all logging output.</span><br><span class="line">#logging.silent: false</span><br><span class="line"></span><br><span class="line"># Set the value of this setting to true to suppress all logging output other than error messages.</span><br><span class="line">#logging.quiet: false</span><br><span class="line"></span><br><span class="line"># Set the value of this setting to true to log all events, including system usage information</span><br><span class="line"># and all requests.</span><br><span class="line">#logging.verbose: false</span><br><span class="line"></span><br><span class="line"># Set the interval in milliseconds to sample system and process performance</span><br><span class="line"># metrics. Minimum is 100ms. Defaults to 5000.</span><br><span class="line">#ops.interval: 5000</span><br><span class="line"></span><br><span class="line"># The default locale. This locale can be used in certain circumstances to substitute any missing</span><br><span class="line"># translations.</span><br><span class="line">#i18n.defaultLocale: &quot;en&quot;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Logback"><a href="#Logback" class="headerlink" title="Logback"></a>Logback</h4><p>作用:与应用程序结合，把指定日志以多种指定方式输出到指定位置<br><br>整合过程主要考验开发人员对maven和spring上下文的理解，对于稍有经验的程序员都不难，项目中只允许一个slf4j的具体实现，只需要在启动时注意加载的slf4j配置是不是自己添加的即可，如果遇到activemq-all这样在maven依赖中看不到引用但是实际上打包slf4j配置的模块，就直接打开他的pom文件把其他引用复制出来即可,以下两种整合方式都实现了动态配置，结合上述的Logstash配置文件即可做到按服务名进行区分</p>
+<h5 id="SpringCloud整合"><a href="#SpringCloud整合" class="headerlink" title="SpringCloud整合"></a>SpringCloud整合</h5><blockquote>
+<p>SpringCloud已经默认整合了logback，引用关系为spring-boot-starter-web引用spring-boot-starter再引用spring-boot-starter-logging，只需要添加logback-spring.xml即可完善使用</p>
+</blockquote>
+<p>示例配置文件：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">contextName</span>&gt;</span>$&#123;HOSTNAME&#125;<span class="tag">&lt;/<span class="name">contextName</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">springProfile</span> <span class="attr">name</span>=<span class="string">"dev"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"logstashDestination"</span> <span class="attr">value</span>=<span class="string">"localhost:4569"</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 文件路径 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"log_dir"</span> <span class="attr">value</span>=<span class="string">"E:/logs"</span> /&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 日志最大的历史 30天 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"maxHistory"</span> <span class="attr">value</span>=<span class="string">"30"</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--使用spring上下文来确定应用程序ip和应用名--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">springProperty</span> <span class="attr">scope</span>=<span class="string">"context"</span> <span class="attr">name</span>=<span class="string">"appName"</span> <span class="attr">source</span>=<span class="string">"spring.application.name"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">springProperty</span> <span class="attr">scope</span>=<span class="string">"context"</span> <span class="attr">name</span>=<span class="string">"ip"</span> <span class="attr">source</span>=<span class="string">"spring.cloud.client.ipAddress"</span> /&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--设置日志的格式--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"CONSOLE_LOG_PATTERN"</span></span></span><br><span class="line"><span class="tag">                  <span class="attr">value</span>=<span class="string">"[%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; $&#123;ip&#125; $&#123;appName&#125; %highlight(%-5level) %yellow(%X&#123;X-B3-TraceId&#125;),%green(%X&#123;X-B3-SpanId&#125;),%blue(%X&#123;X-B3-ParentSpanId&#125;) %yellow(%thread) %green(%logger) %msg%n"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">springProfile</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">springProfile</span> <span class="attr">name</span>=<span class="string">"prod"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"logstashDestination"</span> <span class="attr">value</span>=<span class="string">"localhost:4569"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 文件路径 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"log_dir"</span> <span class="attr">value</span>=<span class="string">"/mnt/logs"</span> /&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 日志最大的历史 30天 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"maxHistory"</span> <span class="attr">value</span>=<span class="string">"30"</span>/&gt;</span></span><br><span class="line">=</span><br><span class="line">        <span class="comment">&lt;!--使用spring上下文来确定应用程序ip和应用名--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">springProperty</span> <span class="attr">scope</span>=<span class="string">"context"</span> <span class="attr">name</span>=<span class="string">"appName"</span> <span class="attr">source</span>=<span class="string">"spring.application.name"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">springProperty</span> <span class="attr">scope</span>=<span class="string">"context"</span> <span class="attr">name</span>=<span class="string">"ip"</span> <span class="attr">source</span>=<span class="string">"spring.cloud.client.ipAddress"</span> /&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--设置日志的格式--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"CONSOLE_LOG_PATTERN"</span></span></span><br><span class="line"><span class="tag">                  <span class="attr">value</span>=<span class="string">"[%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; $&#123;ip&#125; $&#123;appName&#125; %highlight(%-5level) %yellow(%X&#123;X-B3-TraceId&#125;),%green(%X&#123;X-B3-SpanId&#125;),%blue(%X&#123;X-B3-ParentSpanId&#125;) %yellow(%thread) %green(%logger) %msg%n"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">springProfile</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 控制台--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"STDOUT"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.ConsoleAppender"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;HH:mm:ss.SSS&#125; %contextName [%thread] %-5level %logger&#123;36&#125; - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- ERROR --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 滚动记录文件--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"ERROR"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 只记录ERROR级别的日志 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.LevelFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>ERROR<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMatch</span>&gt;</span>ACCEPT<span class="tag">&lt;/<span class="name">onMatch</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMismatch</span>&gt;</span>DENY<span class="tag">&lt;/<span class="name">onMismatch</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 根据时间来制定滚动策略.既负责滚动也负责出发滚动 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--日志输出位置 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;log_dir&#125;/$&#123;appName&#125;/%d&#123;yyyy-MM-dd&#125;/error.log<span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 最大历史--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>$&#123;maxHistory&#125;<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--WARN--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"WARN"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.LevelFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>WARN<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMatch</span>&gt;</span>ACCEPT<span class="tag">&lt;/<span class="name">onMatch</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMismatch</span>&gt;</span>DENY<span class="tag">&lt;/<span class="name">onMismatch</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;log_dir&#125;/$&#123;appName&#125;/%d&#123;yyyy-MM-dd&#125;/warn.log<span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>$&#123;maxHistory&#125;<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- INFO --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"INFO"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.LevelFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>INFO<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMatch</span>&gt;</span>ACCEPT<span class="tag">&lt;/<span class="name">onMatch</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMismatch</span>&gt;</span>DENY<span class="tag">&lt;/<span class="name">onMismatch</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;log_dir&#125;/$&#123;appName&#125;/%d&#123;yyyy-MM-dd&#125;/info.log<span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>$d&#123;maxHistory&#125;<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- DEBUG --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"DEBUG"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.LevelFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>DEBUG<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMatch</span>&gt;</span>ACCEPT<span class="tag">&lt;/<span class="name">onMatch</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMismatch</span>&gt;</span>DENY<span class="tag">&lt;/<span class="name">onMismatch</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;log_dir&#125;/$&#123;appName&#125;/%d&#123;yyyy-MM-dd&#125;/debug.log<span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>$&#123;maxHistory&#125;<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--TRACE --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"TRACE"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.LevelFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>TRACE<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMatch</span>&gt;</span>ACCEPT<span class="tag">&lt;/<span class="name">onMatch</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMismatch</span>&gt;</span>DENY<span class="tag">&lt;/<span class="name">onMismatch</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;log_dir&#125;/$&#123;appName&#125;/%d&#123;yyyy-MM-dd&#125;/trace.log<span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>$&#123;maxHistory&#125;<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"LOGSTASH"</span></span></span><br><span class="line"><span class="tag">              <span class="attr">class</span>=<span class="string">"net.logstash.logback.appender.LogstashTcpSocketAppender"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">destination</span>&gt;</span>$&#123;logstashDestination&#125;<span class="tag">&lt;/<span class="name">destination</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- encoder必须配置,有多种可选 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span> <span class="attr">class</span>=<span class="string">"net.logstash.logback.encoder.LogstashEncoder"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">customFields</span>&gt;</span>&#123;"appname":"$&#123;appName&#125;"&#125;<span class="tag">&lt;/<span class="name">customFields</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">connectionStrategy</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">roundRobin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">connectionTTL</span>&gt;</span>5 minutes<span class="tag">&lt;/<span class="name">connectionTTL</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">roundRobin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">connectionStrategy</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.springframework"</span> <span class="attr">level</span>=<span class="string">"INFO"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.hibernate"</span> <span class="attr">level</span>=<span class="string">"INFO"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"com.kingboy.repository"</span> <span class="attr">level</span>=<span class="string">"INFO"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">root</span> <span class="attr">level</span>=<span class="string">"INFO"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"STDOUT"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"ERROR"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"WARN"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"INFO"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"DEBUG"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"TRACE"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"LOGSTASH"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h5 id="SSM整合"><a href="#SSM整合" class="headerlink" title="SSM整合"></a>SSM整合</h5><p>添加maven依赖<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">project</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">jcl-over-slf4j.version</span>&gt;</span>1.7.25<span class="tag">&lt;/<span class="name">jcl-over-slf4j.version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">logstash-logback-encoder.version</span>&gt;</span>5.2<span class="tag">&lt;/<span class="name">logstash-logback-encoder.version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">logback.version</span>&gt;</span>1.2.3<span class="tag">&lt;/<span class="name">logback.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- log4j的桥接包，解决spring指定log4j作为日志工具的问题--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jcl-over-slf4j<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;jcl-over-slf4j.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 和spring的整合包--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.logback-extensions<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logback-ext-spring<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.1.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 向服务器发送数据的编码包--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>net.logstash.logback<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logstash-logback-encoder<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;logstash-logback-encoder.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>ch.qos.logback<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logback-classic<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;logback.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>ch.qos.logback<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logback-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;logback.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>ch.qos.logback<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>logback-access<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;logback.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.7.16<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>修改web.xml,添加以下内容并保证置于spring上下文的上方<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">web-app</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">context-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>logbackConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>classpath:properties/logback-spring.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>ch.qos.logback.ext.spring.web.LogbackConfigListener<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>添加logback-spring.xml文件<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">contextName</span>&gt;</span>$&#123;HOSTNAME&#125;<span class="tag">&lt;/<span class="name">contextName</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>  <span class="attr">name</span>=<span class="string">"log_destination"</span> <span class="attr">value</span>=<span class="string">"$&#123;log_destination&#125;"</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--日志文件 ;--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span>  <span class="attr">name</span>=<span class="string">"log_dir"</span> <span class="attr">value</span>=<span class="string">"$&#123;log_dir&#125;"</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--项目名称--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"log_appname"</span> <span class="attr">value</span>=<span class="string">"$&#123;log_appname&#125;"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"maxHistory"</span> <span class="attr">value</span>=<span class="string">"60"</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--设置日志的格式--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"CONSOLE_LOG_PATTERN"</span></span></span><br><span class="line"><span class="tag">              <span class="attr">value</span>=<span class="string">"[%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; $&#123;log_appname&#125; %highlight(%-5level) %yellow(%X&#123;X-B3-TraceId&#125;),%green(%X&#123;X-B3-SpanId&#125;),%blue(%X&#123;X-B3-ParentSpanId&#125;) %yellow(%thread) %green(%logger) %msg%n"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 控制台--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"STDOUT"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.ConsoleAppender"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;HH:mm:ss.SSS&#125; %contextName [%thread] %-5level %logger&#123;36&#125; - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"ERROR"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 只记录ERROR级别的日志 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.LevelFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>ERROR<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMatch</span>&gt;</span>ACCEPT<span class="tag">&lt;/<span class="name">onMatch</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMismatch</span>&gt;</span>DENY<span class="tag">&lt;/<span class="name">onMismatch</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 根据时间来制定滚动策略.既负责滚动也负责出发滚动 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--日志输出位置 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;log_dir&#125;/$&#123;log_appname&#125;/%d&#123;yyyy-MM-dd&#125;/error.log<span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>$&#123;maxHistory&#125;<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- WARN级别日志 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"WARN"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.LevelFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>WARN<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMatch</span>&gt;</span>ACCEPT<span class="tag">&lt;/<span class="name">onMatch</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMismatch</span>&gt;</span>DENY<span class="tag">&lt;/<span class="name">onMismatch</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;log_dir&#125;/$&#123;log_appname&#125;/%d&#123;yyyy-MM-dd&#125;/warn.log<span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>$&#123;maxHistory&#125;<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- INFO --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"INFO"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.LevelFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>INFO<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMatch</span>&gt;</span>ACCEPT<span class="tag">&lt;/<span class="name">onMatch</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMismatch</span>&gt;</span>DENY<span class="tag">&lt;/<span class="name">onMismatch</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;log_dir&#125;/$&#123;log_appname&#125;/%d&#123;yyyy-MM-dd&#125;/info.log<span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>$d&#123;maxHistory&#125;<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- DEBUG --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"DEBUG"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.LevelFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>DEBUG<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMatch</span>&gt;</span>ACCEPT<span class="tag">&lt;/<span class="name">onMatch</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMismatch</span>&gt;</span>DENY<span class="tag">&lt;/<span class="name">onMismatch</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;log_dir&#125;/$plog_appname&#125;/%d&#123;yyyy-MM-dd&#125;/debug.log<span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line"></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>$&#123;maxHistory&#125;<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--TRACE --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"TRACE"</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.RollingFileAppender"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">filter</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.classic.filter.LevelFilter"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">level</span>&gt;</span>TRACE<span class="tag">&lt;/<span class="name">level</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMatch</span>&gt;</span>ACCEPT<span class="tag">&lt;/<span class="name">onMatch</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">onMismatch</span>&gt;</span>DENY<span class="tag">&lt;/<span class="name">onMismatch</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rollingPolicy</span> <span class="attr">class</span>=<span class="string">"ch.qos.logback.core.rolling.TimeBasedRollingPolicy"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileNamePattern</span>&gt;</span>$&#123;log_dir&#125;/$&#123;log_appname&#125;/%d&#123;yyyy-MM-dd&#125;/trace.log<span class="tag">&lt;/<span class="name">fileNamePattern</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">maxHistory</span>&gt;</span>$&#123;maxHistory&#125;<span class="tag">&lt;/<span class="name">maxHistory</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rollingPolicy</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">pattern</span>&gt;</span>%d&#123;yyyy-MM-dd HH:mm:ss.SSS&#125; [%thread] %-5level %logger - %msg%n<span class="tag">&lt;/<span class="name">pattern</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">"LOGSTASH"</span></span></span><br><span class="line"><span class="tag">              <span class="attr">class</span>=<span class="string">"net.logstash.logback.appender.LogstashTcpSocketAppender"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">destination</span>&gt;</span>$&#123;log_destination&#125;<span class="tag">&lt;/<span class="name">destination</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- encoder --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">encoder</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span> <span class="attr">class</span>=<span class="string">"net.logstash.logback.encoder.LogstashEncoder"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">customFields</span>&gt;</span>&#123;"appname":"$&#123;log_appname&#125;"&#125;<span class="tag">&lt;/<span class="name">customFields</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">encoder</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">connectionStrategy</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">roundRobin</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">connectionTTL</span>&gt;</span>5 minutes<span class="tag">&lt;/<span class="name">connectionTTL</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">roundRobin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">connectionStrategy</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.springframework"</span> <span class="attr">level</span>=<span class="string">"INFO"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"org.hibernate"</span> <span class="attr">level</span>=<span class="string">"INFO"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">"com.kingboy.repository"</span> <span class="attr">level</span>=<span class="string">"INFO"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">root</span> <span class="attr">level</span>=<span class="string">"INFO"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"STDOUT"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"ERROR"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"WARN"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"INFO"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"DEBUG"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"TRACE"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">"LOGSTASH"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/alex.github.io/tags/JVM/" rel="tag"># JVM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2018/10/10/2018-10-10-JVM垃圾收集器之五-Parallel Old收集器/" rel="next" title="JVM垃圾收集器之一（Parallel Old收集器）">
+                <i class="fa fa-chevron-left"></i> JVM垃圾收集器之一（Parallel Old收集器）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Alex Ren</p>
+              <p class="site-description motion-element" itemprop="description">JAVA之路</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/alex.github.io/archives/">
+                
+                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/AlexRenCN" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jdk环境"><span class="nav-number">2.</span> <span class="nav-text">jdk环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Logstash"><span class="nav-number">3.</span> <span class="nav-text">Logstash</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Elasticsearch"><span class="nav-number">4.</span> <span class="nav-text">Elasticsearch</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kinaba"><span class="nav-number">5.</span> <span class="nav-text">Kinaba</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Logback"><span class="nav-number">6.</span> <span class="nav-text">Logback</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#SpringCloud整合"><span class="nav-number">6.1.</span> <span class="nav-text">SpringCloud整合</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SSM整合"><span class="nav-number">6.2.</span> <span class="nav-text">SSM整合</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex Ren</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@<%= theme.mermaid.version %>/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/alex.github.io/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/alex.github.io/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/alex.github.io/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'VooWzCTKIYsM5LgzWVUF6cuL-gzGzoHsz',
+        appKey: 'mjrOD1ERYDgolUpulB6JU9pQ',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: true
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
