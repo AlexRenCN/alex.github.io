@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="Parallel Old收集器和Parallel Scavenge（并行回收）收集器类似，两者的区别再去前者针对老年代，后者针对新生代  使用多线程进行垃圾回收 针对老年代，采用标记整理算法 可以和Parallel Scavenge（并行回收）收集器结合使用 开启方式-XX:MaxGCPauseMillis设定最大GC时间，-XX:GCTimeRatio参数设定吞吐量，-XX:+UseAdapt">
+  <meta name="description" content="CMS收集器目的是为了得到最短的回收停顿时间，通过减少STW(Stop The World)的时间增加吞吐量  运行过程分为四步 初始标记 并发标记 重新标记 并发清除   使用单线程进行初始标记，此步骤需要STW 使用多线程进行重新标记，此步骤需要STW 使用标记-清除算法 可以和Serial收集器以及ParNew收集器结合使用 开启方式-XX:+UseConcMarkSweepGC  该收集">
 <meta name="keywords" content="JVM">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JVM垃圾收集器之一（Parallel Old收集器）">
-<meta property="og:url" content="https://alexrencn.github.io/2018/10/10/2018-10-10-JVM垃圾收集器之五-Parallel Old收集器/index.html">
+<meta property="og:title" content="JVM垃圾收集器之六（CMS收集器）">
+<meta property="og:url" content="https://alexrencn.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之六-CMS收集器/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="Parallel Old收集器和Parallel Scavenge（并行回收）收集器类似，两者的区别再去前者针对老年代，后者针对新生代  使用多线程进行垃圾回收 针对老年代，采用标记整理算法 可以和Parallel Scavenge（并行回收）收集器结合使用 开启方式-XX:MaxGCPauseMillis设定最大GC时间，-XX:GCTimeRatio参数设定吞吐量，-XX:+UseAdapt">
+<meta property="og:description" content="CMS收集器目的是为了得到最短的回收停顿时间，通过减少STW(Stop The World)的时间增加吞吐量  运行过程分为四步 初始标记 并发标记 重新标记 并发清除   使用单线程进行初始标记，此步骤需要STW 使用多线程进行重新标记，此步骤需要STW 使用标记-清除算法 可以和Serial收集器以及ParNew收集器结合使用 开启方式-XX:+UseConcMarkSweepGC  该收集">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-10-10T13:09:54.501Z">
+<meta property="og:updated_time" content="2018-10-11T12:52:08.351Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JVM垃圾收集器之一（Parallel Old收集器）">
-<meta name="twitter:description" content="Parallel Old收集器和Parallel Scavenge（并行回收）收集器类似，两者的区别再去前者针对老年代，后者针对新生代  使用多线程进行垃圾回收 针对老年代，采用标记整理算法 可以和Parallel Scavenge（并行回收）收集器结合使用 开启方式-XX:MaxGCPauseMillis设定最大GC时间，-XX:GCTimeRatio参数设定吞吐量，-XX:+UseAdapt">
+<meta name="twitter:title" content="JVM垃圾收集器之六（CMS收集器）">
+<meta name="twitter:description" content="CMS收集器目的是为了得到最短的回收停顿时间，通过减少STW(Stop The World)的时间增加吞吐量  运行过程分为四步 初始标记 并发标记 重新标记 并发清除   使用单线程进行初始标记，此步骤需要STW 使用多线程进行重新标记，此步骤需要STW 使用标记-清除算法 可以和Serial收集器以及ParNew收集器结合使用 开启方式-XX:+UseConcMarkSweepGC  该收集">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/10/10/2018-10-10-JVM垃圾收集器之五-Parallel Old收集器/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之六-CMS收集器/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>JVM垃圾收集器之一（Parallel Old收集器） | Alex</title>
+  <title>JVM垃圾收集器之六（CMS收集器） | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/10/2018-10-10-JVM垃圾收集器之五-Parallel Old收集器/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之六-CMS收集器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">JVM垃圾收集器之一（Parallel Old收集器）
+          <h1 class="post-title" itemprop="name headline">JVM垃圾收集器之六（CMS收集器）
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-10-10 21:09:54" itemprop="dateCreated datePublished" datetime="2018-10-10T21:09:54+08:00">2018-10-10</time>
+              <time title="创建时间：2018-10-11 20:52:08" itemprop="dateCreated datePublished" datetime="2018-10-11T20:52:08+08:00">2018-10-11</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/10/10/2018-10-10-JVM垃圾收集器之五-Parallel Old收集器/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/10/2018-10-10-JVM垃圾收集器之五-Parallel Old收集器/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之六-CMS收集器/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之六-CMS收集器/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/10/10/2018-10-10-JVM垃圾收集器之五-Parallel Old收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之一（Parallel Old收集器）">
+             <span id="/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之六-CMS收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之六（CMS收集器）">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -383,13 +383,22 @@
 
       
         <a id="more"></a>
-<p>Parallel Old收集器和Parallel Scavenge（并行回收）收集器类似，两者的区别再去前者针对老年代，后者针对新生代</p>
+<p>CMS收集器目的是为了得到最短的回收停顿时间，通过减少STW(Stop The World)的时间增加吞吐量</p>
 <ol>
-<li>使用多线程进行垃圾回收</li>
-<li>针对老年代，采用标记整理算法</li>
-<li>可以和Parallel Scavenge（并行回收）收集器结合使用</li>
-<li>开启方式-XX:MaxGCPauseMillis设定最大GC时间，-XX:GCTimeRatio参数设定吞吐量，-XX:+UseAdaptiveSizePolicy自动进行堆内存比例分配和晋升年龄调整</li>
+<li>运行过程分为四步<ol>
+<li>初始标记</li>
+<li>并发标记</li>
+<li>重新标记</li>
+<li>并发清除</li>
 </ol>
+</li>
+<li>使用单线程进行初始标记，此步骤需要STW</li>
+<li>使用多线程进行重新标记，此步骤需要STW</li>
+<li>使用标记-清除算法</li>
+<li>可以和Serial收集器以及ParNew收集器结合使用</li>
+<li>开启方式-XX:+UseConcMarkSweepGC</li>
+</ol>
+<p>该收集器的优点是并发收集，停顿时间短，但是缺点是占用更多的CPU资源，回收后会出现内存碎片，并不是每次都会进行压缩，会占用更多的空间，并且多次标记会造成浮动垃圾无法及时清除</p>
 
       
     </div>
@@ -423,8 +432,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/10/08/2018-10-08-JVM垃圾收集器之三-Parallel Scavenge并行回收收集器/" rel="next" title="JVM垃圾收集器之一（Parallel Scavenge（并行回收）收集器）">
-                <i class="fa fa-chevron-left"></i> JVM垃圾收集器之一（Parallel Scavenge（并行回收）收集器）
+              <a href="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/" rel="next" title="JVM垃圾收集器之四（Serial Old 收集器）">
+                <i class="fa fa-chevron-left"></i> JVM垃圾收集器之四（Serial Old 收集器）
               </a>
             
           </div>
@@ -433,8 +442,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/alex.github.io/2018/10/10/2018-10-10-ELK搭建以及项目整合记录/" rel="prev" title="ELK搭建以及项目整合记录">
-                ELK搭建以及项目整合记录 <i class="fa fa-chevron-right"></i>
+              <a href="/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之七-G1收集器/" rel="prev" title="JVM垃圾收集器之七（G1收集器）">
+                JVM垃圾收集器之七（G1收集器） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -499,7 +508,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">31</span>
+                    <span class="site-state-item-count">33</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
