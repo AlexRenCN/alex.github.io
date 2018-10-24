@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="G1收集器和CMS相比，在同样考虑了低停顿时间之外，另外有着类似于Parallel Scavenge并行回收收集器里类似于预估吞吐量的思想，注意这仅仅是概念类似，实现方式完全不同  使用G1收集器时，堆内存会划分成相等大小的多块独立区域，称为Region 新生代和老年代不在是物理上的分离，而是概念上的区分，都是Region的一部分 G1回收器的工作步骤 初始标记 并发标记 最终标记 筛选回收">
-<meta name="keywords" content="JVM">
+  <meta name="description" content="8月份的时候简单写过MySQL的锁，最近在工作中又有了一些更细致的理解，在此记录 从是否共享进行分析Shared Locks共享锁 S锁作用于行，得到共享锁的事务允许读取一行数据 Exclusive Locks排他锁 X锁作用于行，得到排他锁的事务允许更新或删除一行 Intention shared Locks意向共享锁 IS锁表锁，获得意向共享锁的事务可以获得共享锁 Intention exc">
+<meta name="keywords" content="数据库">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JVM垃圾收集器之七（G1收集器）">
-<meta property="og:url" content="https://alexrencn.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之七-G1收集器/index.html">
+<meta property="og:title" content="MySQL的锁（二）">
+<meta property="og:url" content="https://alexrencn.github.io/2018/10/22/2018-10-22-MySQL的锁（二）/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="G1收集器和CMS相比，在同样考虑了低停顿时间之外，另外有着类似于Parallel Scavenge并行回收收集器里类似于预估吞吐量的思想，注意这仅仅是概念类似，实现方式完全不同  使用G1收集器时，堆内存会划分成相等大小的多块独立区域，称为Region 新生代和老年代不在是物理上的分离，而是概念上的区分，都是Region的一部分 G1回收器的工作步骤 初始标记 并发标记 最终标记 筛选回收">
+<meta property="og:description" content="8月份的时候简单写过MySQL的锁，最近在工作中又有了一些更细致的理解，在此记录 从是否共享进行分析Shared Locks共享锁 S锁作用于行，得到共享锁的事务允许读取一行数据 Exclusive Locks排他锁 X锁作用于行，得到排他锁的事务允许更新或删除一行 Intention shared Locks意向共享锁 IS锁表锁，获得意向共享锁的事务可以获得共享锁 Intention exc">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-10-11T14:06:25.474Z">
+<meta property="og:updated_time" content="2018-10-22T06:54:07.504Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JVM垃圾收集器之七（G1收集器）">
-<meta name="twitter:description" content="G1收集器和CMS相比，在同样考虑了低停顿时间之外，另外有着类似于Parallel Scavenge并行回收收集器里类似于预估吞吐量的思想，注意这仅仅是概念类似，实现方式完全不同  使用G1收集器时，堆内存会划分成相等大小的多块独立区域，称为Region 新生代和老年代不在是物理上的分离，而是概念上的区分，都是Region的一部分 G1回收器的工作步骤 初始标记 并发标记 最终标记 筛选回收">
+<meta name="twitter:title" content="MySQL的锁（二）">
+<meta name="twitter:description" content="8月份的时候简单写过MySQL的锁，最近在工作中又有了一些更细致的理解，在此记录 从是否共享进行分析Shared Locks共享锁 S锁作用于行，得到共享锁的事务允许读取一行数据 Exclusive Locks排他锁 X锁作用于行，得到排他锁的事务允许更新或删除一行 Intention shared Locks意向共享锁 IS锁表锁，获得意向共享锁的事务可以获得共享锁 Intention exc">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之七-G1收集器/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2018/10/22/2018-10-22-MySQL的锁（二）/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>JVM垃圾收集器之七（G1收集器） | Alex</title>
+  <title>MySQL的锁（二） | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之七-G1收集器/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/22/2018-10-22-MySQL的锁（二）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">JVM垃圾收集器之七（G1收集器）
+          <h1 class="post-title" itemprop="name headline">MySQL的锁（二）
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-10-11 22:06:25" itemprop="dateCreated datePublished" datetime="2018-10-11T22:06:25+08:00">2018-10-11</time>
+              <time title="创建时间：2018-10-22 14:54:07" itemprop="dateCreated datePublished" datetime="2018-10-22T14:54:07+08:00">2018-10-22</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之七-G1收集器/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之七-G1收集器/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/10/22/2018-10-22-MySQL的锁（二）/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/22/2018-10-22-MySQL的锁（二）/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之七-G1收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之七（G1收集器）">
+             <span id="/alex.github.io/2018/10/22/2018-10-22-MySQL的锁（二）/" class="leancloud_visitors" data-flag-title="MySQL的锁（二）">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -383,25 +383,37 @@
 
       
         <a id="more"></a>
-<p>G1收集器和CMS相比，在同样考虑了低停顿时间之外，另外有着类似于Parallel Scavenge并行回收收集器里类似于预估吞吐量的思想，注意这仅仅是概念类似，实现方式完全不同</p>
-<ol>
-<li>使用G1收集器时，堆内存会划分成相等大小的多块独立区域，称为Region</li>
-<li>新生代和老年代不在是物理上的分离，而是概念上的区分，都是Region的一部分</li>
-<li>G1回收器的工作步骤<ol>
-<li>初始标记</li>
-<li>并发标记</li>
-<li>最终标记</li>
-<li>筛选回收</li>
-</ol>
-</li>
-<li>G1回收器可以追踪每个Region里的垃圾大小及所需时间，并维护一个优先列表，保证了G1在单位时间内得到更大的回收效率</li>
-<li>GC Root的枚举范围中中添加Remembered Set来管理多个Region中对象相互引用，使得不对堆内存进行全部扫描也能得到完整的垃圾信息</li>
-<li>使用复制算法及标记-清除算法</li>
-<li>开启方式-XX:+UseG1GC</li>
-<li>具有三种GC模式<ol>
-<li>young gc,年轻代GC算法，在Eden Region中发生，采用复制算法</li>
-<li>mixed gc,混合GC，老年代达到阈值时进行一次混合GC，回收全部young Region和部分old Region，采用标记-清除算法，如果清除之后Region中没有存活对象就将这个Region加入空闲列表</li>
-<li>full gc,老年代GC算法，采用标记-清除算法，发生在mixed gc来不及回收堆内存，导致堆内存填满的情况下</li>
+<p>8月份的时候简单写过MySQL的锁，最近在工作中又有了一些更细致的理解，在此记录</p>
+<h3 id="从是否共享进行分析"><a href="#从是否共享进行分析" class="headerlink" title="从是否共享进行分析"></a>从是否共享进行分析</h3><h5 id="Shared-Locks共享锁-S锁"><a href="#Shared-Locks共享锁-S锁" class="headerlink" title="Shared Locks共享锁 S锁"></a>Shared Locks共享锁 S锁</h5><p>作用于行，得到共享锁的事务允许读取一行数据</p>
+<h5 id="Exclusive-Locks排他锁-X锁"><a href="#Exclusive-Locks排他锁-X锁" class="headerlink" title="Exclusive Locks排他锁 X锁"></a>Exclusive Locks排他锁 X锁</h5><p>作用于行，得到排他锁的事务允许更新或删除一行</p>
+<h5 id="Intention-shared-Locks意向共享锁-IS锁"><a href="#Intention-shared-Locks意向共享锁-IS锁" class="headerlink" title="Intention shared Locks意向共享锁 IS锁"></a>Intention shared Locks意向共享锁 IS锁</h5><p>表锁，获得意向共享锁的事务可以获得共享锁</p>
+<h5 id="Intention-exclusive-Locks意向排他锁-IX锁"><a href="#Intention-exclusive-Locks意向排他锁-IX锁" class="headerlink" title="Intention exclusive Locks意向排他锁 IX锁"></a>Intention exclusive Locks意向排他锁 IX锁</h5><p>表锁，获得意向排他锁的事务可以获得排他锁</p>
+<blockquote>
+<p>相互之间的兼容关系为</p>
+</blockquote>
+<table><br>    <thead><br>        <tr><br>            <th></th><br>            <th>X</th><br>            <th>IX</th><br>            <th>S</th><br>            <th>IS</th><br>        </tr><br>    </thead><br>    <body><br>        <tr><br>            <th>X</th><br>            <th>冲突</th><br>            <th>冲突</th><br>            <th>冲突</th><br>            <th>冲突</th><br>        <th><br>        </th></tr><tr><br>            <th>IX</th><br>            <th>冲突</th><br>            <th>兼容</th><br>            <th>冲突</th><br>            <th>兼容</th><br>        <th><br>        </th></tr><tr><br>            <th>S</th><br>            <th>冲突</th><br>            <th>冲突</th><br>            <th>兼容</th><br>            <th>兼容</th><br>        <th><br>        </th></tr><tr><br>            <th>IS</th><br>            <th>冲突</th><br>            <th>兼容</th><br>            <th>兼容</th><br>            <th>兼容</th><br>        <th><br>    </th></tr></body><br></table>
+
+
+
+
+<h3 id="从锁的范围分析具体锁"><a href="#从锁的范围分析具体锁" class="headerlink" title="从锁的范围分析具体锁"></a>从锁的范围分析具体锁</h3><h5 id="GAP间隙锁"><a href="#GAP间隙锁" class="headerlink" title="GAP间隙锁"></a>GAP间隙锁</h5><p>行锁，锁住一段索引范围（开区间），不包含数据行本身</p>
+<h5 id="Insert-Intention-Locks插入意向锁"><a href="#Insert-Intention-Locks插入意向锁" class="headerlink" title="Insert Intention Locks插入意向锁"></a>Insert Intention Locks插入意向锁</h5><p>行锁，锁住一段索引范围，再同一间隙锁下的插入互相不影响，但是对其他操作是排它锁</p>
+<h5 id="Record-Locks记录锁"><a href="#Record-Locks记录锁" class="headerlink" title="Record Locks记录锁"></a>Record Locks记录锁</h5><p>行锁，锁住索引而不是数据行本身，如果该表没有任何索引，则建立一个隐藏的聚集主键索引</p>
+<h5 id="Next-Key-Locks间隙锁"><a href="#Next-Key-Locks间隙锁" class="headerlink" title="Next-Key Locks间隙锁"></a>Next-Key Locks间隙锁</h5><p>行锁，锁住一段范围及数据行(左开右闭)，可以认为范围是Record Locks+GAP</p>
+<h5 id="AUTO-INC-Locks自增锁"><a href="#AUTO-INC-Locks自增锁" class="headerlink" title="AUTO-INC Locks自增锁"></a>AUTO-INC Locks自增锁</h5><p>表锁，在自增列插入的时候产生</p>
+<blockquote>
+<p>相互之间的兼容关系为</p>
+</blockquote>
+<table><br>    <thead><br>        <tr><br>            <th></th><br>            <th>Gap</th><br>            <th>Insert Intention</th><br>            <th>Record</th><br>            <th>Next-Key</th><br>        </tr><br>    </thead><br>    <body><br>        <tr><br>            <th>Gap</th><br>            <th>兼容</th><br>            <th>兼容</th><br>            <th>兼容</th><br>            <th>兼容</th><br>        <th><br>        </th></tr><tr><br>            <th>Insert Intention </th><br>            <th>冲突</th><br>            <th>兼容</th><br>            <th>兼容</th><br>            <th>冲突</th><br>        <th><br>        </th></tr><tr><br>            <th>Record</th><br>            <th>兼容</th><br>            <th>兼容</th><br>            <th>冲突</th><br>            <th>冲突</th><br>        <th><br>        </th></tr><tr><br>            <th>Next-Key</th><br>            <th>兼容</th><br>            <th>兼容</th><br>            <th>冲突</th><br>            <th>冲突</th><br>        <th><br>    </th></tr></body><br></table>
+
+
+
+<h3 id="加深理解"><a href="#加深理解" class="headerlink" title="加深理解"></a>加深理解</h3><ol>
+<li>如果SQL没有命中任何索引，则根据记录锁的特性，全部命中到隐藏的聚集主键索引，所有的操作在同一个索引中使用X锁，相当于表锁</li>
+<li>默认情况使用Next-Key锁，出现唯一索引时降级到Record Locks,索引唯一索引除了在定位时效率之外，锁的范围也能变得更小</li>
+<li>会出现冲突的情况<ol>
+<li>GAP、NEXT_KEY之后的Insert（在同一间隙内先删除再插入，这也是本次生产问题产生的原因）</li>
+<li>Record和之后的Record、Next-key</li>
 </ol>
 </li>
 </ol>
@@ -425,7 +437,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/JVM/" rel="tag"># JVM</a>
+            <a href="/alex.github.io/tags/数据库/" rel="tag"># 数据库</a>
           
         </div>
       
@@ -438,8 +450,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之六-CMS收集器/" rel="next" title="JVM垃圾收集器之六（CMS收集器）">
-                <i class="fa fa-chevron-left"></i> JVM垃圾收集器之六（CMS收集器）
+              <a href="/alex.github.io/2018/10/22/2018-08-17-MySQL的锁/" rel="next" title="MySQL的锁">
+                <i class="fa fa-chevron-left"></i> MySQL的锁
               </a>
             
           </div>
@@ -447,10 +459,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/alex.github.io/2018/10/22/2018-08-17-MySQL的锁/" rel="prev" title="MySQL的锁">
-                MySQL的锁 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -498,8 +506,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -594,6 +611,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#从是否共享进行分析"><span class="nav-number">1.</span> <span class="nav-text">从是否共享进行分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Shared-Locks共享锁-S锁"><span class="nav-number">1.0.1.</span> <span class="nav-text">Shared Locks共享锁 S锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Exclusive-Locks排他锁-X锁"><span class="nav-number">1.0.2.</span> <span class="nav-text">Exclusive Locks排他锁 X锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Intention-shared-Locks意向共享锁-IS锁"><span class="nav-number">1.0.3.</span> <span class="nav-text">Intention shared Locks意向共享锁 IS锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Intention-exclusive-Locks意向排他锁-IX锁"><span class="nav-number">1.0.4.</span> <span class="nav-text">Intention exclusive Locks意向排他锁 IX锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从锁的范围分析具体锁"><span class="nav-number">2.</span> <span class="nav-text">从锁的范围分析具体锁</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#GAP间隙锁"><span class="nav-number">2.0.1.</span> <span class="nav-text">GAP间隙锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Insert-Intention-Locks插入意向锁"><span class="nav-number">2.0.2.</span> <span class="nav-text">Insert Intention Locks插入意向锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Record-Locks记录锁"><span class="nav-number">2.0.3.</span> <span class="nav-text">Record Locks记录锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Next-Key-Locks间隙锁"><span class="nav-number">2.0.4.</span> <span class="nav-text">Next-Key Locks间隙锁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#AUTO-INC-Locks自增锁"><span class="nav-number">2.0.5.</span> <span class="nav-text">AUTO-INC Locks自增锁</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加深理解"><span class="nav-number">3.</span> <span class="nav-text">加深理解</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

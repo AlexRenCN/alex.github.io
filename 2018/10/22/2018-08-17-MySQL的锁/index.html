@@ -111,14 +111,14 @@
   <meta name="description" content="本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率 锁级别分类描述 共享锁 ，读锁，只有在读和读之间可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事务更新 排它锁 ，写锁，不可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事物更新和读取 意向锁 ，有读锁和写锁，由于共享锁和排它锁都可以针对行，在事务中如果涉及到多">
 <meta name="keywords" content="数据库">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQL的整体架构">
-<meta property="og:url" content="https://alexrencn.github.io/2018/09/18/2018-08-17-MySQL的锁/index.html">
+<meta property="og:title" content="MySQL的锁">
+<meta property="og:url" content="https://alexrencn.github.io/2018/10/22/2018-08-17-MySQL的锁/index.html">
 <meta property="og:site_name" content="Alex">
 <meta property="og:description" content="本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率 锁级别分类描述 共享锁 ，读锁，只有在读和读之间可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事务更新 排它锁 ，写锁，不可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事物更新和读取 意向锁 ，有读锁和写锁，由于共享锁和排它锁都可以针对行，在事务中如果涉及到多">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-18T14:36:07.544Z">
+<meta property="og:updated_time" content="2018-10-22T06:33:25.799Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MySQL的整体架构">
+<meta name="twitter:title" content="MySQL的锁">
 <meta name="twitter:description" content="本文会按照多种角度分别描述MySQL数据库下的锁，通过了解数据库的锁机制可以在应用程序中合理的运用锁避免并发或者避免锁来提高效率 锁级别分类描述 共享锁 ，读锁，只有在读和读之间可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事务更新 排它锁 ，写锁，不可以重入，在无法获得锁的情况下需要堵塞，会堵塞其他事物更新和读取 意向锁 ，有读锁和写锁，由于共享锁和排它锁都可以针对行，在事务中如果涉及到多">
 
 
@@ -126,7 +126,7 @@
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/09/18/2018-08-17-MySQL的锁/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2018/10/22/2018-08-17-MySQL的锁/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>MySQL的整体架构 | Alex</title>
+  <title>MySQL的锁 | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/18/2018-08-17-MySQL的锁/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/22/2018-08-17-MySQL的锁/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">MySQL的整体架构
+          <h1 class="post-title" itemprop="name headline">MySQL的锁
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-09-18 22:36:07" itemprop="dateCreated datePublished" datetime="2018-09-18T22:36:07+08:00">2018-09-18</time>
+              <time title="创建时间：2018-10-22 14:33:25" itemprop="dateCreated datePublished" datetime="2018-10-22T14:33:25+08:00">2018-10-22</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/09/18/2018-08-17-MySQL的锁/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/18/2018-08-17-MySQL的锁/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/10/22/2018-08-17-MySQL的锁/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/22/2018-08-17-MySQL的锁/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/09/18/2018-08-17-MySQL的锁/" class="leancloud_visitors" data-flag-title="MySQL的整体架构">
+             <span id="/alex.github.io/2018/10/22/2018-08-17-MySQL的锁/" class="leancloud_visitors" data-flag-title="MySQL的锁">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -442,8 +442,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/09/18/2018-09-13-记一次Logback集成SSM异常排查/" rel="next" title="记一次Logback集成SSM异常排查">
-                <i class="fa fa-chevron-left"></i> 记一次Logback集成SSM异常排查
+              <a href="/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之七-G1收集器/" rel="next" title="JVM垃圾收集器之七（G1收集器）">
+                <i class="fa fa-chevron-left"></i> JVM垃圾收集器之七（G1收集器）
               </a>
             
           </div>
@@ -452,8 +452,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/alex.github.io/2018/09/18/2018-08-18-JVM内存模型/" rel="prev" title="JVM内存模型">
-                JVM内存模型 <i class="fa fa-chevron-right"></i>
+              <a href="/alex.github.io/2018/10/22/2018-10-22-MySQL的锁（二）/" rel="prev" title="MySQL的锁（二）">
+                MySQL的锁（二） <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -527,7 +527,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">33</span>
+                    <span class="site-state-item-count">34</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
