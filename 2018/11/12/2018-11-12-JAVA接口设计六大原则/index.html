@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="记录一个有意思的，平时没有显示使用过的索引  什么是聚簇索引聚簇索引不是一种单独的索引类型，而是一种数据存储方式，以InnoDB为例，聚簇索引的数据结构为在同一个结构中保存Btree索引和数据行 聚簇索引的数据结构123graph LR索引+数据行1--&amp;gt;索引+数据行2索引+数据行2--&amp;gt;索引+数据行3 数据行的存放时位于索引的叶子页中，聚簇这个词的含义即表示数据行和相邻的键值紧靠">
-<meta name="keywords" content="MySQL,索引">
+  <meta name="description" content="备考了一个月的英语，是时候补一补博客和拉下的课程了，java设计原则是在一次偶然的机会中发现自己没能熟记，特地写一篇博客来加深印象">
+<meta name="keywords" content="JAVA">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQL的聚簇索引">
-<meta property="og:url" content="https://alexrencn.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/index.html">
+<meta property="og:title" content="JAVA接口设计六大原则">
+<meta property="og:url" content="https://alexrencn.github.io/2018/11/12/2018-11-12-JAVA接口设计六大原则/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="记录一个有意思的，平时没有显示使用过的索引  什么是聚簇索引聚簇索引不是一种单独的索引类型，而是一种数据存储方式，以InnoDB为例，聚簇索引的数据结构为在同一个结构中保存Btree索引和数据行 聚簇索引的数据结构123graph LR索引+数据行1--&amp;gt;索引+数据行2索引+数据行2--&amp;gt;索引+数据行3 数据行的存放时位于索引的叶子页中，聚簇这个词的含义即表示数据行和相邻的键值紧靠">
+<meta property="og:description" content="备考了一个月的英语，是时候补一补博客和拉下的课程了，java设计原则是在一次偶然的机会中发现自己没能熟记，特地写一篇博客来加深印象">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-18T15:07:23.933Z">
+<meta property="og:updated_time" content="2018-11-12T10:44:30.776Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MySQL的聚簇索引">
-<meta name="twitter:description" content="记录一个有意思的，平时没有显示使用过的索引  什么是聚簇索引聚簇索引不是一种单独的索引类型，而是一种数据存储方式，以InnoDB为例，聚簇索引的数据结构为在同一个结构中保存Btree索引和数据行 聚簇索引的数据结构123graph LR索引+数据行1--&amp;gt;索引+数据行2索引+数据行2--&amp;gt;索引+数据行3 数据行的存放时位于索引的叶子页中，聚簇这个词的含义即表示数据行和相邻的键值紧靠">
+<meta name="twitter:title" content="JAVA接口设计六大原则">
+<meta name="twitter:description" content="备考了一个月的英语，是时候补一补博客和拉下的课程了，java设计原则是在一次偶然的机会中发现自己没能熟记，特地写一篇博客来加深印象">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2018/11/12/2018-11-12-JAVA接口设计六大原则/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>MySQL的聚簇索引 | Alex</title>
+  <title>JAVA接口设计六大原则 | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/11/12/2018-11-12-JAVA接口设计六大原则/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">MySQL的聚簇索引
+          <h1 class="post-title" itemprop="name headline">JAVA接口设计六大原则
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-09-18 23:07:23" itemprop="dateCreated datePublished" datetime="2018-09-18T23:07:23+08:00">2018-09-18</time>
+              <time title="创建时间：2018-11-12 18:44:30" itemprop="dateCreated datePublished" datetime="2018-11-12T18:44:30+08:00">2018-11-12</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2018/11/12/2018-11-12-JAVA接口设计六大原则/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/11/12/2018-11-12-JAVA接口设计六大原则/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/09/18/2018-08-21-MySQL聚簇索引/" class="leancloud_visitors" data-flag-title="MySQL的聚簇索引">
+             <span id="/alex.github.io/2018/11/12/2018-11-12-JAVA接口设计六大原则/" class="leancloud_visitors" data-flag-title="JAVA接口设计六大原则">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -382,27 +382,40 @@
       
 
       
-        <a id="more"></a>
+        <p>备考了一个月的英语，是时候补一补博客和拉下的课程了，java设计原则是在一次偶然的机会中发现自己没能熟记，特地写一篇博客来加深印象<br><a id="more"></a></p>
+<p>####单一职责原则（SRP:Single responsibility principle）</p>
 <blockquote>
-<p>记录一个有意思的，平时没有显示使用过的索引</p>
+<p>每一个类，引起他发生变化的原因只有一个职责</p>
 </blockquote>
-<h4 id="什么是聚簇索引"><a href="#什么是聚簇索引" class="headerlink" title="什么是聚簇索引"></a>什么是聚簇索引</h4><p>聚簇索引不是一种单独的索引类型，而是一种数据存储方式，以InnoDB为例，聚簇索引的数据结构为在同一个结构中保存Btree索引和数据行</p>
-<h4 id="聚簇索引的数据结构"><a href="#聚簇索引的数据结构" class="headerlink" title="聚簇索引的数据结构"></a>聚簇索引的数据结构</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">索引+数据行1--&gt;索引+数据行2</span><br><span class="line">索引+数据行2--&gt;索引+数据行3</span><br></pre></td></tr></table></figure>
-<p>数据行的存放时位于索引的叶子页中，聚簇这个词的含义即表示数据行和相邻的键值紧靠着存储，因为数据行不能存在于两个位置，所以每个表至多只能有一个聚簇索引</p>
-<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
-<li>聚簇索引可以把相关的数据保存在一起，提高IO密集型的操作效率，避免全表扫描导致的IO</li>
-<li>查询速度更快，在索引命中后可以通过搜索叶子页快速定位数据行</li>
-<li>使用覆盖索引扫描的查询可以直接使用页节点中的主键值<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4></li>
-<li>聚簇索引提高了IO密集型应用的性能，不能保证其他场景的效率</li>
-<li>插入速度依赖插入顺序，根据ID的顺序进行插入效率最高</li>
-<li>更新聚簇索引的消耗很高，InnoDB会对需要根系的数据行进行重新分配位置</li>
-<li>针对主键的新增和修改，都会使一个子页中添加新的数据行，如果页已经存满，会导致页分裂，页分裂会产生磁盘的缝隙</li>
-<li>在全表扫描时性能不佳，在数据行分散，以及页分裂导致的存储不连续更为明显</li>
-<li>二级索引（非聚簇索引），会在叶子节点包含数据行的主键列，会更庞大</li>
-<li>二级索引的访问需要进行两次索引查找，二级索引存储数据行的主键值，再通过聚簇索引进行查找<h4 id="聚簇索引和非聚簇索引区别"><a href="#聚簇索引和非聚簇索引区别" class="headerlink" title="聚簇索引和非聚簇索引区别"></a>聚簇索引和非聚簇索引区别</h4></li>
-<li>非聚簇索引的数据和索引存储无关</li>
-<li>非聚簇索引可以有多个</li>
-</ul>
+<p>该原则属于最容易理解的设计原则，一个初级的程序员也可以理解该原则，其描述的主要目的是指代码之间需要保证相互隔离，一段代码如果被复用，不会因为某个调用方的逻辑改变而发生错误。<br>但是我们应该仔细的思考单一职责的含义，很多人把类理解为单个的Java文件或者单个的方法，并将其对应到某个需求上，最后写出的代码变成了某一个API具有单一职责，这样的理解很容易造成代码在后期维护的时候产生许多的冗余代码或者可读性极差的代码。<br>由于项目和业务的逐步演进，最初的单个功能可能会分裂成不同的分支逻辑并提供给多个调用方，此时如果没有对初期的代码做合适的功能逻辑划分可能会出现较难维护的情况。<br>举个例子，最常见的适配时错误是在第一次开发时将需求的校验代码以及参数合法性代码写在对外提供API的起始部分，而随着业务的演进，多个新需求复用代码的时候则会发现无法通过原需求验证，直接返回了错误信息，其次而同一个需求中可能会涉及到多个操作，这些操作可能是顺序，也可能是并行，如果此时如果直接进行编码实现多个操作，则很容易违反此原则。<br>所以我们应该明白，从架构上进行考虑，单一原则在每一层的表现都是不相同的，而我们无论在提供或使用API，以及自己对代码进行扩展的时候，一旦碰到原接口会出现失败的情况，都应该记录下原因并在之后的API设计之中注意。</p>
+<p>####里氏替换原则(LSP:Liskov Substitution Principle)</p>
+<blockquote>
+<p>凡是基类所能出现的地方，子类一定可以出现</p>
+</blockquote>
+<p>我们在进行JAVA Bean模型的编写的时候实际上都是根据此原则进行的编码，一个简单的标准为如果把基类替换成子类而功能没有收到影响，此时可以认为符合里氏替换原则，在JAVA语言中，一直强调对象的意义，甚至可以描述为万物皆对象，而里氏替换原则则很很好的描述里对象之间继承的正确关系。<br>而里氏替换原则的提出者对该理论提供了一个简单而明确的定义：“Inheritance should ensure that any property proved about supertype objects also holds for subtype objects.”（“继承必须确保超类所拥有的性质在子类中仍然成立。”）<br>在JAVA Bean之外的代码里是否使用正确，只需要观察是否有子类在继承了基类的某个性质之后完全没有意义或者会出现异常即可，如果出现该问题，那么需要考虑基类的范围是否过大，并对不成立的部分进行划分，可以通过对基类的拆分或者替换成接口实现的方式进行修改</p>
+<p>####依赖倒置原则（DIP：Dependence Inversion Principle）</p>
+<blockquote>
+<p>1.程序中高层次的模块需要依赖于抽象而不是低层次模块的具体实现2.抽象不依赖具体实现而具体实现依赖于抽象</p>
+</blockquote>
+<p>关于第一点，传统的架构中，一般将代码分为三层，控制层，业务逻辑层和数据访问层，而在分布式系统或者由领域模型所设计的微服务系统中，可能会产生4层或者5层架构，然而不论架构中各个层次之间的具体负责内容如何变化，上层的代码只能了解到底层代码的抽象，而不能知道具体实现，在实际项目中实现的变动次数远远超出抽象的变动次数，如果高层次的模块需要了解或者依赖于底层次的实现，必然会出现低层次代码改动引起高层次的代码跟着改动，使得两者之间出现了耦合<br>关于第二点，抽象描述的是一种共性，描述的主要问题是XX可以做XX，而不关注如何完成，具体实现则详细解释了XX是如何完成XX的，只有在可以做的时候，才能够描述如何做这件事，两者之间只能是具体实现描述抽象接口</p>
+<p>####接口隔离原则（ISP：Interface Segregation Principle）</p>
+<blockquote>
+<p>程序不需要引用无用的接口，类和类之间的依赖应该存在于其最小的接口上<br>在调用接口的时候</p>
+</blockquote>
+<p>当程序在引用接口的时候，如果引用接口中包含的子接口属于无用接口或者本身调用多个接口的时候出现了无用接口，此时会造成两个缺陷，一个是在运行时会产生不必要的开销，进行无谓的内存和CPU消耗，另一个是无用接口本身可能是一种隐患，如果接口的实现方不能够搞清楚所有的调用方，可能在维护之后产生调用的错误，即使能够观察到调用方，也会提升维护的范围以及难度，而这些耗费在人力或者某些性能上的资源都对业务没有产生任何正面影响</p>
+<p>####迪米特法则（LOD：Law of Demeter）也称为最少知识原则（LKP：Least Knowledge Principle）</p>
+<blockquote>
+<p>一个对象不应该和不了解的对象进行交互，且应该尽可能少的了解其他对象</p>
+</blockquote>
+<p>迪米特法则所阐述的观念主要在于通过限定交互范围的方式降低接口、类之间的耦合，在对象AB交互的时候，如果相互之间了解的越少，则无论对象AB谁发生了改变，只要交互部分不变，则交互即可视为没有发生改变，而在日常的编码中，底层系统一般视为不变类，通过修改该类或者成员的访问权限使得上层系统对该类的了解度达到最低。</p>
+<p>####开闭原则（OCP）</p>
+<blockquote>
+<p>开闭原则之中的开是指的对接口实现扩展的开放，闭则指的是对接口实现修改的关闭，通过支持扩展提高了复用能力</p>
+</blockquote>
+<p>大部分的接口复用都是通过该原则进行设计，通过继承和多态，接口可以轻松的从所继承的父类中获取原本的实现并添加对应的扩展，或者使用多态的方式添加一个新的子类，而扩展出一个新的实现，在这个过程中，原本的接口实现是不会被修改的，这样我们在进行扩展的时候，只需要根据开闭原则对原本的实现进行扩展或者新增，避免对接口的反复修改，缩短了代码维护的范围，而接口之间的复用也得到了提升，避免重复开发或者重复修改所带来的潜在风险</p>
+<blockquote>
+<p>所有的设计原则之间都无法独立支撑架构和接口的设计，需要根据实际业务场景进行抽象，理解对象之间的关系，在每一次重写接口的时候也要问一下自己，为什么这个接口不符合新的业务需求，这样才能加深对设计原则的理解</p>
+</blockquote>
 
       
     </div>
@@ -423,9 +436,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/MySQL/" rel="tag"># MySQL</a>
-          
-            <a href="/alex.github.io/tags/索引/" rel="tag"># 索引</a>
+            <a href="/alex.github.io/tags/JAVA/" rel="tag"># JAVA</a>
           
         </div>
       
@@ -438,8 +449,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/09/18/2018-08-27-1.8HashMap链表转红黑树/" rel="next" title="1.8HashMap链表转红黑树">
-                <i class="fa fa-chevron-left"></i> 1.8HashMap链表转红黑树
+              <a href="/alex.github.io/2018/10/22/2018-10-22-MySQL的锁（二）/" rel="next" title="MySQL的锁（二）">
+                <i class="fa fa-chevron-left"></i> MySQL的锁（二）
               </a>
             
           </div>
@@ -447,10 +458,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/alex.github.io/2018/09/18/2018-08-27-Redis缓存更新策略/" rel="prev" title="Redis缓存更新策略">
-                Redis缓存更新策略 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -498,17 +505,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -603,22 +601,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是聚簇索引"><span class="nav-number">1.</span> <span class="nav-text">什么是聚簇索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#聚簇索引的数据结构"><span class="nav-number">2.</span> <span class="nav-text">聚簇索引的数据结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#优点"><span class="nav-number">3.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缺点"><span class="nav-number">4.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#聚簇索引和非聚簇索引区别"><span class="nav-number">5.</span> <span class="nav-text">聚簇索引和非聚簇索引区别</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
