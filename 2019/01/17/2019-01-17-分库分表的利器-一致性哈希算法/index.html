@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/alex.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/alex.github.io/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/alex.github.io/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/alex.github.io/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/alex.github.io/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/alex.github.io/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/alex.github.io/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="随着工作经验的提升，接触到了更多的性能问题，最近接触到一个订单中心的场景，预估数据量是千万级别，那首要解决的是数据如何分布的问题了分布式数据存储存在着很多的问题，稍不注意就会踩到坑里，需要注意的问题有 数据分散的平均性简单来说，就是把所有的数据尽可能的平均分散到各个区，避免数据量过少带来的资源浪费和数据量过多带来的性能问题，比如按照时间进行分表是常见的策略，但是对于抢票订单显然不合适，春运时提交的">
+<meta name="keywords" content="分布式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分库分表的利器-一致性哈希算法">
+<meta property="og:url" content="https://alexrencn.github.io/2019/01/17/2019-01-17-分库分表的利器-一致性哈希算法/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="随着工作经验的提升，接触到了更多的性能问题，最近接触到一个订单中心的场景，预估数据量是千万级别，那首要解决的是数据如何分布的问题了分布式数据存储存在着很多的问题，稍不注意就会踩到坑里，需要注意的问题有 数据分散的平均性简单来说，就是把所有的数据尽可能的平均分散到各个区，避免数据量过少带来的资源浪费和数据量过多带来的性能问题，比如按照时间进行分表是常见的策略，但是对于抢票订单显然不合适，春运时提交的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-17T13:53:42.038Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分库分表的利器-一致性哈希算法">
+<meta name="twitter:description" content="随着工作经验的提升，接触到了更多的性能问题，最近接触到一个订单中心的场景，预估数据量是千万级别，那首要解决的是数据如何分布的问题了分布式数据存储存在着很多的问题，稍不注意就会踩到坑里，需要注意的问题有 数据分散的平均性简单来说，就是把所有的数据尽可能的平均分散到各个区，避免数据量过少带来的资源浪费和数据量过多带来的性能问题，比如按照时间进行分表是常见的策略，但是对于抢票订单显然不合适，春运时提交的">
+
+
+
+
+
+
+  <link rel="canonical" href="https://alexrencn.github.io/2019/01/17/2019-01-17-分库分表的利器-一致性哈希算法/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>分库分表的利器-一致性哈希算法 | Alex</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/alex.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alex</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">可达鸭眉头一紧，发现编程并不简单</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/alex.github.io/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/alex.github.io/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/01/17/2019-01-17-分库分表的利器-一致性哈希算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分库分表的利器-一致性哈希算法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-17 21:53:42" itemprop="dateCreated datePublished" datetime="2019-01-17T21:53:42+08:00">2019-01-17</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2019/01/17/2019-01-17-分库分表的利器-一致性哈希算法/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/01/17/2019-01-17-分库分表的利器-一致性哈希算法/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2019/01/17/2019-01-17-分库分表的利器-一致性哈希算法/" class="leancloud_visitors" data-flag-title="分库分表的利器-一致性哈希算法">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>随着工作经验的提升，接触到了更多的性能问题，最近接触到一个订单中心的场景，预估数据量是千万级别，那首要解决的是数据如何分布的问题了<br><br><br>分布式数据存储存在着很多的问题，稍不注意就会踩到坑里，需要注意的问题有</p>
+<h4 id="数据分散的平均性"><a href="#数据分散的平均性" class="headerlink" title="数据分散的平均性"></a>数据分散的平均性</h4><p>简单来说，就是把所有的数据尽可能的平均分散到各个区，避免数据量过少带来的资源浪费和数据量过多带来的性能问题，比如按照时间进行分表是常见的策略，但是对于抢票订单显然不合适，春运时提交的抢票订单和平时没有可比性</p>
+<h4 id="数据获取的方便性"><a href="#数据获取的方便性" class="headerlink" title="数据获取的方便性"></a>数据获取的方便性</h4><p>由于数据存在不同的表甚至不同的数据源中，如何定位数据所在的位置和对批量数据的操作成为了没有完美解决方案的事情，在数据存储上一般我们认为单个用户的数据应该储存在相近的位置，也就是单库，有些没有用户标识的业务就会要求调用方冗余存储，或者本身临时存储，使用后情况关系，批量操作会命中多个数据分布，分布式事务又变成了麻烦的事情</p>
+<h4 id="横向扩展的能力"><a href="#横向扩展的能力" class="headerlink" title="横向扩展的能力"></a>横向扩展的能力</h4><p>数据每天都是在不断扩展的，随着业务的爆发增长或者事件的推移，第一次的分布存储可能会显得不够用，性能逐渐下滑，需要对横向扩展做好准备和方案</p>
+<h4 id="数据库的可用性"><a href="#数据库的可用性" class="headerlink" title="数据库的可用性"></a>数据库的可用性</h4><p>如果采用多数据源的方案，数据源越多，发生故障的几率越大，数据库A故障之后，如果能够做到感知，那么也应该关注如何让本来分布到A的数据选择正常的数据源进行操作</p>
+<h4 id="一致性哈希算法"><a href="#一致性哈希算法" class="headerlink" title="一致性哈希算法"></a>一致性哈希算法</h4><p>如果你没有接触过这个算法，那我先说一句让你转变观念的话，平时你所使用的hashMap是根据键值的hash值确定数据存储的位置，然而一致性哈希则经历了两步，先使用hash算法和一次取模运算，确认数据存储的位置，再由节点来决定哪一段的数据是属于他的。<br><br>官方说法：<br><br>定义：一致哈希 是一种特殊的哈希算法。在使用一致哈希算法后，哈希表槽位数（大小）的改变平均只需要对  K/n 个关键字重新映射，其中  K是关键字的数量， n是槽位数量。然而在传统的哈希表中，添加或删除一个槽位的几乎需要对所有关键字进行重新映射。<br><br>需求：在使用n台缓存服务器时，一种常用的负载均衡方式是，对资源o的请求使用  hash(o)=o mod n来映射到某一台缓存服务器。当增加或减少一台缓存服务器时这种方式可能会改变所有资源对应的hash值，也就是所有的缓存都失效了，这会使得缓存服务器大量集中地向原始内容服务器更新缓存。因此需要一致哈希算法来避免这样的问题。 一致哈希尽可能使同一个资源映射到同一台缓存服务器。这种方式要求增加一台缓存服务器时，新的服务器尽量分担存储其他所有服务器的缓存资源。减少一台缓存服务器时，其他所有服务器也可以尽量分担存储它的缓存资源。 一致哈希算法的主要思想是将每个缓存服务器与一个或多个哈希值域区间关联起来，其中区间边界通过计算缓存服务器对应的哈希值来决定。（定义区间的哈希函数不一定和计算缓存服务器哈希值的函数相同，但是两个函数的返回值的范围需要匹配。）如果一个缓存服务器被移除，则它所对应的区间会被并入到邻近的区间，其他的缓存服务器不需要任何改变。<br><br>实现：一致哈希将每个对象映射到圆环边上的一个点，系统再将可用的节点机器映射到圆环的不同位置。查找某个对象对应的机器时，需要用一致哈希算法计算得到对象对应圆环边上位置，沿着圆环边上查找直到遇到某个节点机器，这台机器即为对象应该保存的位置。 当删除一台节点机器时，这台机器上保存的所有对象都要移动到下一台机器。添加一台机器到圆环边上某个点时，这个点的下一台机器需要将这个节点前对应的对象移动到新机器上。 更改对象在节点机器上的分布可以通过调整节点机器的位置来实现。<br><br>以上来源于维基百科</p>
+<h4 id="如何实现"><a href="#如何实现" class="headerlink" title="如何实现"></a>如何实现</h4><p>一个最简单的方法，利用hashcode对2^32进行取模，可以使数据能均匀的分散在2^32种可能上，然后定义Node，散列在这些可能性上，当一个数据分配到这个一致性哈希表之后，让他往下进行寻找，找到的第一个Node就是他所属于的节点，如果找不到节点，那他就属于第一个节点，所以一致性哈希解构是一个环状解构</p>
+<h4 id="如何评价一致性哈希算法的好坏"><a href="#如何评价一致性哈希算法的好坏" class="headerlink" title="如何评价一致性哈希算法的好坏"></a>如何评价一致性哈希算法的好坏</h4><ol>
+<li>平衡性(Balance)：平衡性是指哈希的结果能够尽可能分布到所有的缓冲中去，这样可以使得所有的缓冲空间都得到利用。很多哈希算法都能够满足这一条件。</li>
+<li>单调性(Monotonicity)：单调性是指如果已经有一些内容通过哈希分派到了相应的缓冲中，又有新的缓冲加入到系统中。哈希的结果应能够保证原有已分配的内容可以被映射到原有的或者新的缓冲中去，而不会被映射到旧的缓冲集合中的其他缓冲区。 </li>
+<li>分散性(Spread)：在分布式环境中，终端有可能看不到所有的缓冲，而是只能看到其中的一部分。当终端希望通过哈希过程将内容映射到缓冲上时，由于不同终端所见的缓冲范围有可能不同，从而导致哈希的结果不一致，最终的结果是相同的内容被不同的终端映射到不同的缓冲区中。这种情况显然是应该避免的，因为它导致相同内容被存储到不同缓冲中去，降低了系统存储的效率。分散性的定义就是上述情况发生的严重程度。好的哈希算法应能够尽量避免不一致的情况发生，也就是尽量降低分散性。 </li>
+<li>负载(Load)：负载问题实际上是从另一个角度看待分散性问题。既然不同的终端可能将相同的内容映射到不同的缓冲区中，那么对于一个特定的缓冲区而言，也可能被不同的用户映射为不同 的内容。与分散性一样，这种情况也是应当避免的，因此好的哈希算法应能够尽量降低缓冲的负荷。</li>
+</ol>
+<h4 id="数据库如何避坑"><a href="#数据库如何避坑" class="headerlink" title="数据库如何避坑"></a>数据库如何避坑</h4><p>由于数据分布不均或者数据量爆发增长，如果扩展Node是一个很头疼的问题，从官方说明上来看，添加或删除一个槽位的几乎需要对所有关键字进行重新映射，这是我们无法接受的，一个常见的做法是使用虚拟节点，在一开始使用的时候，就将数据定义为很多个Node（32、64或者更多），而某个数据源又对应着多个node，这样后期扩展的时候可以根据实际情况让这个数据源对于的多个node分裂。<br>而另一个问题是数据库的故障，这里可以让故障的数据源交出自己持有的Node，将这些Node交给下一个数据源管理，当然这里涉及的内容过于复杂，还需要支持多写多读，而且只有个别的场景符合，不建议大家为了保证可用性进行尝试，需要有大牛坐镇。</p>
+<h4 id="轮子"><a href="#轮子" class="headerlink" title="轮子"></a>轮子</h4><p>一个合适的轮子能让我们变得更快，这里推荐Google的guava包，他给我们提供了一种使用方式<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hashing.consistentHash(id, buckets)</span><br></pre></td></tr></table></figure></p>
+<p>传入id和总的Node数就能得到对于的值，效率非常高，另外推荐大家看一下guava，他提供了很多集合、哈希、并发、缓存、IO等等的工具，1看实现，2看适用场景，真的是受益匪浅。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/alex.github.io/tags/分布式/" rel="tag"># 分布式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2019/01/07/2019-01-07-使用IDEA安装Jar到本地Maven仓库/" rel="next" title="使用IDEA安装Jar到本地Maven仓库">
+                <i class="fa fa-chevron-left"></i> 使用IDEA安装Jar到本地Maven仓库
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Alex Ren</p>
+              <p class="site-description motion-element" itemprop="description">JAVA之路</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/alex.github.io/archives/">
+                
+                    <span class="site-state-item-count">39</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/AlexRenCN" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据分散的平均性"><span class="nav-number">1.</span> <span class="nav-text">数据分散的平均性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据获取的方便性"><span class="nav-number">2.</span> <span class="nav-text">数据获取的方便性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#横向扩展的能力"><span class="nav-number">3.</span> <span class="nav-text">横向扩展的能力</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据库的可用性"><span class="nav-number">4.</span> <span class="nav-text">数据库的可用性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一致性哈希算法"><span class="nav-number">5.</span> <span class="nav-text">一致性哈希算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何实现"><span class="nav-number">6.</span> <span class="nav-text">如何实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何评价一致性哈希算法的好坏"><span class="nav-number">7.</span> <span class="nav-text">如何评价一致性哈希算法的好坏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据库如何避坑"><span class="nav-number">8.</span> <span class="nav-text">数据库如何避坑</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#轮子"><span class="nav-number">9.</span> <span class="nav-text">轮子</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex Ren</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@<%= theme.mermaid.version %>/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/alex.github.io/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/alex.github.io/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/alex.github.io/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'VooWzCTKIYsM5LgzWVUF6cuL-gzGzoHsz',
+        appKey: 'mjrOD1ERYDgolUpulB6JU9pQ',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: true
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
