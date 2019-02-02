@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/alex.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/alex.github.io/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/alex.github.io/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/alex.github.io/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/alex.github.io/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/alex.github.io/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/alex.github.io/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="如果我们的应用数据是按照某个唯一唯独进行分布式存储，而实际查询的角度有多个时，一般有两种选择的方案，一是按不同角度存储关系表，通过关系表进行二次查询，二是根据不同的查询角度进行全量的荣誉存储；这两种方案可以从逻辑上解决问题，但是也会带来延伸的问题，如何处理冗余数据的存储又需要我们进行考虑，一般来说从多角度进行查询无法保证数据分布均匀，比如满足用户查询A系统自己的交易记录，需要以用户的角度进行冗余，">
+<meta name="keywords" content="Mysql">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql数据库binlog系列四-Mysql到ES的同步">
+<meta property="og:url" content="https://alexrencn.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列四-Mysql到ES的同步/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="如果我们的应用数据是按照某个唯一唯独进行分布式存储，而实际查询的角度有多个时，一般有两种选择的方案，一是按不同角度存储关系表，通过关系表进行二次查询，二是根据不同的查询角度进行全量的荣誉存储；这两种方案可以从逻辑上解决问题，但是也会带来延伸的问题，如何处理冗余数据的存储又需要我们进行考虑，一般来说从多角度进行查询无法保证数据分布均匀，比如满足用户查询A系统自己的交易记录，需要以用户的角度进行冗余，">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-02T03:03:22.849Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql数据库binlog系列四-Mysql到ES的同步">
+<meta name="twitter:description" content="如果我们的应用数据是按照某个唯一唯独进行分布式存储，而实际查询的角度有多个时，一般有两种选择的方案，一是按不同角度存储关系表，通过关系表进行二次查询，二是根据不同的查询角度进行全量的荣誉存储；这两种方案可以从逻辑上解决问题，但是也会带来延伸的问题，如何处理冗余数据的存储又需要我们进行考虑，一般来说从多角度进行查询无法保证数据分布均匀，比如满足用户查询A系统自己的交易记录，需要以用户的角度进行冗余，">
+
+
+
+
+
+
+  <link rel="canonical" href="https://alexrencn.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列四-Mysql到ES的同步/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Mysql数据库binlog系列四-Mysql到ES的同步 | Alex</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/alex.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alex</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">可达鸭眉头一紧，发现编程并不简单</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/alex.github.io/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/alex.github.io/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列四-Mysql到ES的同步/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Mysql数据库binlog系列四-Mysql到ES的同步
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-02 11:03:22" itemprop="dateCreated datePublished" datetime="2019-02-02T11:03:22+08:00">2019-02-02</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列四-Mysql到ES的同步/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列四-Mysql到ES的同步/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列四-Mysql到ES的同步/" class="leancloud_visitors" data-flag-title="Mysql数据库binlog系列四-Mysql到ES的同步">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>如果我们的应用数据是按照某个唯一唯独进行分布式存储，而实际查询的角度有多个时，一般有两种选择的方案，一是按不同角度存储关系表，通过关系表进行二次查询，二是根据不同的查询角度进行全量的荣誉存储；<br><br>这两种方案可以从逻辑上解决问题，但是也会带来延伸的问题，如何处理冗余数据的存储又需要我们进行考虑，一般来说从多角度进行查询无法保证数据分布均匀，比如满足用户查询A系统自己的交易记录，需要以用户的角度进行冗余，而热点用户的存在会影响到某个库或表，反过来也会有库和表因为用户记录太少而白白浪费了资源。<br><br>借助全文搜索引擎，我们可以从根本上解决这个问题，ES完全可以满足性能要求和存储量的要求，我们在数据冷热分区的基础上添加了半热的概念，用ES查询满足一年半内数据的部分查询需求，目前选择通过ES来存储关联关系，以屏蔽产品更替频繁带来的字段更替问题。<br><br><strong>缺陷</strong>:ES同步是基于sql的同步，虽然我们在项目中已经预留了updateTime字段，但是在后续开发中维护的程度堪忧，新项目、Mybatis项目修改起来还容易，hibernate、JPA用户还是需要仔细分析现有代码不要遗漏</p>
+<h4 id="Master配置"><a href="#Master配置" class="headerlink" title="Master配置"></a>Master配置</h4><h5 id="创建用于同步的用户"><a href="#创建用于同步的用户" class="headerlink" title="创建用于同步的用户"></a>创建用于同步的用户</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">'username'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">'123456'</span>;</span><br></pre></td></tr></table></figure>
+<h5 id="赋予同步用户查询权限"><a href="#赋予同步用户查询权限" class="headerlink" title="赋予同步用户查询权限"></a>赋予同步用户查询权限</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">SELECT</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="string">'username'</span>@<span class="string">'%'</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="LogStash配置"><a href="#LogStash配置" class="headerlink" title="LogStash配置"></a>LogStash配置</h4><blockquote>
+<p>只讨论配置，搭建部分请回到主页搜关键字ELK</p>
+</blockquote>
+<h5 id="input配置"><a href="#input配置" class="headerlink" title="input配置"></a>input配置</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">input&#123;</span><br><span class="line">  jdbc &#123;</span><br><span class="line">    clean_run =&gt; false</span><br><span class="line">    columns_charset =&gt; &#123;“column0”=&gt;“UTF-8”&#125; </span><br><span class="line">    connection_retry_attempts =&gt; 2</span><br><span class="line">    connection_retry_attempts_wait_time =&gt; 0.5</span><br><span class="line">    jdbc_connection_string =&gt;“jdbc：mysql：// localhost：3306 / mydb”</span><br><span class="line">    jdbc_default_timezone =&gt; &quot;Asia/Shanghai&quot;</span><br><span class="line">    jdbc_driver_class =&gt;“com.mysql.jdbc.Driver”</span><br><span class="line">    jdbc_driver_library =&gt;“mysql-connector-java-5.1.36-bin.jar”</span><br><span class="line">    jdbc_fetch_size =&gt; 10000</span><br><span class="line">    jdbc_page_size =&gt; 100000</span><br><span class="line">    jdbc-jdbc_paging_enabled =&gt; true</span><br><span class="line">    jdbc_password =&gt; &quot;123456&quot;</span><br><span class="line">    jdbc_password_filepath =&gt; /usr/password</span><br><span class="line">    jdbc_pool_timeout =&gt; 5</span><br><span class="line">    jdbc_user =&gt;“mysql”</span><br><span class="line">    jdbc_validate_connection =&gt; true</span><br><span class="line">    jdbc_validation_timeout =&gt; 3600</span><br><span class="line">    last_run_metadata_path =&gt; &quot;$HOME/.logstash_jdbc_last_run&quot;</span><br><span class="line">    lowercase_column_names =&gt; true</span><br><span class="line">    parameters =&gt; &#123;“id”=&gt;“ABCDE”&#125;</span><br><span class="line">    record_last_run =&gt; true</span><br><span class="line">    schedule =&gt; “* * * * *”</span><br><span class="line">    sequel_opts =&gt; &#123;“login_timeout”=&gt;“5”&#125;</span><br><span class="line">    sql_log_level =&gt; “INFO”</span><br><span class="line">    statement =&gt;“SELECT * from dual where id =：id”</span><br><span class="line">    tracking_column =&gt; “id”</span><br><span class="line">    tracking_column_type =&gt; “timestamp”</span><br><span class="line">    use_column_value =&gt; true</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>clean_run:是否应保留之前的运行状态，默认false</li>
+<li>columns_charset：指定编码类型</li>
+<li>connection_retry_attempts:尝试连接数据库的最大次数</li>
+<li>connection_retry_attempts_wait_time:连接尝试之间休眠的秒数</li>
+<li>jdbc_connection_string：链接信息，必选</li>
+<li>jdbc_default_timezone:时区转换，将SQL时间戳转换为Logstash时间戳*</li>
+<li>jdbc_driver_class：驱动类，必选（oracle填Java::oracle.jdbc.driver.OracleDriver）</li>
+<li>jdbc_driver_library：插件和JDBC驱动没有直接打包，需要在此配置，可以通过逗号进行分隔，配置多个</li>
+<li>jdbc_fetch_size:一次获取数据的大小,如果不指定，则默认使用JDBC驱动的默认大小</li>
+<li>jdbc_page_size:JDBCpage的大小，默认100000</li>
+<li>jdbc_paging_enabled:SQl语句会被分解成多次查询，每次查询使用limits和offsets组成完整的结果集，现在大小为jdbc_page_size</li>
+<li>jdbc_password:密码</li>
+<li>jdbc_password_filepath：密码文件名</li>
+<li>jdbc_pool_timeout:连接池获取连接时抛出超时异常的最大值</li>
+<li>jdbc_user：链接用户，必选</li>
+<li>jdbc_validate_connection：连接池链接前先进行验证链接</li>
+<li>jdbc_validation_timeout:验证链接的频率，默认3600</li>
+<li>last_run_metadata_path:上次运行时的文件路径</li>
+<li>lowercase_column_names：是否强制标识符字段小写</li>
+<li>parameters：查询参数设置</li>
+<li>record_last_run：是否保存状态</li>
+<li>schedule：使用cron语法描述定时计划，结果集中的每一行都会成为一个事件，列将转换为事件中的字段，没有指定计划则只运行一次</li>
+<li>sequel_opts：针对数据库服务的参数配置</li>
+<li>sql_log_level:记录SQL查询的日志级别（fatal，error，warn，info，debug）</li>
+<li>statement：配置SQL语句，可以使用命名参数语法</li>
+<li>statement_filepath：从文件中配置SQL语句，该选项只能支持一个SQL（多个SQL需要配置多个logstash配置文件）</li>
+<li>tracking_column：需要追踪的列</li>
+<li>tracking_column_type:跟踪列的类型(numeric，timestamp)</li>
+<li><p>use_column_value:为true时使用tracking_column列作为sql_last_value，为false时使用上次执行查询的时间</p>
+<h5 id="通用LogStash配置"><a href="#通用LogStash配置" class="headerlink" title="通用LogStash配置"></a>通用LogStash配置</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">input&#123;</span><br><span class="line">  jdbc &#123;</span><br><span class="line">    add_field =&gt; &#123;“id”=&gt;“ABCDE”&#125;</span><br><span class="line">    codec =&gt; &quot;json&quot;</span><br><span class="line">    enable_metric =&gt; true</span><br><span class="line">    id =&gt; “MySQL_DB_ID”</span><br><span class="line">    tags =&gt; [&quot;TAG_DB&quot;,&quot;TAG_DATA&quot;]</span><br><span class="line">    type =&gt; &quot;TYPE_DB&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>add_field:向事件中添加字段</p>
+</li>
+<li>codec:解码器，指定数据格式</li>
+<li>enable_metric:是否启用metric日志</li>
+<li>id:设置唯一的标识，如果不设置则默认生成</li>
+<li>tags:设置标签，便于管理和分类</li>
+<li>type:用于过滤器的激活<h5 id="输出配置"><a href="#输出配置" class="headerlink" title="输出配置"></a>输出配置</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">output&#123;</span><br><span class="line">    elashticsearch&#123;</span><br><span class="line">        hosts =&gt;[&quot;XX.XX.XX.XX:9200&quot;]</span><br><span class="line">        codec =&gt; &quot;json&quot;</span><br><span class="line">        action =&gt; &quot;index&quot;</span><br><span class="line">        index =&gt; &quot;INDEX_NAME&quot;</span><br><span class="line">        document_id =&gt; &quot;test&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="内置参数"><a href="#内置参数" class="headerlink" title="内置参数"></a>内置参数</h5><ul>
+<li>sql_last_value：用于计算要查询的行。在运行任何查询之前，设置为1970年1月1日(星期四)，如果use_column_value为true并设置tracking_column，则设置为0。</li>
+</ul>
+<h5 id="数据库驱动安装"><a href="#数据库驱动安装" class="headerlink" title="数据库驱动安装"></a>数据库驱动安装</h5><blockquote>
+<p>ES的jdbc插件需要手动指定驱动，从下面这个网站上可以删掉后半部分的url，选取自己想要的版本进行下载<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget &quot;https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.47.tar.gz&quot; --no-check-certificate</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h5 id="ES-jdbc同步插件"><a href="#ES-jdbc同步插件" class="headerlink" title="ES jdbc同步插件"></a>ES jdbc同步插件</h5><p>这是一个小坑，目前常用的版本已经将该插件作为内置插件，无需进行安装，在网上寻找了很久匹配版本发现都找不到，最后发现已经集成了这个插件</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/alex.github.io/tags/Mysql/" rel="tag"># Mysql</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列三-Mysql数据恢复/" rel="next" title="Mysql数据库binlog系列三-Mysql数据恢复">
+                <i class="fa fa-chevron-left"></i> Mysql数据库binlog系列三-Mysql数据恢复
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/alex.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列五-Mysql到Oracle的同步/" rel="prev" title="Mysql数据库binlog系列五-Mysql到Oracle的同步">
+                Mysql数据库binlog系列五-Mysql到Oracle的同步 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Alex Ren</p>
+              <p class="site-description motion-element" itemprop="description">JAVA之路</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/alex.github.io/archives/">
+                
+                    <span class="site-state-item-count">45</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/AlexRenCN" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Master配置"><span class="nav-number">1.</span> <span class="nav-text">Master配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#创建用于同步的用户"><span class="nav-number">1.1.</span> <span class="nav-text">创建用于同步的用户</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#赋予同步用户查询权限"><span class="nav-number">1.2.</span> <span class="nav-text">赋予同步用户查询权限</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LogStash配置"><span class="nav-number">2.</span> <span class="nav-text">LogStash配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#input配置"><span class="nav-number">2.1.</span> <span class="nav-text">input配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#通用LogStash配置"><span class="nav-number">2.2.</span> <span class="nav-text">通用LogStash配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#输出配置"><span class="nav-number">2.3.</span> <span class="nav-text">输出配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#内置参数"><span class="nav-number">2.4.</span> <span class="nav-text">内置参数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#数据库驱动安装"><span class="nav-number">2.5.</span> <span class="nav-text">数据库驱动安装</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ES-jdbc同步插件"><span class="nav-number">2.6.</span> <span class="nav-text">ES jdbc同步插件</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex Ren</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@<%= theme.mermaid.version %>/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/alex.github.io/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/alex.github.io/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/alex.github.io/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'VooWzCTKIYsM5LgzWVUF6cuL-gzGzoHsz',
+        appKey: 'mjrOD1ERYDgolUpulB6JU9pQ',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: true
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

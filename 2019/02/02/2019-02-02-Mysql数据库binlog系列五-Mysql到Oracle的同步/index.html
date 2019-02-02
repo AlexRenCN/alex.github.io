@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/alex.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/alex.github.io/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/alex.github.io/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/alex.github.io/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/alex.github.io/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/alex.github.io/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/alex.github.io/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="由于某些原因（gui），很多企业都在进行去O的改造，去O是个漫长的过程，如何做到去O时的系统可用是大家头疼的问题，这个问题即数据异构的问题 下面给大家介绍几种我所了解到的方式，并着重描述我选择的方式： 停机维护步骤很简单：  扩展应用程序，实现双写 编写全量脚本，按实际数据特点将不会变更的数据进行迁移 每天进行一次迁移，增量处理不会变更的数据 停机 实现所剩数据的增量同步 部署程序  之所以用双写">
+<meta name="keywords" content="Mysql,Oracle">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql数据库binlog系列五-Mysql到Oracle的同步">
+<meta property="og:url" content="https://alexrencn.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列五-Mysql到Oracle的同步/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="由于某些原因（gui），很多企业都在进行去O的改造，去O是个漫长的过程，如何做到去O时的系统可用是大家头疼的问题，这个问题即数据异构的问题 下面给大家介绍几种我所了解到的方式，并着重描述我选择的方式： 停机维护步骤很简单：  扩展应用程序，实现双写 编写全量脚本，按实际数据特点将不会变更的数据进行迁移 每天进行一次迁移，增量处理不会变更的数据 停机 实现所剩数据的增量同步 部署程序  之所以用双写">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-02T04:09:12.154Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql数据库binlog系列五-Mysql到Oracle的同步">
+<meta name="twitter:description" content="由于某些原因（gui），很多企业都在进行去O的改造，去O是个漫长的过程，如何做到去O时的系统可用是大家头疼的问题，这个问题即数据异构的问题 下面给大家介绍几种我所了解到的方式，并着重描述我选择的方式： 停机维护步骤很简单：  扩展应用程序，实现双写 编写全量脚本，按实际数据特点将不会变更的数据进行迁移 每天进行一次迁移，增量处理不会变更的数据 停机 实现所剩数据的增量同步 部署程序  之所以用双写">
+
+
+
+
+
+
+  <link rel="canonical" href="https://alexrencn.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列五-Mysql到Oracle的同步/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Mysql数据库binlog系列五-Mysql到Oracle的同步 | Alex</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/alex.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alex</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">可达鸭眉头一紧，发现编程并不简单</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/alex.github.io/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/alex.github.io/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列五-Mysql到Oracle的同步/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Mysql数据库binlog系列五-Mysql到Oracle的同步
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-02 12:09:12" itemprop="dateCreated datePublished" datetime="2019-02-02T12:09:12+08:00">2019-02-02</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列五-Mysql到Oracle的同步/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列五-Mysql到Oracle的同步/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列五-Mysql到Oracle的同步/" class="leancloud_visitors" data-flag-title="Mysql数据库binlog系列五-Mysql到Oracle的同步">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>由于某些原因（gui），很多企业都在进行去O的改造，去O是个漫长的过程，如何做到去O时的系统可用是大家头疼的问题，这个问题即数据异构的问题<br></p>
+<p>下面给大家介绍几种我所了解到的方式，并着重描述我选择的方式：</p>
+<h4 id="停机维护"><a href="#停机维护" class="headerlink" title="停机维护"></a>停机维护</h4><p>步骤很简单：</p>
+<ol>
+<li>扩展应用程序，实现双写</li>
+<li>编写全量脚本，按实际数据特点将不会变更的数据进行迁移</li>
+<li>每天进行一次迁移，增量处理不会变更的数据</li>
+<li>停机</li>
+<li>实现所剩数据的增量同步</li>
+<li>部署程序</li>
+</ol>
+<p>之所以用双写，是因为很难做到针对某张表的全部修改，将查询语句留下来，不会对后续造成不可逆影响，但是双写带来的问题需要处理好</p>
+<h4 id="OOG"><a href="#OOG" class="headerlink" title="OOG"></a>OOG</h4><p>oracle官方工具，主流同步工具，亚秒级同步，继承了oracle的功能强大的特点，听起来是个完美的方案，唯一的缺陷就是收费</p>
+<h4 id="MySQL-Migration-Toolkit"><a href="#MySQL-Migration-Toolkit" class="headerlink" title="MySQL Migration Toolkit"></a>MySQL Migration Toolkit</h4><p>mysql官方工具，支持的场景源多，可以自动创建DDL，开源免费，但是缺点太多，已经停止开发，同步时类型转换有问题，需要人工处理，只能在Windows上使用</p>
+<h4 id="KETTLE"><a href="#KETTLE" class="headerlink" title="KETTLE"></a>KETTLE</h4><p>开源免费，效率高，稳定，基于sql，灵活，新增数据源需要的修改少，但是基于sql，需要预设更新时间字段进行数据筛选，否则无法增量</p>
+<h4 id="DataX"><a href="#DataX" class="headerlink" title="DataX"></a>DataX</h4><p>阿里去O使用的一款平台，功能强大，插件式开发，满足更多自定义的需求，目前已经有企业级服务可以直接购买，我其实是更偏向这个插件的，但是他的mysql数据读是基于sql的，如果没有可控字段是无法处理增量同步逻辑的，所以很遗憾没有用这套方案，以后自己会注意开发规范，从自己做起</p>
+<h4 id="canal-otter"><a href="#canal-otter" class="headerlink" title="canal+otter"></a>canal+otter</h4><p>这是我选择的方式，该插件只专注于Mysql和Oracle的同步，而且是通过binlog的方式，可以在增量同步的同时对应用程序代码的影响达到0，而且自带的监控报警系统/UI配置界面和权限管理，对于普通需求可以达到0开发，如果有脱敏或者复杂需求，也提供了数据处理的自定义插件开发接口</p>
+<blockquote>
+<p>讲一下我是怎么做的</p>
+</blockquote>
+<h5 id="安装canal"><a href="#安装canal" class="headerlink" title="安装canal"></a>安装canal</h5><p>下载<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget &quot;https://github.com/alibaba/canal/releases/download/canal-1.1.3-alpha-2/canal.deployer-1.1.3-SNAPSHOT.tar.gz&quot; --no-check-certificate</span><br></pre></td></tr></table></figure></p>
+<p>解压<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf canal.deployer-1.1.3-SNAPSHOT.tar.gz</span><br></pre></td></tr></table></figure></p>
+<p>配置文件修改<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/local/canal/conf/example/instance.properties</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">#################################################</span><br><span class="line">## mysql serverId , v1.0.26+ will autoGen</span><br><span class="line"># canal.instance.mysql.slaveId=0</span><br><span class="line"></span><br><span class="line"># enable gtid use true/false</span><br><span class="line">canal.instance.gtidon=false</span><br><span class="line"></span><br><span class="line"># position info</span><br><span class="line">canal.instance.master.address=XX:XX:XX:XX:3306</span><br><span class="line">canal.instance.master.journal.name=</span><br><span class="line">canal.instance.master.position=</span><br><span class="line">canal.instance.master.timestamp=</span><br><span class="line">canal.instance.master.gtid=</span><br><span class="line"></span><br><span class="line"># rds oss binlog</span><br><span class="line">canal.instance.rds.accesskey=</span><br><span class="line">canal.instance.rds.secretkey=</span><br><span class="line">canal.instance.rds.instanceId=</span><br><span class="line"></span><br><span class="line"># table meta tsdb info</span><br><span class="line">canal.instance.tsdb.enable=true</span><br><span class="line">#canal.instance.tsdb.url=jdbc:mysql://XX.X.X.X:3306/canal_tsdb</span><br><span class="line">#canal.instance.tsdb.dbUsername=canal</span><br><span class="line">#canal.instance.tsdb.dbPassword=canal</span><br><span class="line"></span><br><span class="line">#canal.instance.standby.address =</span><br><span class="line">#canal.instance.standby.journal.name =</span><br><span class="line">#canal.instance.standby.position =</span><br><span class="line">#canal.instance.standby.timestamp =</span><br><span class="line">#canal.instance.standby.gtid=</span><br><span class="line"></span><br><span class="line"># username/password</span><br><span class="line">canal.instance.dbUsername=testuser</span><br><span class="line">canal.instance.dbPassword=123456</span><br><span class="line">canal.instance.connectionCharset = UTF-8</span><br><span class="line">canal.instance.defaultDatabaseName =trade</span><br><span class="line"># enable druid Decrypt database password</span><br><span class="line">canal.instance.enableDruid=false</span><br><span class="line">#canal.instance.pwdPublicKey=MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALK4BUxdDltRRE5/zXpVEVPUgunvscYFtEip3pmLlhrWpacX7y7GCMo2/JM6LeHmiiNdH1FWgGCpUfircSwlWKUCAwEAAQ==</span><br><span class="line"></span><br><span class="line"># table regex</span><br><span class="line">canal.instance.filter.regex=.*\\..*</span><br><span class="line"># table black regex</span><br><span class="line">canal.instance.filter.black.regex=</span><br><span class="line"></span><br><span class="line"># mq config</span><br><span class="line">canal.mq.topic=example</span><br><span class="line"># dynamic topic route by table regex</span><br><span class="line">#canal.mq.dynamicTopic=.*,mytest\\..*,mytest2.user</span><br><span class="line">canal.mq.partition=0</span><br><span class="line"># hash partition config</span><br><span class="line">#canal.mq.partitionsNum=3</span><br><span class="line">#canal.mq.partitionHash=test.table:id^name,.*\\..*</span><br><span class="line">#################################################</span><br></pre></td></tr></table></figure>
+<h5 id="安装otter"><a href="#安装otter" class="headerlink" title="安装otter"></a>安装otter</h5><p>otter需要配合zk进行状态管理，zk安装不在此描述</p>
+<h6 id="manager（管理工具）"><a href="#manager（管理工具）" class="headerlink" title="manager（管理工具）"></a>manager（管理工具）</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget &quot;https://github.com/alibaba/otter/releases/download/otter-4.2.17/manager.deployer-4.2.17.tar.gz&quot; --no-check-certificate</span><br></pre></td></tr></table></figure>
+<p>解压<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf manager.deployer-4.2.17.tar.gz</span><br><span class="line">```   </span><br><span class="line">进入到conf文件配置好ip端口就可以通过bin下的startup.sh脚本进行运行了，但是要提前做好数据源配置</span><br><span class="line">&gt; 官方基础数据表</span><br><span class="line">https://raw.githubusercontent.com/alibaba/otter/master/manager/deployer/src/main/resources/sql/otter-manager-schema.sql</span><br><span class="line">###### node   </span><br><span class="line"></span><br><span class="line">下载</span><br><span class="line">```text</span><br><span class="line">  wget &quot;https://github.com/alibaba/otter/releases/download/otter-4.2.17/node.deployer-4.2.17.tar.gz&quot; --no-check-certificate</span><br></pre></td></tr></table></figure></p>
+<p>解压<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf node.deployer-4.2.17.tar.gz</span><br></pre></td></tr></table></figure></p>
+<p>生成序列号<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 1 &gt;node/conf/nid</span><br></pre></td></tr></table></figure></p>
+<p>配置和启用使用还是conf和bin文件夹下，只需要改数据源端口配置即可使用</p>
+<h6 id="Master配置"><a href="#Master配置" class="headerlink" title="Master配置"></a>Master配置</h6><p>开启binlog配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">在my.inf文件中添加</span><br><span class="line"></span><br><span class="line">log_bin=ON</span><br><span class="line">log_bin_basename=/var/lib/mysql/mysql-bin</span><br><span class="line">log_bin_index=/var/lib/mysql/mysql-bin.index</span><br><span class="line"></span><br><span class="line">或者</span><br><span class="line"></span><br><span class="line">log-bin=/var/lib/mysql/mysql-bin</span><br><span class="line"></span><br><span class="line">然后重新启动</span><br></pre></td></tr></table></figure></p>
+<p>创建同步用户<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建用于同步的用户</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">'username'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">'123456'</span>;</span><br><span class="line"><span class="comment">-- 赋予同步用户SLAVE权限</span></span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">REPLICATION</span> <span class="keyword">SLAVE</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="string">'username'</span>;</span><br><span class="line"><span class="comment">-- 给同步表查询权限</span></span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">SELECT</span> <span class="keyword">ON</span> X.X <span class="keyword">TO</span> <span class="string">'username'</span> <span class="keyword">IDENTITY</span> <span class="keyword">BY</span> <span class="string">'123456'</span>;</span><br><span class="line"><span class="comment">-- 给SLAVE状态查询权限</span></span><br><span class="line"><span class="keyword">GRANT</span> <span class="keyword">REPLICATION</span> <span class="keyword">CLIENT</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="string">'username'</span>;</span><br></pre></td></tr></table></figure></p>
+<h6 id="Slave配置"><a href="#Slave配置" class="headerlink" title="Slave配置"></a>Slave配置</h6><p>使用日常使用的用户即可满足</p>
+<h6 id="管理界面配置"><a href="#管理界面配置" class="headerlink" title="管理界面配置"></a>管理界面配置</h6><ol>
+<li>机器管理-配置ZK</li>
+<li>机器管理-配置Node</li>
+<li>配置数据表</li>
+<li>配置数据源</li>
+<li>配置Channel</li>
+<li>Channel下配置pipeline</li>
+<li>pipeline下配置任务</li>
+<li>启动Channel</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/alex.github.io/tags/Mysql/" rel="tag"># Mysql</a>
+          
+            <a href="/alex.github.io/tags/Oracle/" rel="tag"># Oracle</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列四-Mysql到ES的同步/" rel="next" title="Mysql数据库binlog系列四-Mysql到ES的同步">
+                <i class="fa fa-chevron-left"></i> Mysql数据库binlog系列四-Mysql到ES的同步
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Alex Ren</p>
+              <p class="site-description motion-element" itemprop="description">JAVA之路</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/alex.github.io/archives/">
+                
+                    <span class="site-state-item-count">45</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/AlexRenCN" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#停机维护"><span class="nav-number">1.</span> <span class="nav-text">停机维护</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OOG"><span class="nav-number">2.</span> <span class="nav-text">OOG</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MySQL-Migration-Toolkit"><span class="nav-number">3.</span> <span class="nav-text">MySQL Migration Toolkit</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#KETTLE"><span class="nav-number">4.</span> <span class="nav-text">KETTLE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DataX"><span class="nav-number">5.</span> <span class="nav-text">DataX</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#canal-otter"><span class="nav-number">6.</span> <span class="nav-text">canal+otter</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#安装canal"><span class="nav-number">6.1.</span> <span class="nav-text">安装canal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装otter"><span class="nav-number">6.2.</span> <span class="nav-text">安装otter</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#manager（管理工具）"><span class="nav-number">6.2.1.</span> <span class="nav-text">manager（管理工具）</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Master配置"><span class="nav-number">6.2.2.</span> <span class="nav-text">Master配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Slave配置"><span class="nav-number">6.2.3.</span> <span class="nav-text">Slave配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#管理界面配置"><span class="nav-number">6.2.4.</span> <span class="nav-text">管理界面配置</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex Ren</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@<%= theme.mermaid.version %>/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/alex.github.io/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/alex.github.io/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/alex.github.io/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'VooWzCTKIYsM5LgzWVUF6cuL-gzGzoHsz',
+        appKey: 'mjrOD1ERYDgolUpulB6JU9pQ',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: true
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
