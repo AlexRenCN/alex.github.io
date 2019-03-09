@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="虽然之前的从业的公司一直和金融息息相关，也与多家支付或者银行系统进行过系统对接，但是支付系统一直没能从整体应用中真正独立  业务场景描述混沌初开1234567graph LR[业务流程1]--&amp;gt;[业务1][业务流程2]--&amp;gt;[业务2][业务流程3]--&amp;gt;[业务3][业务1]--&amp;gt;[支付][业务2]--&amp;gt;[支付][业务3]--&amp;gt;[支付] 在这个阶段，一般公司只">
-<meta name="keywords" content="架构设计">
+  <meta name="description" content="该算法是很久以前参加某大厂面试的时候要求手写的代码，改算法常见且基础，当时实在是太年轻了，没有全面发展自己，面试过程和结果都特别不堪。。。最近在看阿里开源的fescar源码的时候突然看到工具类中的转换算法，于是想整理下这个知识点给各位。  使用long类型存储和传输IP地址可以有效的减少存储所需的空间或者传输所需码流  123456789101112131415161718192021222324">
+<meta name="keywords" content="算法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="支付系统的设计">
-<meta property="og:url" content="https://alexrencn.github.io/2018/09/18/2018-08-22-支付系统设计/index.html">
+<meta property="og:title" content="IP地址存储算法">
+<meta property="og:url" content="https://alexrencn.github.io/2019/03/09/2019-03-09-IP地址存储算法/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="虽然之前的从业的公司一直和金融息息相关，也与多家支付或者银行系统进行过系统对接，但是支付系统一直没能从整体应用中真正独立  业务场景描述混沌初开1234567graph LR[业务流程1]--&amp;gt;[业务1][业务流程2]--&amp;gt;[业务2][业务流程3]--&amp;gt;[业务3][业务1]--&amp;gt;[支付][业务2]--&amp;gt;[支付][业务3]--&amp;gt;[支付] 在这个阶段，一般公司只">
+<meta property="og:description" content="该算法是很久以前参加某大厂面试的时候要求手写的代码，改算法常见且基础，当时实在是太年轻了，没有全面发展自己，面试过程和结果都特别不堪。。。最近在看阿里开源的fescar源码的时候突然看到工具类中的转换算法，于是想整理下这个知识点给各位。  使用long类型存储和传输IP地址可以有效的减少存储所需的空间或者传输所需码流  123456789101112131415161718192021222324">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-18T15:07:23.925Z">
+<meta property="og:updated_time" content="2019-03-09T06:47:55.697Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="支付系统的设计">
-<meta name="twitter:description" content="虽然之前的从业的公司一直和金融息息相关，也与多家支付或者银行系统进行过系统对接，但是支付系统一直没能从整体应用中真正独立  业务场景描述混沌初开1234567graph LR[业务流程1]--&amp;gt;[业务1][业务流程2]--&amp;gt;[业务2][业务流程3]--&amp;gt;[业务3][业务1]--&amp;gt;[支付][业务2]--&amp;gt;[支付][业务3]--&amp;gt;[支付] 在这个阶段，一般公司只">
+<meta name="twitter:title" content="IP地址存储算法">
+<meta name="twitter:description" content="该算法是很久以前参加某大厂面试的时候要求手写的代码，改算法常见且基础，当时实在是太年轻了，没有全面发展自己，面试过程和结果都特别不堪。。。最近在看阿里开源的fescar源码的时候突然看到工具类中的转换算法，于是想整理下这个知识点给各位。  使用long类型存储和传输IP地址可以有效的减少存储所需的空间或者传输所需码流  123456789101112131415161718192021222324">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/09/18/2018-08-22-支付系统设计/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2019/03/09/2019-03-09-IP地址存储算法/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>支付系统的设计 | Alex</title>
+  <title>IP地址存储算法 | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/18/2018-08-22-支付系统设计/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/03/09/2019-03-09-IP地址存储算法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">支付系统的设计
+          <h1 class="post-title" itemprop="name headline">IP地址存储算法
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-09-18 23:07:23" itemprop="dateCreated datePublished" datetime="2018-09-18T23:07:23+08:00">2018-09-18</time>
+              <time title="创建时间：2019-03-09 14:47:55" itemprop="dateCreated datePublished" datetime="2019-03-09T14:47:55+08:00">2019-03-09</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/09/18/2018-08-22-支付系统设计/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/18/2018-08-22-支付系统设计/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2019/03/09/2019-03-09-IP地址存储算法/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/03/09/2019-03-09-IP地址存储算法/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/09/18/2018-08-22-支付系统设计/" class="leancloud_visitors" data-flag-title="支付系统的设计">
+             <span id="/alex.github.io/2019/03/09/2019-03-09-IP地址存储算法/" class="leancloud_visitors" data-flag-title="IP地址存储算法">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -382,80 +382,11 @@
       
 
       
-        <a id="more"></a>
+        <p>该算法是很久以前参加某大厂面试的时候要求手写的代码，改算法常见且基础，当时实在是太年轻了，没有全面发展自己，面试过程和结果都特别不堪。。。<br>最近在看阿里开源的fescar源码的时候突然看到工具类中的转换算法，于是想整理下这个知识点给各位。</p>
 <blockquote>
-<p>虽然之前的从业的公司一直和金融息息相关，也与多家支付或者银行系统进行过系统对接，但是支付系统一直没能从整体应用中真正独立</p>
+<p>使用long类型存储和传输IP地址可以有效的减少存储所需的空间或者传输所需码流</p>
 </blockquote>
-<h4 id="业务场景描述"><a href="#业务场景描述" class="headerlink" title="业务场景描述"></a>业务场景描述</h4><h5 id="混沌初开"><a href="#混沌初开" class="headerlink" title="混沌初开"></a>混沌初开</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">[业务流程1]--&gt;[业务1]</span><br><span class="line">[业务流程2]--&gt;[业务2]</span><br><span class="line">[业务流程3]--&gt;[业务3]</span><br><span class="line">[业务1]--&gt;[支付]</span><br><span class="line">[业务2]--&gt;[支付]</span><br><span class="line">[业务3]--&gt;[支付]</span><br></pre></td></tr></table></figure>
-<p>在这个阶段，一般公司只会确认一家公司作为自己的第三方支付，而此时公司的技术人员架构还并不完整，很难找得到完全熟悉支付业务和支付系统的开发人员，在我接触过的第三方对接的系统里，大部分的基础类来自于支付公司的样例，这部分代码不能保障效率但是可以大大解决开发进度的问题，针对这部分代码也很难有人会维护</p>
-<h5 id="业务冲突"><a href="#业务冲突" class="headerlink" title="业务冲突"></a>业务冲突</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">[业务流程1]--&gt;[业务1]</span><br><span class="line">[业务流程2]--&gt;[业务2]</span><br><span class="line">[业务流程3]--&gt;[业务3]</span><br><span class="line">[业务1]--&gt;[支付1]</span><br><span class="line">[业务2]--&gt;[支付1]</span><br><span class="line">[业务3]--&gt;[支付2]</span><br></pre></td></tr></table></figure>
-<p>经过一定时间的发展，因为支付公司提供的某个接口可用性不高，或者某种业务需求无法满足，可能会新引进一家支付公司，这个时候回针对部分业务进行替换</p>
-<h5 id="逐渐独立"><a href="#逐渐独立" class="headerlink" title="逐渐独立"></a>逐渐独立</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">[业务流程1]--&gt;[业务1]</span><br><span class="line">[业务流程2]--&gt;[业务2]</span><br><span class="line">[业务流程3]--&gt;[业务3]</span><br><span class="line">[业务1]--&gt;[支付代理]</span><br><span class="line">[业务2]--&gt;[支付代理]</span><br><span class="line">[业务3]--&gt;[支付代理]</span><br><span class="line">[支付代理]--&gt;[支付1]</span><br><span class="line">[支付代理]--&gt;[支付2]</span><br><span class="line">[支付代理]--&gt;[支付3]</span><br></pre></td></tr></table></figure>
-<p>随着第三方支付的增加和业务规则的不断变化，需要将业务模型进程抽象剥离，将交易过程进行委托代理，由代理进行实际的链接，简单介绍下这个调用链的各部分组成<br></p>
-<ul>
-<li>业务：业务模块只需要关心自己要执行的交易类型，以及业务所需要的支付方式<ul>
-<li>该部分属于一个统称，业务选择支付方式的部分也可以进行封装，避免耦合</li>
-</ul>
-</li>
-<li>支付代理：作为业务模块和支付模块的HTTP代理负责处理多对多模型下的网关路由，提供规范统一的API接口<ul>
-<li>在提供统一API的时候，使用建造者模式是一个不错的选择</li>
-<li>不要试图通过任何方式来确定具体参数的合法性，只需要通过合适的机制比如token来确定请求的合法性即可</li>
-<li>尽量简化该步骤以增加吞吐量，并且把一切控制权交由支付系统处理</li>
-<li>作为一个网络代理，可以添加客户端负载均衡、熔断等策略来避免网络因素导致的资源不释放</li>
-</ul>
-</li>
-<li>支付：作为第三方支付系统的真实对接系统，使用适配器模式将来自支付代理的统一API入参进行转换并进行实际处理，并将结果通过支付代理再次返回给业务系统，需要保证该服务的自治理，避免数据状态不同步造成的事故<ul>
-<li>秘钥：基本采用第三方支付提供的非对称性加密方案</li>
-<li>渠道：这里的渠道代表着第三方支付对本公司系统的渠道标识</li>
-<li>接口：提供具体的业务模块，比如红包，退款</li>
-<li>同步通知：在双方的系统内进行一次HTTP链接，实时通知结果</li>
-<li>异步通知：在某些接口上需要跳转到第三方页面进行密码输入等操作，此时用户行为发生在浏览器中，第三方支付会使用异步通知的方式发送到一个指定的接口中</li>
-<li>其他通知：如果该交易发生在线下，第三方支付会将结果发送到协商的接口中，通知本公司系统该交易的发生</li>
-<li>幂等性：针对同一笔交易有且仅有一个结果，</li>
-<li>自治理：自治理分为两部分，一部分是对第三方支付，需要保证长时间未明确结果的交易和第三方支付状态同步，另一部分是对业务系统，在返回结果时未收到响应应该及时切断链接避免木桶效应，并使用延时队列等方式再次发送结果，避免上游系统崩溃导致的系统性能占用</li>
-</ul>
-</li>
-</ul>
-<h6 id="API变化问题"><a href="#API变化问题" class="headerlink" title="API变化问题"></a>API变化问题</h6><blockquote>
-<p>第三方支付系统的API升级不可控，在生产环境中进行版本升级需要在编码中添加参数并进行灰度发布，为了保证7*24小时服务，不可能频繁进行发布，此时应该动态获取参数</p>
-</blockquote>
-<p>业务支付配置表</p>
-<ul>
-<li>规则ID</li>
-<li>业务ID</li>
-<li>支付系统ID</li>
-</ul>
-<p>第三方支付配置表 </p>
-<ul>
-<li>支付系统ID</li>
-<li>请求方式</li>
-<li>秘钥规则ID</li>
-</ul>
-<p>第三方支付秘钥表</p>
-<ul>
-<li>秘钥规则ID</li>
-<li>加密方式</li>
-<li>公钥</li>
-<li>私钥</li>
-</ul>
-<p>第三方支付参数表</p>
-<ul>
-<li>参数表ID</li>
-<li>支付系统ID</li>
-<li>功能接口ID</li>
-<li>商户号</li>
-<li>版本号</li>
-<li>同步地址</li>
-<li>异步地址</li>
-</ul>
-<p>第三方支付个性化参数表</p>
-<ul>
-<li>参数表ID</li>
-<li>参数名</li>
-<li>默认值</li>
-</ul>
-<p>把具体对接时的参数以表的形式存储，提供合适的缓存机制，保证效率，以及更新的速度</p>
-
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IpUtil</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String LOCALHOST = <span class="string">"127.0.0.1"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * ip地址编码</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> address</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">long</span> <span class="title">ipToLong</span><span class="params">(String address)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span>[] ip = <span class="keyword">new</span> <span class="keyword">long</span>[<span class="number">4</span>];</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (String ipStr : address.split(<span class="string">"\\."</span>)) &#123;</span><br><span class="line">            ip[i] = Long.parseLong(ipStr);</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (ip[<span class="number">0</span>] &lt;&lt; <span class="number">24</span>) + (ip[<span class="number">1</span>] &lt;&lt; <span class="number">16</span>) + (ip[<span class="number">2</span>] &lt;&lt; <span class="number">8</span>) + ip[<span class="number">3</span>];</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * ip地址解码</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> address</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">ipToString</span><span class="params">(<span class="keyword">long</span> address)</span> </span>&#123;</span><br><span class="line">        StringBuffer sb = <span class="keyword">new</span> StringBuffer(<span class="string">""</span>);</span><br><span class="line">        sb.append(String.valueOf((address &gt;&gt;&gt; <span class="number">24</span>)));</span><br><span class="line">        sb.append(<span class="string">"."</span>);</span><br><span class="line">        sb.append(String.valueOf((address &amp; <span class="number">0x00FFFFFF</span>) &gt;&gt;&gt; <span class="number">16</span>));</span><br><span class="line">        sb.append(<span class="string">"."</span>);</span><br><span class="line">        sb.append(String.valueOf((address &amp; <span class="number">0x0000FFFF</span>) &gt;&gt;&gt; <span class="number">8</span>));</span><br><span class="line">        sb.append(<span class="string">"."</span>);</span><br><span class="line">        sb.append(String.valueOf((address &amp; <span class="number">0x000000FF</span>)));</span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> anlong = ipToLong(LOCALHOST);</span><br><span class="line">        System.out.println(anlong);</span><br><span class="line">        String host = ipToString(anlong);</span><br><span class="line">        System.out.println(host);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -475,7 +406,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/架构设计/" rel="tag"># 架构设计</a>
+            <a href="/alex.github.io/tags/算法/" rel="tag"># 算法</a>
           
         </div>
       
@@ -488,8 +419,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/09/18/2018-08-30-高并发概念描述/" rel="next" title="高并发概念描述">
-                <i class="fa fa-chevron-left"></i> 高并发概念描述
+              <a href="/alex.github.io/2019/02/02/2019-02-02-Mysql数据库binlog系列五-Mysql到Oracle的同步/" rel="next" title="Mysql数据库binlog系列五-Mysql到Oracle的同步">
+                <i class="fa fa-chevron-left"></i> Mysql数据库binlog系列五-Mysql到Oracle的同步
               </a>
             
           </div>
@@ -497,10 +428,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/alex.github.io/2018/09/18/2018-08-28-MySQL自增列优缺点/" rel="prev" title="MySQL自增列优缺点">
-                MySQL自增列优缺点 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -548,17 +475,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -661,22 +579,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#业务场景描述"><span class="nav-number">1.</span> <span class="nav-text">业务场景描述</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#混沌初开"><span class="nav-number">1.1.</span> <span class="nav-text">混沌初开</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#业务冲突"><span class="nav-number">1.2.</span> <span class="nav-text">业务冲突</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#逐渐独立"><span class="nav-number">1.3.</span> <span class="nav-text">逐渐独立</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#API变化问题"><span class="nav-number">1.3.1.</span> <span class="nav-text">API变化问题</span></a></li></ol></li></ol></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
