@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/alex.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/alex.github.io/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/alex.github.io/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/alex.github.io/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/alex.github.io/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/alex.github.io/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/alex.github.io/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="官方文档地址https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html JSTATjstat用来进行jvm统计，常用来进行性能统计，其语法为：123jstat [ generalOption | outputOptions vmid [ interval [s | ms] [ count ]]jstat [ 单个选项 |">
+<meta name="keywords" content="JAVA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java基础系列3-JSTAT">
+<meta property="og:url" content="https://alexrencn.github.io/2019/03/26/2019-03-26-Java基础系列3-JSTAT/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="官方文档地址https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html JSTATjstat用来进行jvm统计，常用来进行性能统计，其语法为：123jstat [ generalOption | outputOptions vmid [ interval [s | ms] [ count ]]jstat [ 单个选项 |">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-26T04:45:38.128Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java基础系列3-JSTAT">
+<meta name="twitter:description" content="官方文档地址https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html JSTATjstat用来进行jvm统计，常用来进行性能统计，其语法为：123jstat [ generalOption | outputOptions vmid [ interval [s | ms] [ count ]]jstat [ 单个选项 |">
+
+
+
+
+
+
+  <link rel="canonical" href="https://alexrencn.github.io/2019/03/26/2019-03-26-Java基础系列3-JSTAT/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Java基础系列3-JSTAT | Alex</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/alex.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alex</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">可达鸭眉头一紧，发现编程并不简单</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/alex.github.io/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/alex.github.io/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/03/26/2019-03-26-Java基础系列3-JSTAT/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java基础系列3-JSTAT
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-26 12:45:38" itemprop="dateCreated datePublished" datetime="2019-03-26T12:45:38+08:00">2019-03-26</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2019/03/26/2019-03-26-Java基础系列3-JSTAT/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/03/26/2019-03-26-Java基础系列3-JSTAT/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2019/03/26/2019-03-26-Java基础系列3-JSTAT/" class="leancloud_visitors" data-flag-title="Java基础系列3-JSTAT">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="官方文档地址"><a href="#官方文档地址" class="headerlink" title="官方文档地址"></a>官方文档地址</h3><p><a href="https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html</a></p>
+<h3 id="JSTAT"><a href="#JSTAT" class="headerlink" title="JSTAT"></a>JSTAT</h3><p>jstat用来进行jvm统计，常用来进行性能统计，其语法为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">jstat [ generalOption | outputOptions vmid [ interval [s | ms] [ count ]]</span><br><span class="line"></span><br><span class="line">jstat [ 单个选项 | 其它选项 jvm标识符 [ 监控间隔 [s | ms] [ 监控次数 ]]</span><br></pre></td></tr></table></figure></p>
+<p>其中vmid语法如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[protocol:][//]lvmid[@hostname[:port]/servername]</span><br><span class="line"></span><br><span class="line">[协议:][//]目标JVM的本地虚拟机标识符[@主机名</span><br><span class="line">[:端口]/服务器名称]</span><br></pre></td></tr></table></figure></p>
+<p>一个最简单的例子如下</p>
+<blockquote>
+<p>jstat -gc 16763 1000 10 #代表着每1秒查看一次16763进程的GC信息，一共查看10次</p>
+</blockquote>
+<p>选项说明：</p>
+<h4 id="class-该选项用于显示有关类加载器的统计，分别展示："><a href="#class-该选项用于显示有关类加载器的统计，分别展示：" class="headerlink" title="class: 该选项用于显示有关类加载器的统计，分别展示："></a>class: 该选项用于显示有关类加载器的统计，分别展示：</h4><pre><code>- Loaded加载类的数量;
+- Bytes加载类的大小;
+- Unloaded卸载类的数量;
+- Bytes卸载类的大小;
+- Time加载和卸载类一共消耗的时间;
+</code></pre><h4 id="compiler-该选项用于显示HotSpot虚拟机编译的统计，分别展示："><a href="#compiler-该选项用于显示HotSpot虚拟机编译的统计，分别展示：" class="headerlink" title="compiler: 该选项用于显示HotSpot虚拟机编译的统计，分别展示："></a>compiler: 该选项用于显示HotSpot虚拟机编译的统计，分别展示：</h4><pre><code>- Compiled——编译任务数量; 
+- Failed——编译失败数量; 
+- Invalid——编译失效数量; 
+- Time——编译耗时; 
+- FailedType——最后一个编译失败的类型;
+- FailedMethod——最后一个编译失败的方法和类型;
+</code></pre><h4 id="gc-该选项用于显示GC的具体统计，分别展示："><a href="#gc-该选项用于显示GC的具体统计，分别展示：" class="headerlink" title="gc: 该选项用于显示GC的具体统计，分别展示："></a>gc: 该选项用于显示GC的具体统计，分别展示：</h4><pre><code>- S0C——第一个survivor的容量;
+- S1C——第二个survivor的容量;
+- S0U——第一个survivor的使用容量;
+- S1U——第二个survivor的使用容量;
+- EC——年轻代Eden区容量;
+- EU——年轻代Eden区使用容量;
+- OC——老年代Old区容量;
+- OU——老年代Old区使用容量;
+- MC——元空间Metaspace区容量;
+- MU——元空间Metaspace区使用容量;
+- CCSC——压缩类空间容量;
+- CCSU——压缩类空间使用容量;
+- YGC——年轻代垃圾收集活动的次数; 
+- YGCT——年轻代垃圾收集活动的时间;
+- FGC——发生FullGC的次数;
+- FGCT——发生FullGC的时间;
+- GCT——发生垃圾收集的总时间;
+</code></pre><h4 id="gccapacity-该选项用于显示内存空间的具体统计，分别展示："><a href="#gccapacity-该选项用于显示内存空间的具体统计，分别展示：" class="headerlink" title="gccapacity: 该选项用于显示内存空间的具体统计，分别展示："></a>gccapacity: 该选项用于显示内存空间的具体统计，分别展示：</h4><pre><code>- NGCMN——年轻代初始化大小（最小大小）;
+- NGCMX——年轻代最大大小;
+- NGC——年轻代当前大小;
+- S0C——第一个survivor区大小;
+- S1C——第二个survivor区大小;
+- EC——年轻代Eden区大小; 
+- OGCMN——老年代Old区初始化容量（最小大小);
+- OGCMX——老年代Old区最大大小;
+- OGC——老年代Old区新生成的大小;
+- OC——老年代Old区当前大小;
+- MCMN——最小元空间大小;
+- MCMX——最大元空间大小;  
+- MC——当前元空间大小;
+- CCSMN——压缩类空间最小容量;
+- CCSMX——压缩类空间最大容量;
+- CCSC——压缩类空间当前容量;
+- YGC——年轻代GC次数;
+- FGC——老年代GC次数;
+</code></pre><h4 id="gccause-该选项用于最近一次GC的统计信息，分别展示："><a href="#gccause-该选项用于最近一次GC的统计信息，分别展示：" class="headerlink" title="gccause: 该选项用于最近一次GC的统计信息，分别展示："></a>gccause: 该选项用于最近一次GC的统计信息，分别展示：</h4><pre><code>- S0——第一个survivor区当前使用比率;
+- S1——第二个survivor区当前使用比率;
+- E——伊甸区当前使用比率;
+- O——老年代当前使用比率;
+- M——元空间当前使用比率;
+- CCS——压缩类当前使用比率;
+- YGC——年轻代GC次数;
+- YGCT——年轻代垃圾收集时间;
+- FGC——老年代GC次数;
+- FGCT——老年代垃圾收集时间;
+- GCT——垃圾收集总时间;
+- LGCC——最后一次GC的原因;
+- GCC——当前GC的原因
+</code></pre><h4 id="gcnew-该选项用于年轻代GC的统计信息，分别展示："><a href="#gcnew-该选项用于年轻代GC的统计信息，分别展示：" class="headerlink" title="gcnew: 该选项用于年轻代GC的统计信息，分别展示："></a>gcnew: 该选项用于年轻代GC的统计信息，分别展示：</h4><pre><code>- S0C——第一个survivor区大小;
+- S1C——第二个survivor区大小;
+- S0U——第一个survivor区使用率;
+- S1U——第二个survivor区使用率;
+- TT——对象存活次数;
+- MTT——对象最大存货此时;
+- DSS——期望Survivor区大小;
+- EC——伊甸区大小;
+- EU——伊甸区使用率;
+- YGC——年轻代GC次数;
+- YGCT——年轻代GC时间;
+</code></pre><h4 id="gcnewcapacity-该选项用于年轻代空间的统计信息，分别展示："><a href="#gcnewcapacity-该选项用于年轻代空间的统计信息，分别展示：" class="headerlink" title="gcnewcapacity: 该选项用于年轻代空间的统计信息，分别展示："></a>gcnewcapacity: 该选项用于年轻代空间的统计信息，分别展示：</h4><pre><code>- NGCMN——新生代最小空间大小;
+- NGCMX——新生代最大空间大小;
+- NGC——新生代当前空间大小;
+- S0CMX——第一个Survivor区最大空间大小;
+- S0C——第一个Survivor区当前空间大小;
+- S1CMX——第二个Survivor区最大空间大小;
+- S1C——第二个Survivor区当前空间大小;
+- ECMX——伊甸区最大大小;
+- EC——伊甸区当前大小;
+- YGC——年轻代GC次数;
+- FGC——年轻代GC时间;
+</code></pre><h4 id="gcold-该选项用于老年代和元空间的空间的统计信息，分别展示："><a href="#gcold-该选项用于老年代和元空间的空间的统计信息，分别展示：" class="headerlink" title="gcold: 该选项用于老年代和元空间的空间的统计信息，分别展示："></a>gcold: 该选项用于老年代和元空间的空间的统计信息，分别展示：</h4><pre><code>- MC——元空间大小;
+- MU——元空间使用大小;
+- CCSC——压缩类大小;
+- CCSU——压缩类使用大型;
+- OC——当前老年代容量;
+- OU——老年代使用容量;
+- YGC——年轻代GC数量;
+- FGC——fullGC数量;
+- FGCT——fullGC时间;
+- GCT ——GC总耗时;
+</code></pre><h4 id="gcoldcapacity-该选项用于老年代的空间的统计信息，分别展示："><a href="#gcoldcapacity-该选项用于老年代的空间的统计信息，分别展示：" class="headerlink" title="gcoldcapacity:该选项用于老年代的空间的统计信息，分别展示："></a>gcoldcapacity:该选项用于老年代的空间的统计信息，分别展示：</h4><pre><code>- OGCMN——老年代最小大小;
+- OGCMX——老年代最大大小;
+- OGC——老年代当前增大小;
+- OC——老年代当前大小;
+- YGC——年轻代GC次数;
+- FGC——老年代GC次数;
+- FGCT——老年代GC总耗时;
+- GCT——GC总耗时;
+</code></pre><h4 id="gcmetacapacity-该选项用于元空间的统计信息，分别展示："><a href="#gcmetacapacity-该选项用于元空间的统计信息，分别展示：" class="headerlink" title="gcmetacapacity:该选项用于元空间的统计信息，分别展示："></a>gcmetacapacity:该选项用于元空间的统计信息，分别展示：</h4><pre><code>- MCMN——元空间最小大小;
+- MCMX——元空间最大大小;
+- MC——元空间大小;
+- CCSMN——压缩类空间最小大小;
+- CCSMX——压缩类空间最大大小;
+- CCSC——压缩类空间当前大小;
+- YGC——年轻代GC次数;
+- FGC——老年代GC次数;
+- FGCT——老年代GC总耗时;
+- GCT——GC总耗时;
+</code></pre><h4 id="gcutil-该选项用于内存空间的统计信息，分别展示："><a href="#gcutil-该选项用于内存空间的统计信息，分别展示：" class="headerlink" title="gcutil: 该选项用于内存空间的统计信息，分别展示："></a>gcutil: 该选项用于内存空间的统计信息，分别展示：</h4><pre><code>- S0——第一个survivor区当前使用比率;
+- S1——第二个survivor区当前使用比率;
+- E——伊甸区当前使用比率;
+- O——老年代当前使用比率;
+- M——元空间当前使用比率;
+- CCS——压缩类当前使用比率;
+- YGC——年轻代GC次数;
+- YGCT——年轻代垃圾收集时间;
+- FGC——老年代GC次数;
+- FGCT——老年代垃圾收集时间;
+- GCT——垃圾收集总时间;
+- LGCC——最后一次GC的原因;
+- GCC——当前GC的原因
+</code></pre><h4 id="printcompilation-该选项用于方法编译的统计信息，分别展示："><a href="#printcompilation-该选项用于方法编译的统计信息，分别展示：" class="headerlink" title="printcompilation: 该选项用于方法编译的统计信息，分别展示："></a>printcompilation: 该选项用于方法编译的统计信息，分别展示：</h4><pre><code>- Compiled——最近进行编译方法的任务数量;
+- Size——最近进行编译方法的任务大小;
+- Type——最近进行编译方法的任务类型;
+- Method——最近进行编译方法的任务类名和方法名;
+</code></pre><h4 id="其他参数"><a href="#其他参数" class="headerlink" title="其他参数"></a>其他参数</h4><pre><code>- -h+数字——用于批量的操作时候，可以每隔一段时间进行一次标题重新输出;
+- -t——用于给结果加上一个时间戳;
+- 远程连接参数——jstat -gcutil 40496@remote.domain 1000，只用这种指令进行远程服务器JVM监控;
+</code></pre>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/alex.github.io/tags/JAVA/" rel="tag"># JAVA</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2019/03/26/2019-03-26-Java基础系列2-JPS/" rel="next" title="Java基础系列2-JPS">
+                <i class="fa fa-chevron-left"></i> Java基础系列2-JPS
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Alex Ren</p>
+              <p class="site-description motion-element" itemprop="description">JAVA之路</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/alex.github.io/archives/">
+                
+                    <span class="site-state-item-count">49</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/AlexRenCN" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#官方文档地址"><span class="nav-number">1.</span> <span class="nav-text">官方文档地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSTAT"><span class="nav-number">2.</span> <span class="nav-text">JSTAT</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#class-该选项用于显示有关类加载器的统计，分别展示："><span class="nav-number">2.1.</span> <span class="nav-text">class: 该选项用于显示有关类加载器的统计，分别展示：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#compiler-该选项用于显示HotSpot虚拟机编译的统计，分别展示："><span class="nav-number">2.2.</span> <span class="nav-text">compiler: 该选项用于显示HotSpot虚拟机编译的统计，分别展示：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gc-该选项用于显示GC的具体统计，分别展示："><span class="nav-number">2.3.</span> <span class="nav-text">gc: 该选项用于显示GC的具体统计，分别展示：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gccapacity-该选项用于显示内存空间的具体统计，分别展示："><span class="nav-number">2.4.</span> <span class="nav-text">gccapacity: 该选项用于显示内存空间的具体统计，分别展示：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gccause-该选项用于最近一次GC的统计信息，分别展示："><span class="nav-number">2.5.</span> <span class="nav-text">gccause: 该选项用于最近一次GC的统计信息，分别展示：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gcnew-该选项用于年轻代GC的统计信息，分别展示："><span class="nav-number">2.6.</span> <span class="nav-text">gcnew: 该选项用于年轻代GC的统计信息，分别展示：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gcnewcapacity-该选项用于年轻代空间的统计信息，分别展示："><span class="nav-number">2.7.</span> <span class="nav-text">gcnewcapacity: 该选项用于年轻代空间的统计信息，分别展示：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gcold-该选项用于老年代和元空间的空间的统计信息，分别展示："><span class="nav-number">2.8.</span> <span class="nav-text">gcold: 该选项用于老年代和元空间的空间的统计信息，分别展示：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gcoldcapacity-该选项用于老年代的空间的统计信息，分别展示："><span class="nav-number">2.9.</span> <span class="nav-text">gcoldcapacity:该选项用于老年代的空间的统计信息，分别展示：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gcmetacapacity-该选项用于元空间的统计信息，分别展示："><span class="nav-number">2.10.</span> <span class="nav-text">gcmetacapacity:该选项用于元空间的统计信息，分别展示：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#gcutil-该选项用于内存空间的统计信息，分别展示："><span class="nav-number">2.11.</span> <span class="nav-text">gcutil: 该选项用于内存空间的统计信息，分别展示：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#printcompilation-该选项用于方法编译的统计信息，分别展示："><span class="nav-number">2.12.</span> <span class="nav-text">printcompilation: 该选项用于方法编译的统计信息，分别展示：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他参数"><span class="nav-number">2.13.</span> <span class="nav-text">其他参数</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex Ren</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@<%= theme.mermaid.version %>/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/alex.github.io/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/alex.github.io/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/alex.github.io/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'VooWzCTKIYsM5LgzWVUF6cuL-gzGzoHsz',
+        appKey: 'mjrOD1ERYDgolUpulB6JU9pQ',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: true
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

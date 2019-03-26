@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="Serial Old收集器和Serial收集器类似，采用单线程进行垃圾收集，并且在工作室需要stop the world，两者的区别再去前者针对老年代，后者针对新生代  使用单线程进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对老年代，采用标记整理算法 可以和Serial收集器，ParNew收集器以及Parallel Scavenge并行回收收集器结合使用 开启方式-">
-<meta name="keywords" content="JVM">
+  <meta name="description" content="官方文档地址https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html JPSjps列出目标系统上已经检测的JAVA虚拟机，通常用于查询当前服务器中正在运行的java虚拟机进程信息。jps的详细参数如下  -q只列出进程号而不列出其他信息  -m列出进程号、名称以及传递给main方法的参数    -l列出进程号、名称以详细">
+<meta name="keywords" content="JAVA">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JVM垃圾收集器之四（Serial Old 收集器）">
-<meta property="og:url" content="https://alexrencn.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/index.html">
+<meta property="og:title" content="Java基础系列2-JPS">
+<meta property="og:url" content="https://alexrencn.github.io/2019/03/26/2019-03-26-Java基础系列2-JPS/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="Serial Old收集器和Serial收集器类似，采用单线程进行垃圾收集，并且在工作室需要stop the world，两者的区别再去前者针对老年代，后者针对新生代  使用单线程进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对老年代，采用标记整理算法 可以和Serial收集器，ParNew收集器以及Parallel Scavenge并行回收收集器结合使用 开启方式-">
+<meta property="og:description" content="官方文档地址https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html JPSjps列出目标系统上已经检测的JAVA虚拟机，通常用于查询当前服务器中正在运行的java虚拟机进程信息。jps的详细参数如下  -q只列出进程号而不列出其他信息  -m列出进程号、名称以及传递给main方法的参数    -l列出进程号、名称以详细">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-10-11T12:35:24.876Z">
+<meta property="og:updated_time" content="2019-03-26T04:44:32.269Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JVM垃圾收集器之四（Serial Old 收集器）">
-<meta name="twitter:description" content="Serial Old收集器和Serial收集器类似，采用单线程进行垃圾收集，并且在工作室需要stop the world，两者的区别再去前者针对老年代，后者针对新生代  使用单线程进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对老年代，采用标记整理算法 可以和Serial收集器，ParNew收集器以及Parallel Scavenge并行回收收集器结合使用 开启方式-">
+<meta name="twitter:title" content="Java基础系列2-JPS">
+<meta name="twitter:description" content="官方文档地址https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html JPSjps列出目标系统上已经检测的JAVA虚拟机，通常用于查询当前服务器中正在运行的java虚拟机进程信息。jps的详细参数如下  -q只列出进程号而不列出其他信息  -m列出进程号、名称以及传递给main方法的参数    -l列出进程号、名称以详细">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2019/03/26/2019-03-26-Java基础系列2-JPS/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>JVM垃圾收集器之四（Serial Old 收集器） | Alex</title>
+  <title>Java基础系列2-JPS | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/03/26/2019-03-26-Java基础系列2-JPS/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">JVM垃圾收集器之四（Serial Old 收集器）
+          <h1 class="post-title" itemprop="name headline">Java基础系列2-JPS
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-10-11 20:35:24" itemprop="dateCreated datePublished" datetime="2018-10-11T20:35:24+08:00">2018-10-11</time>
+              <time title="创建时间：2019-03-26 12:44:32" itemprop="dateCreated datePublished" datetime="2019-03-26T12:44:32+08:00">2019-03-26</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2019/03/26/2019-03-26-Java基础系列2-JPS/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/03/26/2019-03-26-Java基础系列2-JPS/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之四（Serial Old 收集器）">
+             <span id="/alex.github.io/2019/03/26/2019-03-26-Java基础系列2-JPS/" class="leancloud_visitors" data-flag-title="Java基础系列2-JPS">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -382,15 +382,27 @@
       
 
       
-        <a id="more"></a>
-<p>Serial Old收集器和Serial收集器类似，采用单线程进行垃圾收集，并且在工作室需要stop the world，两者的区别再去前者针对老年代，后者针对新生代</p>
-<ol>
-<li>使用单线程进行垃圾回收</li>
-<li>进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成</li>
-<li>针对老年代，采用标记整理算法</li>
-<li>可以和Serial收集器，ParNew收集器以及Parallel Scavenge并行回收收集器结合使用</li>
-<li>开启方式-XX:+UseSerialGC</li>
-</ol>
+        <h3 id="官方文档地址"><a href="#官方文档地址" class="headerlink" title="官方文档地址"></a>官方文档地址</h3><p><a href="https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html</a></p>
+<h3 id="JPS"><a href="#JPS" class="headerlink" title="JPS"></a>JPS</h3><p>jps列出目标系统上已经检测的JAVA虚拟机，通常用于查询当前服务器中正在运行的java虚拟机进程信息。<br><br>jps的详细参数如下</p>
+<ul>
+<li><p>-q<br>只列出进程号而不列出其他信息</p>
+</li>
+<li><p>-m<br>列出进程号、名称以及传递给main方法的参数</p>
+</li>
+</ul>
+<ul>
+<li><p>-l<br>列出进程号、名称以详细路径</p>
+</li>
+<li><p>-v<br>列出进程号、名称以及JVM的详细参数</p>
+</li>
+<li><p>-V<br>列出进程号、名称</p>
+</li>
+</ul>
+<ul>
+<li>-J option<br>将option传递给JVM，比如-J-Xms48m将启动内存设置为48 MB，不过该功能支持并不完善</li>
+</ul>
+<p>一个简单的例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jps</span><br></pre></td></tr></table></figure></p>
+<p>就可以列出当前服务器上所有jvm的进程号了</p>
 
       
     </div>
@@ -411,7 +423,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/JVM/" rel="tag"># JVM</a>
+            <a href="/alex.github.io/tags/JAVA/" rel="tag"># JAVA</a>
           
         </div>
       
@@ -424,8 +436,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/10/11/2018-10-10-JVM垃圾收集器之五-Parallel Old收集器/" rel="next" title="JVM垃圾收集器之五（Parallel Old收集器）">
-                <i class="fa fa-chevron-left"></i> JVM垃圾收集器之五（Parallel Old收集器）
+              <a href="/alex.github.io/2019/03/26/2019-03-26-Java基础系列1-JDK如何找到Class类/" rel="next" title="Java基础系列1-JDK如何找到Class类">
+                <i class="fa fa-chevron-left"></i> Java基础系列1-JDK如何找到Class类
               </a>
             
           </div>
@@ -434,8 +446,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之六-CMS收集器/" rel="prev" title="JVM垃圾收集器之六（CMS收集器）">
-                JVM垃圾收集器之六（CMS收集器） <i class="fa fa-chevron-right"></i>
+              <a href="/alex.github.io/2019/03/26/2019-03-26-Java基础系列3-JSTAT/" rel="prev" title="Java基础系列3-JSTAT">
+                Java基础系列3-JSTAT <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -484,8 +496,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -588,6 +609,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#官方文档地址"><span class="nav-number">1.</span> <span class="nav-text">官方文档地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JPS"><span class="nav-number">2.</span> <span class="nav-text">JPS</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

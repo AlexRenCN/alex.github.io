@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="Serial Old收集器和Serial收集器类似，采用单线程进行垃圾收集，并且在工作室需要stop the world，两者的区别再去前者针对老年代，后者针对新生代  使用单线程进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对老年代，采用标记整理算法 可以和Serial收集器，ParNew收集器以及Parallel Scavenge并行回收收集器结合使用 开启方式-">
-<meta name="keywords" content="JVM">
+  <meta name="description" content="java应用是运行在JVM上的，在项目的整合与使用中，经常会碰到NoSuchMethod之类的异常，这部分异常出现的原因大部分是类冲突造成的，想要熟练的解决这个问题，就必须了解java到底是如何加载class的  官方文档地址https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html 如何找到类JVM加载类的顺序 JVM">
+<meta name="keywords" content="JAVA">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JVM垃圾收集器之四（Serial Old 收集器）">
-<meta property="og:url" content="https://alexrencn.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/index.html">
+<meta property="og:title" content="Java基础系列1-JDK如何找到Class类">
+<meta property="og:url" content="https://alexrencn.github.io/2019/03/26/2019-03-26-Java基础系列1-JDK如何找到Class类/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="Serial Old收集器和Serial收集器类似，采用单线程进行垃圾收集，并且在工作室需要stop the world，两者的区别再去前者针对老年代，后者针对新生代  使用单线程进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对老年代，采用标记整理算法 可以和Serial收集器，ParNew收集器以及Parallel Scavenge并行回收收集器结合使用 开启方式-">
+<meta property="og:description" content="java应用是运行在JVM上的，在项目的整合与使用中，经常会碰到NoSuchMethod之类的异常，这部分异常出现的原因大部分是类冲突造成的，想要熟练的解决这个问题，就必须了解java到底是如何加载class的  官方文档地址https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html 如何找到类JVM加载类的顺序 JVM">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-10-11T12:35:24.876Z">
+<meta property="og:updated_time" content="2019-03-26T04:41:47.215Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JVM垃圾收集器之四（Serial Old 收集器）">
-<meta name="twitter:description" content="Serial Old收集器和Serial收集器类似，采用单线程进行垃圾收集，并且在工作室需要stop the world，两者的区别再去前者针对老年代，后者针对新生代  使用单线程进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对老年代，采用标记整理算法 可以和Serial收集器，ParNew收集器以及Parallel Scavenge并行回收收集器结合使用 开启方式-">
+<meta name="twitter:title" content="Java基础系列1-JDK如何找到Class类">
+<meta name="twitter:description" content="java应用是运行在JVM上的，在项目的整合与使用中，经常会碰到NoSuchMethod之类的异常，这部分异常出现的原因大部分是类冲突造成的，想要熟练的解决这个问题，就必须了解java到底是如何加载class的  官方文档地址https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html 如何找到类JVM加载类的顺序 JVM">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2019/03/26/2019-03-26-Java基础系列1-JDK如何找到Class类/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>JVM垃圾收集器之四（Serial Old 收集器） | Alex</title>
+  <title>Java基础系列1-JDK如何找到Class类 | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/03/26/2019-03-26-Java基础系列1-JDK如何找到Class类/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">JVM垃圾收集器之四（Serial Old 收集器）
+          <h1 class="post-title" itemprop="name headline">Java基础系列1-JDK如何找到Class类
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-10-11 20:35:24" itemprop="dateCreated datePublished" datetime="2018-10-11T20:35:24+08:00">2018-10-11</time>
+              <time title="创建时间：2019-03-26 12:41:47" itemprop="dateCreated datePublished" datetime="2019-03-26T12:41:47+08:00">2019-03-26</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2019/03/26/2019-03-26-Java基础系列1-JDK如何找到Class类/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/03/26/2019-03-26-Java基础系列1-JDK如何找到Class类/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之四（Serial Old 收集器）">
+             <span id="/alex.github.io/2019/03/26/2019-03-26-Java基础系列1-JDK如何找到Class类/" class="leancloud_visitors" data-flag-title="Java基础系列1-JDK如何找到Class类">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -382,15 +382,50 @@
       
 
       
-        <a id="more"></a>
-<p>Serial Old收集器和Serial收集器类似，采用单线程进行垃圾收集，并且在工作室需要stop the world，两者的区别再去前者针对老年代，后者针对新生代</p>
+        <blockquote>
+<p>java应用是运行在JVM上的，在项目的整合与使用中，经常会碰到NoSuchMethod之类的异常，<br>这部分异常出现的原因大部分是类冲突造成的，想要熟练的解决这个问题，就必须了解java到底是如何加载class的</p>
+</blockquote>
+<h3 id="官方文档地址"><a href="#官方文档地址" class="headerlink" title="官方文档地址"></a>官方文档地址</h3><p><a href="https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/technotes/tools/unix/toc.html</a></p>
+<h3 id="如何找到类"><a href="#如何找到类" class="headerlink" title="如何找到类"></a>如何找到类</h3><h4 id="JVM加载类的顺序"><a href="#JVM加载类的顺序" class="headerlink" title="JVM加载类的顺序"></a>JVM加载类的顺序</h4><blockquote>
+<p>JVM按照一定的顺序进行类加载</p>
+</blockquote>
 <ol>
-<li>使用单线程进行垃圾回收</li>
-<li>进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成</li>
-<li>针对老年代，采用标记整理算法</li>
-<li>可以和Serial收集器，ParNew收集器以及Parallel Scavenge并行回收收集器结合使用</li>
-<li>开启方式-XX:+UseSerialGC</li>
+<li>BootStarp类，包含的类构成了JAVA平台，包括rt.jar以及其他几个重要的jar</li>
+<li>Extension类，扩展类会被打包成一个Jar并放在extension路径中</li>
+<li>User类，开发人员或者第三方自定义的类，可以通过-classpath命令或指定CLASSPATH变量来制定这些类的位置</li>
 </ol>
+<p>大家经常会听到的双亲委派模型就是根据这个加载顺序进行设置的，而官方网站上也提出该模型目前有部分改进：</p>
+<ul>
+<li>隐藏或者省略BootStrap类是相对困难的</li>
+<li>通常来说开发人员只需要指定User类所在位置，而BootStrap和Extension类会被自动找到</li>
+<li>工具类现在被单独管理在tools.jar中，而且只有被包含在User类路径描述中才可以使用</li>
+</ul>
+<h4 id="JAVA如何在运行时找到BootStarp类"><a href="#JAVA如何在运行时找到BootStarp类" class="headerlink" title="JAVA如何在运行时找到BootStarp类"></a>JAVA如何在运行时找到BootStarp类</h4><p>BootStarp类包含在rt.jar或者其他一些位于jre/lib路径下的jar包中，在系统中存在一个sun.boot.class.path，官方不建议修改此属性，但是提供了-Xbootclasspath选项来制定BootStarp类路径，在项目繁杂的情况下，如果同时存在不同版本的JDK，可以通过该属性进行指定</p>
+<h4 id="JAVA如何在运行时找到Extension类"><a href="#JAVA如何在运行时找到Extension类" class="headerlink" title="JAVA如何在运行时找到Extension类"></a>JAVA如何在运行时找到Extension类</h4><p>扩展类存放的路径为jre/lib/ext，并使用Java Extension Framework来加载其中的每一个jar包，这些类必须被包含在jar或者zip文件中，并且没有用于更改Extension类路径的选项。<br><br>如果扩展类路径中包含不同的jar文件，包含着相同全限定名的class，则class的加载是未定义的<br><br>多说一句，如果是在WEB项目中出现相同限定类名有多个的情况，class目录下的类是优先于lib目录下面的类加载的，如果在lib下还存在这种情况，会根据操作系统默认的文件存放顺序，自上而下进行加载第一个出现的class而忽略第二个。所以如果不想通过自定义ClassLoader来加载类的情况下，可以通过把对应的类复制到项目中进行修改，或者打包后保证目录可以在原jar包上面的形式来手动干扰类加载的选择，并可以进行自主扩展。<br></p>
+<h4 id="JAVA如何在运行时找到User类"><a href="#JAVA如何在运行时找到User类" class="headerlink" title="JAVA如何在运行时找到User类"></a>JAVA如何在运行时找到User类</h4><ul>
+<li>User类的默认值是*.*,及当前目录或目录下的所有class文件</li>
+<li>CLASSPATH环境变量用来覆盖默认的环境变量</li>
+<li>-cp或者-classpath命令，会覆盖默认环境变量和CLASSPATH环境变量</li>
+<li>如果使用-jar来制定环境变量，则会覆盖所有class-path变量，此时用户需要手动指定所有的User类地址</li>
+</ul>
+<h4 id="JAVA如何在运行时找到JAR-class-path"><a href="#JAVA如何在运行时找到JAR-class-path" class="headerlink" title="JAVA如何在运行时找到JAR-class-path"></a>JAVA如何在运行时找到JAR-class-path</h4><p>JAR文件中通常会维护一份JAR文件内容的清单，这个清单即可能是JAR文件，也可能描述了其他的JAR-class-path。</p>
+<ol>
+<li>通常，JAR-class-path会作为JAR文件中的部分，出现在JAR-class-path描述中的JAR文件可以在稍后被搜索</li>
+<li>如果JAR-class-path指向的其他JAR-class-path已经被搜索过，那就不会再次搜索该文件，这样提高了搜索效率并且可以避免循环搜索</li>
+<li>如果JAR文件被安装文Extension，那么JAR-class-path将会被全部忽略，因为Extension类的所有类都默认是JDK的一部分或者是其他Extension类</li>
+</ol>
+<h4 id="javac和javadoc指令如何找到User类"><a href="#javac和javadoc指令如何找到User类" class="headerlink" title="javac和javadoc指令如何找到User类"></a>javac和javadoc指令如何找到User类</h4><ul>
+<li>运行javac和javadoc命令必须指定类文件</li>
+<li>为了处理class文件的源代码，javac和javadoc命令必须获取有关源代码中使用的对象类型的信息</li>
+</ul>
+<p>用于解析源代码引用的类文件大多与用于运行javac和javadoc命令的类文件相同。但也有一些重要的例外，如下:</p>
+<ul>
+<li>javac和javadoc命令经常解析类和接口的引用，这些类和接口与javac或javadoc命令的实现无关，有关引用的用户类和接口的信息可能以类文件、源代码文件或两者的形式出现。</li>
+<li>tools.jar文件里的class文件仅用于运行javac和javadoc指令，除非tools.jar被定义在了user class path中</li>
+<li>开发者可能会使用其他的java平台实现类或者扩展类的解析，javac和javadoc都支持-bootclasspath和-extdirs指令，这些指令不会影响和修改用于运行javac和javadoc指令本身的文件集。</li>
+</ul>
+<p>如果在类文件和源文件中都定义了引用了类，javadoc命令总是使用源文件，而且javadoc命令从不编译源文件，而javac命令总是使用类文件，自动重新编译他认为过去的任何类文件，重新编译规则在javac的文档中有说明。<br><br>javac和javadoc命令在默认情况下都会搜索User类路径，如果-source指令有手动选择，则javac和javadoc命令尽在指定的源文件路径上搜索源文件，同时在User类路径中搜索类文件。</p>
+<h4 id="类加载和安全策略"><a href="#类加载和安全策略" class="headerlink" title="类加载和安全策略"></a>类加载和安全策略</h4><p>使用类和接口必须由类加载器进行加载，使用特定的类加载器确定与类加载器关联的安全策略。<br><br>程序可以通过调用loadClass类加载器对象来加载类或者接口，成为内部类加载器，该加载器可以将安全策略应用于扩展类和用户类，如果尚未启用安全策略，则所有类都是可信的，即使使用了安全策略，也不适用于始终受信任的bootstarp类。</p>
 
       
     </div>
@@ -411,7 +446,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/JVM/" rel="tag"># JVM</a>
+            <a href="/alex.github.io/tags/JAVA/" rel="tag"># JAVA</a>
           
         </div>
       
@@ -424,8 +459,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/10/11/2018-10-10-JVM垃圾收集器之五-Parallel Old收集器/" rel="next" title="JVM垃圾收集器之五（Parallel Old收集器）">
-                <i class="fa fa-chevron-left"></i> JVM垃圾收集器之五（Parallel Old收集器）
+              <a href="/alex.github.io/2019/03/09/2019-03-09-IP地址存储算法/" rel="next" title="IP地址存储算法">
+                <i class="fa fa-chevron-left"></i> IP地址存储算法
               </a>
             
           </div>
@@ -434,8 +469,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/alex.github.io/2018/10/11/2018-10-11-JVM垃圾收集器之六-CMS收集器/" rel="prev" title="JVM垃圾收集器之六（CMS收集器）">
-                JVM垃圾收集器之六（CMS收集器） <i class="fa fa-chevron-right"></i>
+              <a href="/alex.github.io/2019/03/26/2019-03-26-Java基础系列2-JPS/" rel="prev" title="Java基础系列2-JPS">
+                Java基础系列2-JPS <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -484,8 +519,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -588,6 +632,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#官方文档地址"><span class="nav-number">1.</span> <span class="nav-text">官方文档地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何找到类"><span class="nav-number">2.</span> <span class="nav-text">如何找到类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JVM加载类的顺序"><span class="nav-number">2.1.</span> <span class="nav-text">JVM加载类的顺序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JAVA如何在运行时找到BootStarp类"><span class="nav-number">2.2.</span> <span class="nav-text">JAVA如何在运行时找到BootStarp类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JAVA如何在运行时找到Extension类"><span class="nav-number">2.3.</span> <span class="nav-text">JAVA如何在运行时找到Extension类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JAVA如何在运行时找到User类"><span class="nav-number">2.4.</span> <span class="nav-text">JAVA如何在运行时找到User类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JAVA如何在运行时找到JAR-class-path"><span class="nav-number">2.5.</span> <span class="nav-text">JAVA如何在运行时找到JAR-class-path</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#javac和javadoc指令如何找到User类"><span class="nav-number">2.6.</span> <span class="nav-text">javac和javadoc指令如何找到User类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#类加载和安全策略"><span class="nav-number">2.7.</span> <span class="nav-text">类加载和安全策略</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
