@@ -111,14 +111,14 @@
   <meta name="description" content="近几天看到了一篇面试被虐文，被文中的题目狠狠虐了一遍，感觉到自己的底层知识和基础知识是多么的薄弱，这几天准备填一填文中的一些坑，今天是第一个部分，原题是redis的hash是如何实现的？很奇怪吧，这个题目从来没有想过，但是想想一下，这和Java中HashMap结构和源码问题一样，对结构的了解确实能带来很大的提升，并不只是一个造火箭的题目。下面好好描述下了解的步骤  Redis里的对象类型送分题，">
 <meta name="keywords" content="缓存">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis的Hash结构">
-<meta property="og:url" content="https://alexrencn.github.io/2019/06/25/2019-06-25-Redis的Hash结构/index.html">
+<meta property="og:title" content="Redis的Hash是如何实现的">
+<meta property="og:url" content="https://alexrencn.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/index.html">
 <meta property="og:site_name" content="Alex">
 <meta property="og:description" content="近几天看到了一篇面试被虐文，被文中的题目狠狠虐了一遍，感觉到自己的底层知识和基础知识是多么的薄弱，这几天准备填一填文中的一些坑，今天是第一个部分，原题是redis的hash是如何实现的？很奇怪吧，这个题目从来没有想过，但是想想一下，这和Java中HashMap结构和源码问题一样，对结构的了解确实能带来很大的提升，并不只是一个造火箭的题目。下面好好描述下了解的步骤  Redis里的对象类型送分题，">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-25T13:03:47.563Z">
+<meta property="og:updated_time" content="2019-06-26T07:31:34.017Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Redis的Hash结构">
+<meta name="twitter:title" content="Redis的Hash是如何实现的">
 <meta name="twitter:description" content="近几天看到了一篇面试被虐文，被文中的题目狠狠虐了一遍，感觉到自己的底层知识和基础知识是多么的薄弱，这几天准备填一填文中的一些坑，今天是第一个部分，原题是redis的hash是如何实现的？很奇怪吧，这个题目从来没有想过，但是想想一下，这和Java中HashMap结构和源码问题一样，对结构的了解确实能带来很大的提升，并不只是一个造火箭的题目。下面好好描述下了解的步骤  Redis里的对象类型送分题，">
 
 
@@ -126,7 +126,7 @@
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2019/06/25/2019-06-25-Redis的Hash结构/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>Redis的Hash结构 | Alex</title>
+  <title>Redis的Hash是如何实现的 | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/06/25/2019-06-25-Redis的Hash结构/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Redis的Hash结构
+          <h1 class="post-title" itemprop="name headline">Redis的Hash是如何实现的
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2019-06-25 21:03:47" itemprop="dateCreated datePublished" datetime="2019-06-25T21:03:47+08:00">2019-06-25</time>
+              <time title="创建时间：2019-06-26 15:31:34" itemprop="dateCreated datePublished" datetime="2019-06-26T15:31:34+08:00">2019-06-26</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2019/06/25/2019-06-25-Redis的Hash结构/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/06/25/2019-06-25-Redis的Hash结构/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2019/06/25/2019-06-25-Redis的Hash结构/" class="leancloud_visitors" data-flag-title="Redis的Hash结构">
+             <span id="/alex.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/" class="leancloud_visitors" data-flag-title="Redis的Hash是如何实现的">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -397,7 +397,7 @@
 <h4 id="Redis里的数据结构"><a href="#Redis里的数据结构" class="headerlink" title="Redis里的数据结构"></a>Redis里的数据结构</h4><blockquote>
 <p>在<code>server.h</code>文件里描述了所有的数据结构</p>
 </blockquote>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Objects encoding. Some kind of objects like Strings and Hashes can be</span></span><br><span class="line"><span class="comment"> * internally represented in multiple ways. The 'encoding' field of the object</span></span><br><span class="line"><span class="comment"> * is set to one of this fields for this object. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> R 0     <span class="comment">/* Raw representation 原始数据类型，SDS字符串 */</span> </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_INT 1     <span class="comment">/* Encoded as integer 整型 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_HT 2      <span class="comment">/* Encoded as hash table 哈希类型 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_ZIPMAP 3  <span class="comment">/* Encoded as zipmap 废弃类型，转为使用ZIPLIST */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_LINKEDLIST 4 <span class="comment">/* No longer used: old list encoding. 废弃类型，转为使用QUICKLIST */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_ZIPLIST 5 <span class="comment">/* Encoded as ziplist 压缩列表 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_INTSET 6  <span class="comment">/* Encoded as intset 整数集合 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_SKIPLIST 7  <span class="comment">/* Encoded as skiplist 跳表 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_EMBSTR 8  <span class="comment">/* Embedded sds string encoding 分配较小的字符串，EMBSTR字符串 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_QUICKLIST 9 <span class="comment">/* Encoded as linked list of ziplists 压缩列表组成的双向链表 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_STREAM 10 <span class="comment">/* Encoded as a radix tree of listpacks 消息队列 */</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Objects encoding. Some kind of objects like Strings and Hashes can be</span></span><br><span class="line"><span class="comment"> * internally represented in multiple ways. The 'encoding' field of the object</span></span><br><span class="line"><span class="comment"> * is set to one of this fields for this object. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_RAW 0     <span class="comment">/* Raw representation 原始数据类型，SDS字符串 */</span> </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_INT 1     <span class="comment">/* Encoded as integer 整型 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_HT 2      <span class="comment">/* Encoded as hash table 哈希类型 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_ZIPMAP 3  <span class="comment">/* Encoded as zipmap 废弃类型，转为使用ZIPLIST */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_LINKEDLIST 4 <span class="comment">/* No longer used: old list encoding. 废弃类型，转为使用QUICKLIST */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_ZIPLIST 5 <span class="comment">/* Encoded as ziplist 压缩列表 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_INTSET 6  <span class="comment">/* Encoded as intset 整数集合 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_SKIPLIST 7  <span class="comment">/* Encoded as skiplist 跳表 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_EMBSTR 8  <span class="comment">/* Embedded sds string encoding 分配较小的字符串，EMBSTR字符串 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_QUICKLIST 9 <span class="comment">/* Encoded as linked list of ziplists 压缩列表组成的双向链表 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_STREAM 10 <span class="comment">/* Encoded as a radix tree of listpacks 消息队列 */</span></span></span><br></pre></td></tr></table></figure>
 <h4 id="对象类型和数据结构的对应关系"><a href="#对象类型和数据结构的对应关系" class="headerlink" title="对象类型和数据结构的对应关系"></a>对象类型和数据结构的对应关系</h4><blockquote>
 <p>在<code>server.h</code>文件里描述了所有的创建关系，散列在各个方法中，这里整理出了一份，并不代表每一种都会用到，每种对象会在不同的情况下选择不同的数据结构，比如String类型在44字符一下会采用EMBSTR方式，以用来节省内存（随版本有变化）。</p>
 </blockquote>
@@ -408,7 +408,7 @@
 <ul>
 <li>OBJ_LIST</li>
 </ul>
-<p>QUICKLIST、ZIPLIST</p>
+<p>OBJ_ENCODING_LINKEDLIST、OBJ_ENCODING_QUICKLIST、OBJ_ENCODING_ZIPLIST</p>
 <ul>
 <li>OBJ_SET</li>
 </ul>
@@ -461,8 +461,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2019/04/28/2019-04-28-【转】一文带你吃透线程池  /" rel="next" title="【转】一文带你吃透线程池">
-                <i class="fa fa-chevron-left"></i> 【转】一文带你吃透线程池
+              <a href="/alex.github.io/2019/06/26/2019-06-26-Redis的Hash结构和Rehash/" rel="next" title="Redis的Hash结构和Rehash">
+                <i class="fa fa-chevron-left"></i> Redis的Hash结构和Rehash
               </a>
             
           </div>
@@ -470,10 +470,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/alex.github.io/2019/06/25/2019-05-21-Arthas笔记/" rel="prev" title="Arthas笔记">
-                Arthas笔记 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -546,7 +542,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">53</span>
+                    <span class="site-state-item-count">54</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
