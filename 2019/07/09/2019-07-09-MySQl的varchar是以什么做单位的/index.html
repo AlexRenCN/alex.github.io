@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="在最近的学习中发现了一个功能强大的工具集amino，可以使用无锁算法处理线程冲突问题，并且内置提供了list/set/tree/graph/master-worker等一系列的应用场景，急匆匆的尝试使用和进行性能测试，却发现该工具只有jar包，在常用的maven服务器上没有引用。。。在一顿脑抽想添加到library之后，想起来之前公司使用的是私服，在使用其他公司提供的加解密包时，都是将新的jar包">
-<meta name="keywords" content="JAVA">
+  <meta name="description" content="测试环境出现了一个数据长度过长的bug，原因是测试环境数据的不正确，该字段设置的是varchar(4096)单位，这时候在内心问了下自己，varchar的单位是字节还是字符？然后就不知道了。。。。 字节和字符字节 来自百度百科  字节（Byte ）是计算机信息技术用于计量存储容量的一种计量单位，作为一个单位来处理的一个二进制数字串，是构成信息的一个小单位。最常用的字节是八位的字节，即它包含八位的">
+<meta name="keywords" content="数据库">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用IDEA安装Jar到本地Maven仓库">
-<meta property="og:url" content="https://alexrencn.github.io/2019/01/07/2019-01-07-使用IDEA安装Jar到本地Maven仓库/index.html">
+<meta property="og:title" content="MySQl的varchar是以什么做单位的">
+<meta property="og:url" content="https://alexrencn.github.io/2019/07/09/2019-07-09-MySQl的varchar是以什么做单位的/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="在最近的学习中发现了一个功能强大的工具集amino，可以使用无锁算法处理线程冲突问题，并且内置提供了list/set/tree/graph/master-worker等一系列的应用场景，急匆匆的尝试使用和进行性能测试，却发现该工具只有jar包，在常用的maven服务器上没有引用。。。在一顿脑抽想添加到library之后，想起来之前公司使用的是私服，在使用其他公司提供的加解密包时，都是将新的jar包">
+<meta property="og:description" content="测试环境出现了一个数据长度过长的bug，原因是测试环境数据的不正确，该字段设置的是varchar(4096)单位，这时候在内心问了下自己，varchar的单位是字节还是字符？然后就不知道了。。。。 字节和字符字节 来自百度百科  字节（Byte ）是计算机信息技术用于计量存储容量的一种计量单位，作为一个单位来处理的一个二进制数字串，是构成信息的一个小单位。最常用的字节是八位的字节，即它包含八位的">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-07T15:22:37.438Z">
+<meta property="og:updated_time" content="2019-07-09T08:40:11.813Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用IDEA安装Jar到本地Maven仓库">
-<meta name="twitter:description" content="在最近的学习中发现了一个功能强大的工具集amino，可以使用无锁算法处理线程冲突问题，并且内置提供了list/set/tree/graph/master-worker等一系列的应用场景，急匆匆的尝试使用和进行性能测试，却发现该工具只有jar包，在常用的maven服务器上没有引用。。。在一顿脑抽想添加到library之后，想起来之前公司使用的是私服，在使用其他公司提供的加解密包时，都是将新的jar包">
+<meta name="twitter:title" content="MySQl的varchar是以什么做单位的">
+<meta name="twitter:description" content="测试环境出现了一个数据长度过长的bug，原因是测试环境数据的不正确，该字段设置的是varchar(4096)单位，这时候在内心问了下自己，varchar的单位是字节还是字符？然后就不知道了。。。。 字节和字符字节 来自百度百科  字节（Byte ）是计算机信息技术用于计量存储容量的一种计量单位，作为一个单位来处理的一个二进制数字串，是构成信息的一个小单位。最常用的字节是八位的字节，即它包含八位的">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2019/01/07/2019-01-07-使用IDEA安装Jar到本地Maven仓库/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2019/07/09/2019-07-09-MySQl的varchar是以什么做单位的/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>使用IDEA安装Jar到本地Maven仓库 | Alex</title>
+  <title>MySQl的varchar是以什么做单位的 | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/01/07/2019-01-07-使用IDEA安装Jar到本地Maven仓库/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/07/09/2019-07-09-MySQl的varchar是以什么做单位的/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">使用IDEA安装Jar到本地Maven仓库
+          <h1 class="post-title" itemprop="name headline">MySQl的varchar是以什么做单位的
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2019-01-07 23:22:37" itemprop="dateCreated datePublished" datetime="2019-01-07T23:22:37+08:00">2019-01-07</time>
+              <time title="创建时间：2019-07-09 16:40:11" itemprop="dateCreated datePublished" datetime="2019-07-09T16:40:11+08:00">2019-07-09</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2019/01/07/2019-01-07-使用IDEA安装Jar到本地Maven仓库/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/01/07/2019-01-07-使用IDEA安装Jar到本地Maven仓库/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2019/07/09/2019-07-09-MySQl的varchar是以什么做单位的/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/07/09/2019-07-09-MySQl的varchar是以什么做单位的/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2019/01/07/2019-01-07-使用IDEA安装Jar到本地Maven仓库/" class="leancloud_visitors" data-flag-title="使用IDEA安装Jar到本地Maven仓库">
+             <span id="/alex.github.io/2019/07/09/2019-07-09-MySQl的varchar是以什么做单位的/" class="leancloud_visitors" data-flag-title="MySQl的varchar是以什么做单位的">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -382,19 +382,24 @@
       
 
       
-        <p>在最近的学习中发现了一个功能强大的工具集amino，可以使用无锁算法处理线程冲突问题，并且内置提供了list/set/tree/graph/master-worker等一系列的应用场景，急匆匆的尝试使用和进行性能测试，却发现该工具只有jar包，在常用的maven服务器上没有引用。。。<br><br>在一顿脑抽想添加到library之后，想起来之前公司使用的是私服，在使用其他公司提供的加解密包时，都是将新的jar包添加到maven仓库解决的，于是尝试了一下使用idea添加到本地的maven库</p>
-<h4 id="准备材料"><a href="#准备材料" class="headerlink" title="准备材料"></a>准备材料</h4><ul>
-<li>有maven环境的Idea工具，我使用的是自带的maven插件，这个并不影响</li>
-<li>amino的相关jar包</li>
-</ul>
-<h4 id="开始打包"><a href="#开始打包" class="headerlink" title="开始打包"></a>开始打包</h4><h5 id="打开execute-maven-goal"><a href="#打开execute-maven-goal" class="headerlink" title="打开execute maven goal"></a>打开execute maven goal</h5><p>这一步就是在idea的右边菜单，找到Maven Projects，打开之后在上方的图标栏中找到一个右下角有小m的图标</p>
-<h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><p>有两个参数需要写，第一个是Working Dictionary，这个会自动帮我们填写，不用关注，第二个是Command line，填写想要的命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">install:install-file -Dfile=&lt;路径&gt; </span><br><span class="line">                     -DgroupId=&lt;GroupId&gt; </span><br><span class="line">                     -DartifactId=&lt;artifactId&gt; </span><br><span class="line">                     -Dversion=&lt;version&gt; </span><br><span class="line">                     -Dpackaging=&lt;打包方式&gt;</span><br></pre></td></tr></table></figure>
-<p>比如我这次填写的是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">install:install-file -Dfile=/Users/alex/Downloads/amino-java-bin-1.0.jar </span><br><span class="line">                     -DgroupId=org.amino </span><br><span class="line">                     -DartifactId=amino-bin </span><br><span class="line">                     -Dversion=1.0 </span><br><span class="line">                     -Dpackaging=Jar</span><br></pre></td></tr></table></figure></p>
-<p>点击Execute，就看到平时熟悉的maven打包界面 提示成功</p>
-<h5 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h5><p>在pom中添加<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.amino<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>amino-bin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>没有高亮错误提示，实际项目中可用</p>
-<p>####总结<br>平时只是会用maven这个工具的小部分内容，一般也不会实际操作这些部分，<br>在碰到用的时候反而觉得自己只是写个例子，能用就行，这样的想法下，如果问题暴露在真正需要使用的时刻，让我上手却无法解决，现场谷歌，<br>那就失去了在工作中的价值了，虽然只是个小tips，但是能接触的东西，亲自写一下，总比只说不做好</p>
+        <a id="more"></a>
+<p>测试环境出现了一个数据长度过长的bug，原因是测试环境数据的不正确，该字段设置的是varchar(4096)单位，<br>这时候在内心问了下自己，varchar的单位是字节还是字符？<br><br>然后就不知道了。。。。</p>
+<h4 id="字节和字符"><a href="#字节和字符" class="headerlink" title="字节和字符"></a>字节和字符</h4><h5 id="字节"><a href="#字节" class="headerlink" title="字节"></a>字节</h5><blockquote>
+<p>来自百度百科</p>
+</blockquote>
+<p>字节（Byte ）是计算机信息技术用于计量存储容量的一种计量单位，作为一个单位来处理的一个二进制数字串，是构成信息的一个小单位。最常用的字节是八位的字节，即它包含八位的二进制数。</p>
+<h5 id="字符"><a href="#字符" class="headerlink" title="字符"></a>字符</h5><blockquote>
+<p>来自百度百科</p>
+</blockquote>
+<p>表示数据和信息的字母、数字或其他符号。在电子计算机中，每一个字符与一个二进制编码相对应。</p>
+<h5 id="举例"><a href="#举例" class="headerlink" title="举例"></a>举例</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">	String str=<span class="string">"一二三四五六七八九十一二三四五六七八九十"</span>;</span><br><span class="line">	System.out.println(str.getBytes().length);<span class="comment">//60</span></span><br><span class="line">	System.out.println(str.length());<span class="comment">//20</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，一二三四五六七八九十一二三四五六七八九十的字符是20个，占用了60字节</p>
+<h4 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h4><h5 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> testTable</span><br><span class="line">(</span><br><span class="line">  <span class="keyword">id</span>             <span class="built_in">bigint</span> <span class="keyword">unsigned</span> auto_increment</span><br><span class="line">  <span class="keyword">comment</span> <span class="string">'主键'</span></span><br><span class="line">    primary <span class="keyword">key</span>,</span><br><span class="line">  extend         <span class="built_in">varchar</span>(<span class="number">20</span>)                         <span class="literal">null</span></span><br><span class="line">)</span><br><span class="line">  <span class="keyword">comment</span> <span class="string">'测试表'</span>;</span><br></pre></td></tr></table></figure>
+<h5 id="插入测试数据"><a href="#插入测试数据" class="headerlink" title="插入测试数据"></a>插入测试数据</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> testTable(extend) <span class="keyword">values</span> (<span class="string">"一二三四五六七八九十一二三四五六七八九十"</span> );</span><br></pre></td></tr></table></figure>
+<h5 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h5><p>1 row affected in 44 ms<br><br>插入成功，问题的答案是以字符为单位。</p>
+<h4 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h4><p><a href="https://dev.mysql.com/doc/refman/8.0/en/string-type-overview.html" target="_blank" rel="noopener">官网传送门</a></p>
+<p>MySQL interprets length specifications in character column definitions in character units. This applies to CHAR, VARCHAR, and the TEXT types.<br></p>
+<p>MySQL以字符为单位解释字符列定义中的长度规范。这适用于 CHAR， VARCHAR和 TEXT类型。</p>
 
       
     </div>
@@ -415,7 +420,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/JAVA/" rel="tag"># JAVA</a>
+            <a href="/alex.github.io/tags/数据库/" rel="tag"># 数据库</a>
           
         </div>
       
@@ -428,8 +433,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/12/25/2018-12-25-Linux监控之top/" rel="next" title="Linux监控之top">
-                <i class="fa fa-chevron-left"></i> Linux监控之top
+              <a href="/alex.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/" rel="next" title="Redis的Hash是如何实现的">
+                <i class="fa fa-chevron-left"></i> Redis的Hash是如何实现的
               </a>
             
           </div>
@@ -437,10 +442,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/alex.github.io/2019/01/17/2019-01-17-分库分表的利器-一致性哈希算法/" rel="prev" title="分库分表的利器-一致性哈希算法">
-                分库分表的利器-一致性哈希算法 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -613,7 +614,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#准备材料"><span class="nav-number">1.</span> <span class="nav-text">准备材料</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开始打包"><span class="nav-number">2.</span> <span class="nav-text">开始打包</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#打开execute-maven-goal"><span class="nav-number">2.1.</span> <span class="nav-text">打开execute maven goal</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装"><span class="nav-number">2.2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#引用"><span class="nav-number">2.3.</span> <span class="nav-text">引用</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#字节和字符"><span class="nav-number">1.</span> <span class="nav-text">字节和字符</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#字节"><span class="nav-number">1.1.</span> <span class="nav-text">字节</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#字符"><span class="nav-number">1.2.</span> <span class="nav-text">字符</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#举例"><span class="nav-number">1.3.</span> <span class="nav-text">举例</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#验证"><span class="nav-number">2.</span> <span class="nav-text">验证</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#创建表"><span class="nav-number">2.1.</span> <span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#插入测试数据"><span class="nav-number">2.2.</span> <span class="nav-text">插入测试数据</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#结果"><span class="nav-number">2.3.</span> <span class="nav-text">结果</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文档"><span class="nav-number">3.</span> <span class="nav-text">文档</span></a></li></ol></div>
             
 
           </div>
