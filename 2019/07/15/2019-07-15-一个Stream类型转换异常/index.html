@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="生产项目中很久没有使用过自增列，本文针对MySQL的InnoDB引擎对自增列进行分析 如何使用自增列create table tab (id int auto_increment) 优点 自增列天然有序，作为主键的时候数据分布可以预估 InnoDB引擎默认会将第一个不包含Null的唯一索引作为主键索引，如果没有符合条件的索引，会创建一个隐含的Rowid，该索引属于聚集索引。 聚集索引在子叶数据放">
-<meta name="keywords" content="数据库">
+  <meta name="description" content="纯属犯蠢，可以看一看，没有什么可以学到的东西  在分析Stream的时候写的测试代码出现了异常，那为什么Arrays.asList会出现ClassCastException？  代码123456789101112131415public static void main(String[] args) &amp;#123;	int[] ints=new int[]&amp;#123;1,2,3,4,5,6,7,8,">
+<meta name="keywords" content="JAVA">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQL自增列优缺点">
-<meta property="og:url" content="https://alexrencn.github.io/2018/09/18/2018-08-28-MySQL自增列优缺点/index.html">
+<meta property="og:title" content="一个Stream类型转换异常">
+<meta property="og:url" content="https://alexrencn.github.io/2019/07/15/2019-07-15-一个Stream类型转换异常/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="生产项目中很久没有使用过自增列，本文针对MySQL的InnoDB引擎对自增列进行分析 如何使用自增列create table tab (id int auto_increment) 优点 自增列天然有序，作为主键的时候数据分布可以预估 InnoDB引擎默认会将第一个不包含Null的唯一索引作为主键索引，如果没有符合条件的索引，会创建一个隐含的Rowid，该索引属于聚集索引。 聚集索引在子叶数据放">
+<meta property="og:description" content="纯属犯蠢，可以看一看，没有什么可以学到的东西  在分析Stream的时候写的测试代码出现了异常，那为什么Arrays.asList会出现ClassCastException？  代码123456789101112131415public static void main(String[] args) &amp;#123;	int[] ints=new int[]&amp;#123;1,2,3,4,5,6,7,8,">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-18T15:07:23.928Z">
+<meta property="og:updated_time" content="2019-07-15T08:59:06.798Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MySQL自增列优缺点">
-<meta name="twitter:description" content="生产项目中很久没有使用过自增列，本文针对MySQL的InnoDB引擎对自增列进行分析 如何使用自增列create table tab (id int auto_increment) 优点 自增列天然有序，作为主键的时候数据分布可以预估 InnoDB引擎默认会将第一个不包含Null的唯一索引作为主键索引，如果没有符合条件的索引，会创建一个隐含的Rowid，该索引属于聚集索引。 聚集索引在子叶数据放">
+<meta name="twitter:title" content="一个Stream类型转换异常">
+<meta name="twitter:description" content="纯属犯蠢，可以看一看，没有什么可以学到的东西  在分析Stream的时候写的测试代码出现了异常，那为什么Arrays.asList会出现ClassCastException？  代码123456789101112131415public static void main(String[] args) &amp;#123;	int[] ints=new int[]&amp;#123;1,2,3,4,5,6,7,8,">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/09/18/2018-08-28-MySQL自增列优缺点/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2019/07/15/2019-07-15-一个Stream类型转换异常/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>MySQL自增列优缺点 | Alex</title>
+  <title>一个Stream类型转换异常 | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/18/2018-08-28-MySQL自增列优缺点/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/07/15/2019-07-15-一个Stream类型转换异常/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">MySQL自增列优缺点
+          <h1 class="post-title" itemprop="name headline">一个Stream类型转换异常
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-09-18 23:07:23" itemprop="dateCreated datePublished" datetime="2018-09-18T23:07:23+08:00">2018-09-18</time>
+              <time title="创建时间：2019-07-15 16:59:06" itemprop="dateCreated datePublished" datetime="2019-07-15T16:59:06+08:00">2019-07-15</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/09/18/2018-08-28-MySQL自增列优缺点/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/18/2018-08-28-MySQL自增列优缺点/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2019/07/15/2019-07-15-一个Stream类型转换异常/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/07/15/2019-07-15-一个Stream类型转换异常/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/09/18/2018-08-28-MySQL自增列优缺点/" class="leancloud_visitors" data-flag-title="MySQL自增列优缺点">
+             <span id="/alex.github.io/2019/07/15/2019-07-15-一个Stream类型转换异常/" class="leancloud_visitors" data-flag-title="一个Stream类型转换异常">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -382,17 +382,17 @@
       
 
       
-        <a id="more"></a>
-<p>生产项目中很久没有使用过自增列，本文针对MySQL的InnoDB引擎对自增列进行分析</p>
-<h4 id="如何使用自增列"><a href="#如何使用自增列" class="headerlink" title="如何使用自增列"></a>如何使用自增列</h4><p>create table tab (id int auto_increment)</p>
-<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
-<li>自增列天然有序，作为主键的时候数据分布可以预估</li>
-<li>InnoDB引擎默认会将第一个不包含Null的唯一索引作为主键索引，如果没有符合条件的索引，会创建一个隐含的Rowid，该索引属于聚集索引。</li>
-<li>聚集索引在子叶数据放满的时候回进行页分裂，自增列保证了数据添加只会操作最后的页，数据放满后开辟新的页，不会对之前的数据进行分裂，移动，减少了空间碎片<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4></li>
-<li>自增列只能针对单个数据库，无法进行数据库的拆分（通过自增量进行区分，但是不灵活，也无法一致扩展）</li>
-<li>可能会出现不连续的问题（ID不做任何业务，只关心是否相等）</li>
-<li>自增列无法保证唯一（通过唯一约束避免）</li>
-</ul>
+        <p>纯属犯蠢，可以看一看，没有什么可以学到的东西</p>
+<blockquote>
+<p>在分析Stream的时候写的测试代码出现了异常，那为什么Arrays.asList会出现ClassCastException？</p>
+</blockquote>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span>[] ints=<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>&#125;;</span><br><span class="line">	List lists=Arrays.asList(ints);</span><br><span class="line">	Optional anInt=lists.stream().filter(</span><br><span class="line">           a-&gt;&#123;</span><br><span class="line">               <span class="keyword">return</span> (<span class="keyword">int</span>)a &gt;<span class="number">100</span>;</span><br><span class="line">           &#125;</span><br><span class="line">	).max(<span class="keyword">new</span> Comparator&lt;Object&gt;() &#123;</span><br><span class="line">               <span class="meta">@Override</span></span><br><span class="line">               <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Object o1, Object o2)</span> </span>&#123;</span><br><span class="line">                   <span class="keyword">return</span> Integer.compare((<span class="keyword">int</span>)o1,(<span class="keyword">int</span>)o2);</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">	);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="执行结果"><a href="#执行结果" class="headerlink" title="执行结果"></a>执行结果</h3><p>执行结果为 <strong>Exception in thread “main” java.lang.ClassCastException: [I cannot be cast to java.lang.Integer</strong></p>
+<h3 id="开始分析"><a href="#开始分析" class="headerlink" title="开始分析"></a>开始分析</h3><p>看一下asList方法做了些什么，首先他构建了一个内部的ArrayList</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Arrays.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">List&lt;T&gt; <span class="title">asList</span><span class="params">(T... a)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 这里是内部类，不是平时用的ArrayList</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ArrayList&lt;&gt;(a);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再来看这个内部类是如何构造的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Arrays.ArrayList.java</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> E[] a;</span><br><span class="line"></span><br><span class="line">ArrayList(E[] array) &#123;</span><br><span class="line">    a = Objects.requireNonNull(array);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>为什么asList的参数是一个不定参。。。难道。。。<br><br>打开断点进行Debug，果然lists的实际size为1，包含了一个int[]数组，其实这个方法并不是把数组转换为集合而是把所有参数放到一个集合中。</p>
 
       
     </div>
@@ -413,7 +413,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/数据库/" rel="tag"># 数据库</a>
+            <a href="/alex.github.io/tags/JAVA/" rel="tag"># JAVA</a>
           
         </div>
       
@@ -426,8 +426,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/09/18/2018-08-22-支付系统设计/" rel="next" title="支付系统的设计">
-                <i class="fa fa-chevron-left"></i> 支付系统的设计
+              <a href="/alex.github.io/2019/07/09/2019-07-09-BigDecimal精度丢失Bug分析/" rel="next" title="BigDecimal精度丢失Bug分析">
+                <i class="fa fa-chevron-left"></i> BigDecimal精度丢失Bug分析
               </a>
             
           </div>
@@ -436,8 +436,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/alex.github.io/2018/09/18/2018-08-27-1.8HashMap链表转红黑树/" rel="prev" title="1.8HashMap链表转红黑树">
-                1.8HashMap链表转红黑树 <i class="fa fa-chevron-right"></i>
+              <a href="/alex.github.io/2019/07/15/2019-07-15-JDK8Stream需要考虑什么异常/" rel="prev" title="JDK8Stream需要考虑什么异常？">
+                JDK8Stream需要考虑什么异常？ <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -611,7 +611,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#如何使用自增列"><span class="nav-number">1.</span> <span class="nav-text">如何使用自增列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#优点"><span class="nav-number">2.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缺点"><span class="nav-number">3.</span> <span class="nav-text">缺点</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">1.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行结果"><span class="nav-number">2.</span> <span class="nav-text">执行结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始分析"><span class="nav-number">3.</span> <span class="nav-text">开始分析</span></a></li></ol></div>
             
 
           </div>
