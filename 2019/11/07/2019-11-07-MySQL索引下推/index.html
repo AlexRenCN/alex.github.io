@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="Serial收集器是java最古老，最基础的垃圾回收器，该回收器具有以下特点：  使用一个线程及CPU进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对新生代，采用复制算法 可以和CMS收集器以及Serial Old（MSC）收集器结合使用 没有现成交互开销，简单高效（单CPU收集情况下） 开启方式-XX:+UseSerialGC">
-<meta name="keywords" content="JVM">
+  <meta name="description" content="什么是索引下推 Index Condition Pushdown (ICP) is an optimization for the case where MySQL retrieves rows from a table using an index. Without ICP, the storage engine traverses the index to locate rows in the">
+<meta name="keywords" content="MySQL,索引">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JVM垃圾收集器之一（Serial收集器）">
-<meta property="og:url" content="https://alexrencn.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/index.html">
+<meta property="og:title" content="MySQL索引下推">
+<meta property="og:url" content="https://alexrencn.github.io/2019/11/07/2019-11-07-MySQL索引下推/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="Serial收集器是java最古老，最基础的垃圾回收器，该回收器具有以下特点：  使用一个线程及CPU进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对新生代，采用复制算法 可以和CMS收集器以及Serial Old（MSC）收集器结合使用 没有现成交互开销，简单高效（单CPU收集情况下） 开启方式-XX:+UseSerialGC">
+<meta property="og:description" content="什么是索引下推 Index Condition Pushdown (ICP) is an optimization for the case where MySQL retrieves rows from a table using an index. Without ICP, the storage engine traverses the index to locate rows in the">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-10-04T14:03:35.192Z">
+<meta property="og:updated_time" content="2019-11-07T07:11:43.664Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JVM垃圾收集器之一（Serial收集器）">
-<meta name="twitter:description" content="Serial收集器是java最古老，最基础的垃圾回收器，该回收器具有以下特点：  使用一个线程及CPU进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对新生代，采用复制算法 可以和CMS收集器以及Serial Old（MSC）收集器结合使用 没有现成交互开销，简单高效（单CPU收集情况下） 开启方式-XX:+UseSerialGC">
+<meta name="twitter:title" content="MySQL索引下推">
+<meta name="twitter:description" content="什么是索引下推 Index Condition Pushdown (ICP) is an optimization for the case where MySQL retrieves rows from a table using an index. Without ICP, the storage engine traverses the index to locate rows in the">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2019/11/07/2019-11-07-MySQL索引下推/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>JVM垃圾收集器之一（Serial收集器） | Alex</title>
+  <title>MySQL索引下推 | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/11/07/2019-11-07-MySQL索引下推/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">JVM垃圾收集器之一（Serial收集器）
+          <h1 class="post-title" itemprop="name headline">MySQL索引下推
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-10-04 22:03:35" itemprop="dateCreated datePublished" datetime="2018-10-04T22:03:35+08:00">2018-10-04</time>
+              <time title="创建时间：2019-11-07 15:11:43" itemprop="dateCreated datePublished" datetime="2019-11-07T15:11:43+08:00">2019-11-07</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2019/11/07/2019-11-07-MySQL索引下推/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/11/07/2019-11-07-MySQL索引下推/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/10/04/2018-10-04-JVM垃圾收集器之一-Serial收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之一（Serial收集器）">
+             <span id="/alex.github.io/2019/11/07/2019-11-07-MySQL索引下推/" class="leancloud_visitors" data-flag-title="MySQL索引下推">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -382,16 +382,27 @@
       
 
       
-        <a id="more"></a>
-<p>Serial收集器是java最古老，最基础的垃圾回收器，该回收器具有以下特点：</p>
+        <h3 id="什么是索引下推"><a href="#什么是索引下推" class="headerlink" title="什么是索引下推"></a>什么是索引下推</h3><blockquote>
+<p>Index Condition Pushdown (ICP) is an optimization for the case where MySQL retrieves rows from a table using an index. Without ICP, the storage engine traverses the index to locate rows in the base table and returns them to the MySQL server which evaluates the WHERE condition for the rows. With ICP enabled, and if parts of the WHERE condition can be evaluated by using only columns from the index, the MySQL server pushes this part of the WHERE condition down to the storage engine. The storage engine then evaluates the pushed index condition by using the index entry and only if this is satisfied is the row read from the table. ICP can reduce the number of times the storage engine must access the base table and the number of times the MySQL server must access the storage engine.</p>
+</blockquote>
+<p>索引条件下推（ICP）是针对MySQL使用索引从表中检索行的情况的一种优化。如果不使用ICP，则存储引擎将遍历索引以在基表中定位行，并将其返回给MySQL服务器，后者将评估WHERE行的条件。启用ICP后，如果WHERE可以仅使用索引中的列来评估部分 条件，则MySQL服务器会将这部分条件压入WHERE条件下降到存储引擎。然后，存储引擎通过使用索引条目来评估推送的索引条件，并且只有在满足此条件的情况下，才从表中读取行。ICP可以减少存储引擎必须访问基表的次数以及MySQL服务器必须访问存储引擎的次数。</p>
+<h3 id="索引下推解决了什么问题"><a href="#索引下推解决了什么问题" class="headerlink" title="索引下推解决了什么问题"></a>索引下推解决了什么问题</h3><p>where条件有多个时，如果使用索引进行定位，原来的模式下需要将所有满足条件的行返回给MySQL服务器，由服务器根据其他条件筛选和评估数据，此时可能因为前面的条件过滤数据不够多而造成多次回表</p>
+<h3 id="什么时候触发索引下推"><a href="#什么时候触发索引下推" class="headerlink" title="什么时候触发索引下推"></a>什么时候触发索引下推</h3><p>默认情况下，索引条件下推处于启用状态。可以optimizer_switch通过设置index_condition_pushdown标志使用系统变量 进行控制 ：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SET</span> optimizer_switch = <span class="string">'index_condition_pushdown=off'</span>;</span><br><span class="line"><span class="keyword">SET</span> optimizer_switch = <span class="string">'index_condition_pushdown=on'</span>;</span><br></pre></td></tr></table></figure>
 <ol>
-<li>使用一个线程及CPU进行垃圾回收</li>
-<li>进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成</li>
-<li>针对新生代，采用复制算法</li>
-<li>可以和CMS收集器以及Serial Old（MSC）收集器结合使用</li>
-<li>没有现成交互开销，简单高效（单CPU收集情况下）</li>
-<li>开启方式-XX:+UseSerialGC</li>
+<li>有一个条件需要访问全部表行</li>
+<li>适用于分区表</li>
+<li>对于InnoDB，适用于二级索引</li>
+<li>虚拟列上的二级索引不存在ICP，但是InnoDB实现了这个功能</li>
 </ol>
+<h3 id="什么时候不能触发索引下推"><a href="#什么时候不能触发索引下推" class="headerlink" title="什么时候不能触发索引下推"></a>什么时候不能触发索引下推</h3><ol>
+<li>子查询的条件无法下推</li>
+<li>涉及到存储功能的条件无法下推，存储引擎无法调用存储的功能</li>
+<li>触发条件不能下推</li>
+</ol>
+<h3 id="索引下推产生的变化"><a href="#索引下推产生的变化" class="headerlink" title="索引下推产生的变化"></a>索引下推产生的变化</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> people</span><br><span class="line">  <span class="keyword">WHERE</span> zipcode=<span class="string">'95054'</span></span><br><span class="line">  <span class="keyword">AND</span> lastname <span class="keyword">LIKE</span> <span class="string">'%etrunia%'</span></span><br><span class="line">  <span class="keyword">AND</span> address <span class="keyword">LIKE</span> <span class="string">'%Main Street%'</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="索引下推之前"><a href="#索引下推之前" class="headerlink" title="索引下推之前"></a>索引下推之前</h4><p>MySQL可以使用索引扫描具有的人员 zipcode=’95054’。第二部分（lastname LIKE ‘%etrunia%’）不能用于限制必须扫描的行数，因此，如果没有“索引条件下推”，此查询必须为所有具有的人员检索完整的表行 zipcode=’95054’。</p>
+<h4 id="索引下推之后"><a href="#索引下推之后" class="headerlink" title="索引下推之后"></a>索引下推之后</h4><p>通过“索引条件下推”，MySQL lastname LIKE ‘%etrunia%’在读取整个表行之前会检查该 部分。这样可以避免读取与zipcode条件而不是 lastname条件匹配的索引元组对应的完整行 。</p>
 
       
     </div>
@@ -412,7 +423,9 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/JVM/" rel="tag"># JVM</a>
+            <a href="/alex.github.io/tags/MySQL/" rel="tag"># MySQL</a>
+          
+            <a href="/alex.github.io/tags/索引/" rel="tag"># 索引</a>
           
         </div>
       
@@ -425,8 +438,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/09/29/2018-09-29-TOMCAT结构分析/" rel="next" title="TOMCAT结构分析">
-                <i class="fa fa-chevron-left"></i> TOMCAT结构分析
+              <a href="/alex.github.io/2019/07/15/2019-07-15-JDK8Stream需要考虑什么异常/" rel="next" title="JDK8Stream需要考虑什么异常？">
+                <i class="fa fa-chevron-left"></i> JDK8Stream需要考虑什么异常？
               </a>
             
           </div>
@@ -434,10 +447,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/alex.github.io/2018/10/10/2018-10-10-ELK搭建以及项目整合记录/" rel="prev" title="ELK搭建以及项目整合记录">
-                ELK搭建以及项目整合记录 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -485,8 +494,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -591,6 +609,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是索引下推"><span class="nav-number">1.</span> <span class="nav-text">什么是索引下推</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引下推解决了什么问题"><span class="nav-number">2.</span> <span class="nav-text">索引下推解决了什么问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么时候触发索引下推"><span class="nav-number">3.</span> <span class="nav-text">什么时候触发索引下推</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#什么时候不能触发索引下推"><span class="nav-number">4.</span> <span class="nav-text">什么时候不能触发索引下推</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#索引下推产生的变化"><span class="nav-number">5.</span> <span class="nav-text">索引下推产生的变化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#索引下推之前"><span class="nav-number">5.1.</span> <span class="nav-text">索引下推之前</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#索引下推之后"><span class="nav-number">5.2.</span> <span class="nav-text">索引下推之后</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
