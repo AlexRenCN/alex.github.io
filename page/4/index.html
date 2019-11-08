@@ -285,6 +285,173 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/" itemprop="url">
+                  JVM垃圾收集器之四（Serial Old 收集器）
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-11 20:35:24" itemprop="dateCreated datePublished" datetime="2018-10-11T20:35:24+08:00">2018-10-11</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之四（Serial Old 收集器）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+          
+Serial Old收集器和Serial收集器类似，采用单线程进行垃圾收集，并且在工作室需要stop the world，两者的区别再去前者针对老年代，后者针对新生代
+
+使用单线程进行垃圾回收
+进行
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之四-Serial Old 收集器/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/11/2018-10-10-JVM垃圾收集器之五-Parallel Old收集器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1222,7 +1389,7 @@ Serial收集器是java最古老，最基础的垃圾回收器，该回收器具�
 
       
         
-          <p>原文<a href="https://mp.weixin.qq.com/s/D-lmaFwJBsiWIPmFIcfJnQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/D-lmaFwJBsiWIPmFIcfJnQ</a><br>
+          <p>原文<a href="https://mp.weixin.qq.com/s/D-lmaFwJBsiWIPmFIcfJnQ" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/D-lmaFwJBsiWIPmFIcfJnQ</a><br></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/alex.github.io/2018/09/29/2018-09-29-TOMCAT结构分析/#more" rel="contents">
@@ -1761,172 +1928,6 @@ Serial收集器是java最古老，最基础的垃圾回收器，该回收器具�
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/18/2018-09-12-SpringMVC流程解析/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Alex Ren">
-      <meta itemprop="description" content="JAVA之路">
-      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alex">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/alex.github.io/2018/09/18/2018-09-12-SpringMVC流程解析/" itemprop="url">
-                  SpringMVC流程解析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-09-18 23:07:23" itemprop="dateCreated datePublished" datetime="2018-09-18T23:07:23+08:00">2018-09-18</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/alex.github.io/2018/09/18/2018-09-12-SpringMVC流程解析/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/18/2018-09-12-SpringMVC流程解析/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-             <span id="/alex.github.io/2018/09/18/2018-09-12-SpringMVC流程解析/" class="leancloud_visitors" data-flag-title="SpringMVC流程解析">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数：</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-          
-重要domain说明
-DispatcherServlet     前端控制器，用于接收全部前段请求和分发请求，处理SpringMVC流程
-HandlerMapping        处理器映射器，从
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/alex.github.io/2018/09/18/2018-09-12-SpringMVC流程解析/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1974,7 +1975,7 @@ HandlerMapping        处理器映射器，从
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">59</span>
+                    <span class="site-state-item-count">60</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

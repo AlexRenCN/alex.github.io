@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/alex.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/alex.github.io/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/alex.github.io/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/alex.github.io/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/alex.github.io/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/alex.github.io/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/alex.github.io/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="事发描述在10月1日下午某服务线上5台机器出现严重问题，资源消耗打满并最终无法正常提供服务。   堆使用内存占满，从12点开始不停上升到18点，内存从2G升到8G最大值 Full GC可以触发 频繁GC，18点和20点GC count均有高峰，但没有带来内存回收效果 同一集群同一时间只有一台服务有问题  怀疑方向 服务器出现内存泄漏 该应用内置的主从策略引起选举为主的服务器出现问题 选举为主的服务">
+<meta name="keywords" content="JAVA,JVM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jvm-Sandbox内存溢出排查记录">
+<meta property="og:url" content="https://alexrencn.github.io/2019/11/08/2019-11-08-jvm-Sandbox内存溢出排查记录/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="事发描述在10月1日下午某服务线上5台机器出现严重问题，资源消耗打满并最终无法正常提供服务。   堆使用内存占满，从12点开始不停上升到18点，内存从2G升到8G最大值 Full GC可以触发 频繁GC，18点和20点GC count均有高峰，但没有带来内存回收效果 同一集群同一时间只有一台服务有问题  怀疑方向 服务器出现内存泄漏 该应用内置的主从策略引起选举为主的服务器出现问题 选举为主的服务">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://alexrencn.github.io/alex.github.io/.io//1.png">
+<meta property="og:image" content="https://alexrencn.github.io/alex.github.io/.io//2.png">
+<meta property="og:image" content="https://alexrencn.github.io/alex.github.io/.io//3.png">
+<meta property="og:image" content="https://alexrencn.github.io/alex.github.io/.io//4.png">
+<meta property="og:updated_time" content="2019-11-08T09:47:56.882Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="jvm-Sandbox内存溢出排查记录">
+<meta name="twitter:description" content="事发描述在10月1日下午某服务线上5台机器出现严重问题，资源消耗打满并最终无法正常提供服务。   堆使用内存占满，从12点开始不停上升到18点，内存从2G升到8G最大值 Full GC可以触发 频繁GC，18点和20点GC count均有高峰，但没有带来内存回收效果 同一集群同一时间只有一台服务有问题  怀疑方向 服务器出现内存泄漏 该应用内置的主从策略引起选举为主的服务器出现问题 选举为主的服务">
+<meta name="twitter:image" content="https://alexrencn.github.io/alex.github.io/.io//1.png">
+
+
+
+
+
+
+  <link rel="canonical" href="https://alexrencn.github.io/2019/11/08/2019-11-08-jvm-Sandbox内存溢出排查记录/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>jvm-Sandbox内存溢出排查记录 | Alex</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/alex.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alex</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">可达鸭眉头一紧，发现编程并不简单</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/alex.github.io/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/alex.github.io/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/11/08/2019-11-08-jvm-Sandbox内存溢出排查记录/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">jvm-Sandbox内存溢出排查记录
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-08 17:47:56" itemprop="dateCreated datePublished" datetime="2019-11-08T17:47:56+08:00">2019-11-08</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2019/11/08/2019-11-08-jvm-Sandbox内存溢出排查记录/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/11/08/2019-11-08-jvm-Sandbox内存溢出排查记录/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2019/11/08/2019-11-08-jvm-Sandbox内存溢出排查记录/" class="leancloud_visitors" data-flag-title="jvm-Sandbox内存溢出排查记录">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="事发描述"><a href="#事发描述" class="headerlink" title="事发描述"></a>事发描述</h3><p>在10月1日下午某服务线上5台机器出现严重问题，资源消耗打满并最终无法正常提供服务。</p>
+<p><img src="/alex.github.io/.io//1.png" alt="服务器监控"><br><img src="/alex.github.io/.io//2.png" alt="堆dump"></p>
+<ol>
+<li>堆使用内存占满，从12点开始不停上升到18点，内存从2G升到8G最大值</li>
+<li>Full GC可以触发</li>
+<li>频繁GC，18点和20点GC count均有高峰，但没有带来内存回收效果</li>
+<li>同一集群同一时间只有一台服务有问题</li>
+</ol>
+<h3 id="怀疑方向"><a href="#怀疑方向" class="headerlink" title="怀疑方向"></a>怀疑方向</h3><ol>
+<li>服务器出现内存泄漏</li>
+<li>该应用内置的主从策略引起选举为主的服务器出现问题</li>
+<li>选举为主的服务器单独运行的方法触发sandbox懒加载机制，使得该现象发生在运行期</li>
+</ol>
+<h3 id="需要解释的问题："><a href="#需要解释的问题：" class="headerlink" title="需要解释的问题："></a>需要解释的问题：</h3><ol>
+<li>为什么有内存泄漏</li>
+<li>什么时候触发的内存泄漏</li>
+<li>为什么只有一台有问题,而且是运行中发生<h3 id="解决过程："><a href="#解决过程：" class="headerlink" title="解决过程："></a>解决过程：</h3></li>
+</ol>
+<p>根据之前拿到的分析结果，可以看到SandboxClassLoader里有一个GaLRUCache对象发生了泄漏，使用OQL语句进行查询发现发生内存泄漏确实是发生在该对象上，该map扩展到了1048576个Entry，且总大小达到了8388632；</p>
+<p><br></p>
+<p>查看源码，改对象操作发生在ClassStructureImplByAsm类中，以ClassLoader和ClassName为唯一标识对类结构进行缓存</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> GaLRUCache&lt;Pair, ClassStructure&gt; classStructureCache = <span class="keyword">new</span> GaLRUCache(<span class="number">1024</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Pair pair = <span class="keyword">new</span> Pair(<span class="keyword">new</span> Object[]&#123;<span class="keyword">this</span>.loader, javaClassName&#125;);</span><br><span class="line"><span class="keyword">if</span> (classStructureCache.containsKey(pair)) &#123;</span><br><span class="line">    <span class="keyword">return</span> (ClassStructure)classStructureCache.get(pair);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    classStructureCache.put(xxxxx)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该Map存在的并发问题：GaLRUCache直接继承的LinkedHashMap，containKey方法没有重写，导致不断触发put所在的代码块，对这个map进行并发操作，而LinkedHashMap是一个线程不安全的map，并发操作导致该map的size对象变得无效，无法触发超过size阈值自动移除首位，使得该Map可以无限扩容</p>
+<p><br></p>
+<p>同时在堆dump中发现两个比较特殊的现象：</p>
+<table>
+<thead>
+<tr>
+<th>指标名称</th>
+<th>指标数据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>字节总数</td>
+<td>9,239,723,959</td>
+</tr>
+<tr>
+<td>类总数</td>
+<td><strong>160,616</strong></td>
+</tr>
+<tr>
+<td>实例总数</td>
+<td>56,294,016</td>
+</tr>
+<tr>
+<td>类加载器</td>
+<td><strong>136,976</strong></td>
+</tr>
+<tr>
+<td>垃圾回收根节点</td>
+<td>5,268</td>
+</tr>
+<tr>
+<td>等待结束的暂挂对象数</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>类总数和类加载器数量过多，在堆dump里发现基本上是GaLRUCache里缓存的Value，也就是ASMClassLoader对象</p>
+<h3 id="回归问题（第一次）："><a href="#回归问题（第一次）：" class="headerlink" title="回归问题（第一次）："></a>回归问题（第一次）：</h3><ol>
+<li><del>为什么有内存泄漏（sandbox源码问题）</del></li>
+<li>如何解决类加载器过多带来的额外占用</li>
+<li><del>什么时候触发的内存泄漏（sandbox插件将发现的类和插件需要监控的类进行匹配的时候）</del></li>
+<li>为什么只有一台有问题,而且是运行中发生<h3 id="尝试复现（第一次）："><a href="#尝试复现（第一次）：" class="headerlink" title="尝试复现（第一次）："></a>尝试复现（第一次）：</h3>我写了很多AdviceListener用来watch，使用正则表达式*来匹配所有类，并不断启停插件，希望通过不断触发类匹配复现该问题</li>
+</ol>
+<blockquote>
+<p>未解决，但是发现额外问题：</p>
+</blockquote>
+<p>类只会装载不会卸载，元数据区有泄漏风险</p>
+<h3 id="回归问题（第二次）："><a href="#回归问题（第二次）：" class="headerlink" title="回归问题（第二次）："></a>回归问题（第二次）：</h3><ol>
+<li><del>为什么有内存泄漏（sandbox源码问题）</del></li>
+<li>如何解决类加载器过多带来的额外占用</li>
+<li><del>什么时候触发的内存泄漏（sandbox插件将发现的类和插件需要监控的类进行匹配的时候）</del></li>
+<li>为什么只有一台有问题,而且是运行中发生(怀疑是路由策略导致一台机器比较明显)</li>
+<li>不停启停的场景下元数据区有内存泄漏风险</li>
+</ol>
+<p>因为想看一下ASMClassLoader为什么是多例的，搜了一下这个ClassLoader相关的文章，发现这个类是FastJson插件的类，用于在序列化/反序列化时生成临时类来处理json，通过这种方式提高性能，并且在某些容器下有类泄漏的先例，猜想会不会是fastjson的serialize方法动态生成Class导致Sandbox不停的认为发现了新的类，然后才触发的sandbox Map并发问题？在当时的堆Dump里也有大量Class来自ASMClassLoader</p>
+<blockquote>
+<p>与作者沟通，获得到的答案：是</p>
+</blockquote>
+<h3 id="尝试复现（第二次）"><a href="#尝试复现（第二次）" class="headerlink" title="尝试复现（第二次）"></a>尝试复现（第二次）</h3><p>在本地环境重复调用使用 JSON.parseObject接口，进行验证</p>
+<blockquote>
+<p>失败</p>
+</blockquote>
+<h3 id="尝试复现（第三次）"><a href="#尝试复现（第三次）" class="headerlink" title="尝试复现（第三次）"></a>尝试复现（第三次）</h3><p>在特殊的生成环境重复调用使用 JSON.parseObject接口，验证目标同第二次，排除jvm启动参数带来的影响<br>复现成功</p>
+<p><img src="/alex.github.io/.io//3.png" alt="复现出的服务器监控"><br><img src="/alex.github.io/.io//4.png" alt="复现出的堆dump"></p>
+<h3 id="回归问题（第三次）："><a href="#回归问题（第三次）：" class="headerlink" title="回归问题（第三次）："></a>回归问题（第三次）：</h3><ol>
+<li><del>为什么有内存泄漏（sandbox源码问题，Fastjson和sandbox兼容不好的问题）</del></li>
+<li><del>如何解决类加载器过多带来的额外占用（修改sandbox源码，将原来匹配API扩展，在入口处拦截更多的类）</del></li>
+<li><del>什么时候触发的内存泄漏（sandbox插件将发现的类和插件需要监控的类进行匹配的时候）</del></li>
+<li><del>为什么只有一台有问题,而且是运行中发生（这是个错误条件，最后发现所有机器都有问题，只是其他机器没有宕机）</del></li>
+<li>不停启停的场景下元数据区有内存泄漏风险</li>
+</ol>
+<h3 id="遗留问题"><a href="#遗留问题" class="headerlink" title="遗留问题:"></a>遗留问题:</h3><ol>
+<li>不停启停的场景下元数据区有内存泄漏风险（我们远没有达到泄漏风险的要求，暂时无需关注，等待开发者维护该问题）</li>
+</ol>
+<h3 id="如何规避："><a href="#如何规避：" class="headerlink" title="如何规避："></a>如何规避：</h3><ol>
+<li>上线前：在特殊的生产机器部署一套sandbox和目标应用项目，通过复现功能进行压力测试之后再应用到生产，如果扩展插件功能，需要进行全插件功能的压测</li>
+<li>上线后：针对如何快速关闭有问题的服务，需要提供一套关闭方案（不方便透露，有疑问可以通过github信息找到我）</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/alex.github.io/tags/JAVA/" rel="tag"># JAVA</a>
+          
+            <a href="/alex.github.io/tags/JVM/" rel="tag"># JVM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2019/11/08/2019-11-07-MySQL索引下推/" rel="next" title="MySQL索引下推">
+                <i class="fa fa-chevron-left"></i> MySQL索引下推
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Alex Ren</p>
+              <p class="site-description motion-element" itemprop="description">JAVA之路</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/alex.github.io/archives/">
+                
+                    <span class="site-state-item-count">60</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/AlexRenCN" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#事发描述"><span class="nav-number">1.</span> <span class="nav-text">事发描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怀疑方向"><span class="nav-number">2.</span> <span class="nav-text">怀疑方向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需要解释的问题："><span class="nav-number">3.</span> <span class="nav-text">需要解释的问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决过程："><span class="nav-number">4.</span> <span class="nav-text">解决过程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#回归问题（第一次）："><span class="nav-number">5.</span> <span class="nav-text">回归问题（第一次）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#尝试复现（第一次）："><span class="nav-number">6.</span> <span class="nav-text">尝试复现（第一次）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#回归问题（第二次）："><span class="nav-number">7.</span> <span class="nav-text">回归问题（第二次）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#尝试复现（第二次）"><span class="nav-number">8.</span> <span class="nav-text">尝试复现（第二次）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#尝试复现（第三次）"><span class="nav-number">9.</span> <span class="nav-text">尝试复现（第三次）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#回归问题（第三次）："><span class="nav-number">10.</span> <span class="nav-text">回归问题（第三次）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遗留问题"><span class="nav-number">11.</span> <span class="nav-text">遗留问题:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何规避："><span class="nav-number">12.</span> <span class="nav-text">如何规避：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex Ren</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@<%= theme.mermaid.version %>/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/alex.github.io/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/alex.github.io/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/alex.github.io/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'VooWzCTKIYsM5LgzWVUF6cuL-gzGzoHsz',
+        appKey: 'mjrOD1ERYDgolUpulB6JU9pQ',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: true
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
