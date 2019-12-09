@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/alex.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/alex.github.io/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/alex.github.io/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/alex.github.io/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/alex.github.io/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/alex.github.io/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/alex.github.io/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="不聊什么是分布式事务，分布式事务是解决的什么问题，直接开搞常见的处理模式  2PC定义两阶段提交（two-phase commit protocol），是一个强一致性，中心化的原子提交协议 参与对象：一个协调者（coordinator）和多个参与者（partcipant） 过程 请求/表决阶段，事务发起方（参与者角色）向事务协调者发送请求时，事务协调者向参与者A、参与者B分别发送事务预处理请求（">
+<meta name="keywords" content="分布式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式事务的分类和简述">
+<meta property="og:url" content="https://alexrencn.github.io/2019/12/09/2019-12-09-分布式事务的分类和简述/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="不聊什么是分布式事务，分布式事务是解决的什么问题，直接开搞常见的处理模式  2PC定义两阶段提交（two-phase commit protocol），是一个强一致性，中心化的原子提交协议 参与对象：一个协调者（coordinator）和多个参与者（partcipant） 过程 请求/表决阶段，事务发起方（参与者角色）向事务协调者发送请求时，事务协调者向参与者A、参与者B分别发送事务预处理请求（">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-12-09T06:34:03.321Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式事务的分类和简述">
+<meta name="twitter:description" content="不聊什么是分布式事务，分布式事务是解决的什么问题，直接开搞常见的处理模式  2PC定义两阶段提交（two-phase commit protocol），是一个强一致性，中心化的原子提交协议 参与对象：一个协调者（coordinator）和多个参与者（partcipant） 过程 请求/表决阶段，事务发起方（参与者角色）向事务协调者发送请求时，事务协调者向参与者A、参与者B分别发送事务预处理请求（">
+
+
+
+
+
+
+  <link rel="canonical" href="https://alexrencn.github.io/2019/12/09/2019-12-09-分布式事务的分类和简述/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>分布式事务的分类和简述 | Alex</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/alex.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alex</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">可达鸭眉头一紧，发现编程并不简单</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/alex.github.io/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/alex.github.io/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/12/09/2019-12-09-分布式事务的分类和简述/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">分布式事务的分类和简述
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-12-09 14:34:03" itemprop="dateCreated datePublished" datetime="2019-12-09T14:34:03+08:00">2019-12-09</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2019/12/09/2019-12-09-分布式事务的分类和简述/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/12/09/2019-12-09-分布式事务的分类和简述/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2019/12/09/2019-12-09-分布式事务的分类和简述/" class="leancloud_visitors" data-flag-title="分布式事务的分类和简述">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>不聊什么是分布式事务，分布式事务是解决的什么问题，直接开搞常见的处理模式</p>
+</blockquote>
+<h2 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h2><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>两阶段提交（two-phase commit protocol），是一个强一致性，中心化的原子提交协议</p>
+<h4 id="参与对象："><a href="#参与对象：" class="headerlink" title="参与对象："></a>参与对象：</h4><p>一个<strong>协调者</strong>（coordinator）和多个<strong>参与者</strong>（partcipant）</p>
+<h4 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h4><ol>
+<li>请求/表决阶段，事务发起方（参与者角色）向事务协调者发送请求时，事务协调者向参与者A、参与者B分别发送事务<strong>预处理</strong>请求（Prepare）<ol>
+<li>正常流程：参与者A、参与者B会开启本地数据库事务并<strong>执行本地数据库事务</strong>，并汇报给事务协调者（Vote Commit）</li>
+<li>异常流程：参与者A/参与者B会开启本地数据库事务并<strong>执行本地数据库事务</strong>，并汇报给事务协调者（Vote_Abort）</li>
+</ol>
+</li>
+<li>第二阶段：提交/执行阶段<ol>
+<li>正常流程：如果所有的参与者汇报给事务协调者的结果都是可以执行，那么事务协调者会向所有的事务参与者发送<strong>全局提交确认通知</strong>（global_commit），所有的事务参与者完成本地数据库事务的提交，并反馈给事务协调者ACK</li>
+<li>异常流程：如果有参与者汇报给事务协调者的结果不是可以执行，那么事务协调者会向所有的事务参与者发送<strong>事务回滚</strong>的消息（“global_rollback”），所有的事务参与者完成本地数据库事务的提交，并反馈给事务协调者ACK</li>
+</ol>
+</li>
+</ol>
+<h4 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h4><ol>
+<li>性能问题，各个事务参与者都处在<strong>堵塞</strong>状态。</li>
+<li>2PC在一阶段中，如果协调者（coordinator）在向事务参与者（partcipant）<strong>发起预处理请求（Prepare）后挂掉</strong>，则该事务参与者的事务会处在挂起状态，长时间占用资源。</li>
+<li>2PC在二阶段中，如果事务协调者会向所有的事务参与者<strong>发送全局提交确认通知（global_commit）后发生局部网络故障</strong>，可能会有部分事务参与者没有接受到全局提交确认通知（global_commit），导致数据不一致的问题。</li>
+</ol>
+<h2 id="3PC"><a href="#3PC" class="headerlink" title="3PC"></a>3PC</h2><p>在2PC的基础上进行了完善，添加了CanCommit阶段，添加了超时机制</p>
+<h4 id="参与对象"><a href="#参与对象" class="headerlink" title="参与对象"></a>参与对象</h4><p>一个<strong>协调者</strong>（coordinator）和多个<strong>参与者</strong>（partcipant）</p>
+<h4 id="过程-1"><a href="#过程-1" class="headerlink" title="过程"></a>过程</h4><ol>
+<li>第一阶段：检查阶段（CanCommit），事务发起方（参与者角色）向事务协调者发送请求时，事务协调者向参与者A、参与者B分别发送事务尝试（CanCommit），<strong>尝试执行事务</strong>并确定是否能够执行。</li>
+<li>第二阶段：请求/表决阶段（PreCommit），事务发起方（参与者角色）向事务协调者发送请求时，事务协调者向参与者A、参与者B分别发送事务预处理请求（Prepare），参与者将<strong>Undo和Redo信息记录到事务日志中</strong>，并反馈给事务协调者ACK</li>
+<li>第三阶段：提交/执行阶段（DoCommit）<ol>
+<li>正常流程：如果所有的参与者汇报给事务协调者的结果都是可以执行，那么事务协调者会向所有的事务参与者发送<strong>全局提交确认通知</strong>（global_commit），所有的事务参与者完成本地数据库事务的提交</li>
+<li>异常流程：如果有参与者汇报给事务协调者的结果不是可以执行或者有参与者超时，那么事务协调者回向所有事务参与者发送<strong>事务中断（abort）请求</strong>。</li>
+</ol>
+</li>
+</ol>
+<h4 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h4><ol>
+<li>解决了性能问题，使用undo和redo记录来代替占用数据库资源</li>
+<li>使用超时回滚机制，解决了一阶段挂起问题</li>
+<li>使用三阶段提交，保证了在DoCommit阶段时数据一致性，<strong>但是其他阶段没有保障</strong></li>
+</ol>
+<h2 id="TCC"><a href="#TCC" class="headerlink" title="TCC"></a>TCC</h2><h4 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h4><p>TCC（Try-Confirm-Cancel），针对每一个操作都注册一个与之对应的确认和撤销操作</p>
+<h4 id="过程-2"><a href="#过程-2" class="headerlink" title="过程"></a>过程</h4><ol>
+<li>第一阶段：Try预留阶段，对系统资源进行<strong>检查和预留</strong></li>
+<li>第二阶段：<ol>
+<li>Confirm阶段，<strong>确认执行操作</strong></li>
+<li>Cancel阶段，<strong>取消执行操作</strong></li>
+</ol>
+</li>
+</ol>
+<h4 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h4><ol>
+<li>【优】TCC抛弃了DB级别的分布式事务和锁，通过应用来处理逻辑和数据，实现更加灵活和，堵塞时间更少，吞吐量更高</li>
+<li>【缺】TCC依赖于业务，业务逻辑的每个分支都需要分成Try-Confirm-Cancel三个方法，分别在三个阶段调用，而且TCC必须满足幂等性，代码侵入强</li>
+<li>【缺】TCC的分布式事务协调器并没有业界公认的开源实现</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/alex.github.io/tags/分布式/" rel="tag"># 分布式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2019/11/08/2019-11-08-jvm-Sandbox内存溢出排查记录/" rel="next" title="jvm-Sandbox内存溢出排查记录">
+                <i class="fa fa-chevron-left"></i> jvm-Sandbox内存溢出排查记录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Alex Ren</p>
+              <p class="site-description motion-element" itemprop="description">JAVA之路</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/alex.github.io/archives/">
+                
+                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/AlexRenCN" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#2PC"><span class="nav-number">1.</span> <span class="nav-text">2PC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义"><span class="nav-number">1.0.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参与对象："><span class="nav-number">1.0.2.</span> <span class="nav-text">参与对象：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#过程"><span class="nav-number">1.0.3.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#其他问题"><span class="nav-number">1.0.4.</span> <span class="nav-text">其他问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3PC"><span class="nav-number">2.</span> <span class="nav-text">3PC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参与对象"><span class="nav-number">2.0.1.</span> <span class="nav-text">参与对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#过程-1"><span class="nav-number">2.0.2.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决问题"><span class="nav-number">2.0.3.</span> <span class="nav-text">解决问题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCC"><span class="nav-number">3.</span> <span class="nav-text">TCC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义-1"><span class="nav-number">3.0.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#过程-2"><span class="nav-number">3.0.2.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#优缺点"><span class="nav-number">3.0.3.</span> <span class="nav-text">优缺点</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex Ren</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@<%= theme.mermaid.version %>/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/alex.github.io/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/alex.github.io/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/alex.github.io/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'VooWzCTKIYsM5LgzWVUF6cuL-gzGzoHsz',
+        appKey: 'mjrOD1ERYDgolUpulB6JU9pQ',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: true
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
