@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="JAVA线程调度模式 在谈及JAVA锁之前，不如先去了解一下JAVA线程的调度模式吧，线程调度模式一般分为两种，抢占式调度和协同式调度，抢占式调度是由系统在某种算法的运行下给所有线程CPU的时间切片，这个时候所有的线程都会在分配到的时间内进行自己的操作，但是优先级低的线程可能就没有得到分配，所谓并行也只不过是轮流占用CPU资源，并没有达到在单核中同时执行多个线程，协同式调度是由线程完成后主动将C">
-<meta name="keywords" content="JAVA">
+  <meta name="description" content="事务的四大特性事务的四大特性是原子性，一致性，隔离性，持久性。先简单的描述下这四个特性:  原子性Atomicity:一个事务（transaction）中的所有操作，或者全部完成，或者全部不完成，不会结束在中间某个环节。事务在执行过程中发生错误，会被回滚（Rollback）到事务开始前的状态，就像这个事务从来没有执行过一样。即，事务不可分割、不可约简。 一致性Consistency:在事务开始之前">
+<meta name="keywords" content="MySQL">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JAVA的对象锁">
-<meta property="og:url" content="https://alexrencn.github.io/2018/09/18/2018-08-18-JAVA的对象锁/index.html">
+<meta property="og:title" content="InnoDB是如何实现事务的四大特性的">
+<meta property="og:url" content="https://alexrencn.github.io/2019/12/20/2019-12-20-InnoDB是如何实现事务的四大特性的/index.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="JAVA线程调度模式 在谈及JAVA锁之前，不如先去了解一下JAVA线程的调度模式吧，线程调度模式一般分为两种，抢占式调度和协同式调度，抢占式调度是由系统在某种算法的运行下给所有线程CPU的时间切片，这个时候所有的线程都会在分配到的时间内进行自己的操作，但是优先级低的线程可能就没有得到分配，所谓并行也只不过是轮流占用CPU资源，并没有达到在单核中同时执行多个线程，协同式调度是由线程完成后主动将C">
+<meta property="og:description" content="事务的四大特性事务的四大特性是原子性，一致性，隔离性，持久性。先简单的描述下这四个特性:  原子性Atomicity:一个事务（transaction）中的所有操作，或者全部完成，或者全部不完成，不会结束在中间某个环节。事务在执行过程中发生错误，会被回滚（Rollback）到事务开始前的状态，就像这个事务从来没有执行过一样。即，事务不可分割、不可约简。 一致性Consistency:在事务开始之前">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-18T14:59:21.564Z">
+<meta property="og:updated_time" content="2019-12-20T09:45:21.654Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JAVA的对象锁">
-<meta name="twitter:description" content="JAVA线程调度模式 在谈及JAVA锁之前，不如先去了解一下JAVA线程的调度模式吧，线程调度模式一般分为两种，抢占式调度和协同式调度，抢占式调度是由系统在某种算法的运行下给所有线程CPU的时间切片，这个时候所有的线程都会在分配到的时间内进行自己的操作，但是优先级低的线程可能就没有得到分配，所谓并行也只不过是轮流占用CPU资源，并没有达到在单核中同时执行多个线程，协同式调度是由线程完成后主动将C">
+<meta name="twitter:title" content="InnoDB是如何实现事务的四大特性的">
+<meta name="twitter:description" content="事务的四大特性事务的四大特性是原子性，一致性，隔离性，持久性。先简单的描述下这四个特性:  原子性Atomicity:一个事务（transaction）中的所有操作，或者全部完成，或者全部不完成，不会结束在中间某个环节。事务在执行过程中发生错误，会被回滚（Rollback）到事务开始前的状态，就像这个事务从来没有执行过一样。即，事务不可分割、不可约简。 一致性Consistency:在事务开始之前">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/09/18/2018-08-18-JAVA的对象锁/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2019/12/20/2019-12-20-InnoDB是如何实现事务的四大特性的/"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>JAVA的对象锁 | Alex</title>
+  <title>InnoDB是如何实现事务的四大特性的 | Alex</title>
   
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/18/2018-08-18-JAVA的对象锁/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/12/20/2019-12-20-InnoDB是如何实现事务的四大特性的/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">JAVA的对象锁
+          <h1 class="post-title" itemprop="name headline">InnoDB是如何实现事务的四大特性的
               
             
           </h1>
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-09-18 22:59:21" itemprop="dateCreated datePublished" datetime="2018-09-18T22:59:21+08:00">2018-09-18</time>
+              <time title="创建时间：2019-12-20 17:45:21" itemprop="dateCreated datePublished" datetime="2019-12-20T17:45:21+08:00">2019-12-20</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/09/18/2018-08-18-JAVA的对象锁/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/18/2018-08-18-JAVA的对象锁/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2019/12/20/2019-12-20-InnoDB是如何实现事务的四大特性的/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/12/20/2019-12-20-InnoDB是如何实现事务的四大特性的/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/09/18/2018-08-18-JAVA的对象锁/" class="leancloud_visitors" data-flag-title="JAVA的对象锁">
+             <span id="/alex.github.io/2019/12/20/2019-12-20-InnoDB是如何实现事务的四大特性的/" class="leancloud_visitors" data-flag-title="InnoDB是如何实现事务的四大特性的">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -382,21 +382,37 @@
       
 
       
-        <a id="more"></a>
-<h2 id="JAVA线程调度模式"><a href="#JAVA线程调度模式" class="headerlink" title="JAVA线程调度模式"></a>JAVA线程调度模式</h2><blockquote>
-<p>在谈及JAVA锁之前，不如先去了解一下JAVA线程的调度模式吧，线程调度模式一般分为两种，抢占式调度和协同式调度，<strong>抢占式调度</strong>是由系统在某种算法的运行下给所有线程CPU的时间切片，这个时候所有的线程都会在分配到的时间内进行自己的操作，但是优先级低的线程可能就没有得到分配，所谓并行也只不过是轮流占用CPU资源，并没有达到在单核中同时执行多个线程，<strong>协同式调度</strong>是由线程完成后主动将CPU让给下一个线程，而JAVA使用的是抢占式调度，根据线程优先级来分配CPU时间片</p>
+        <h3 id="事务的四大特性"><a href="#事务的四大特性" class="headerlink" title="事务的四大特性"></a>事务的四大特性</h3><p>事务的四大特性是原子性，一致性，隔离性，持久性。先简单的描述下这四个特性:</p>
+<ol>
+<li>原子性Atomicity:一个事务（transaction）中的所有操作，或者全部完成，或者全部不完成，不会结束在中间某个环节。事务在执行过程中发生错误，会被回滚（Rollback）到事务开始前的状态，就像这个事务从来没有执行过一样。即，事务不可分割、不可约简。</li>
+<li>一致性Consistency:在事务开始之前和事务结束以后，数据库的完整性没有被破坏。这表示写入的资料必须完全符合所有的预设约束、触发器、级联回滚等。</li>
+<li>隔离性Isolation:数据库允许多个并发事务同时对其数据进行读写和修改的能力，隔离性可以防止多个事务并发执行时由于交叉执行而导致数据的不一致。事务隔离分为不同级别，包括未提交读（Read uncommitted）、提交读（read committed）、可重复读（repeatable read）和串行化（Serializable）。</li>
+<li>持久性Durability:事务处理结束后，对数据的修改就是永久的，即便系统故障也不会丢失。</li>
+</ol>
+<p>InnoDB引擎支持了事务，那么他是如何实现事务的呢，下面让我们逐一说明一下：</p>
+<h3 id="原子性实现"><a href="#原子性实现" class="headerlink" title="原子性实现"></a>原子性实现</h3><p>使用Undo log实现<br></p>
+<p>数据库的每一条语句都会记录对应的Undo log,并且提前持久化到磁盘，如果事务选择回滚，那么会根据Undo log进行数据的逆转；<br>逆转的操作根据sql语句的不同会有不同的提现，如：</p>
+<ol>
+<li>insert语句在回滚的时候逆转为delete</li>
+<li>delete语句在回滚的时候逆转为insert</li>
+<li>update语句在回滚的时候修改为原值</li>
+</ol>
+<h3 id="隔离性实现"><a href="#隔离性实现" class="headerlink" title="隔离性实现"></a>隔离性实现</h3><blockquote>
+<p>重点！不要忽略：这里的加锁方式是MySQL官网8.0版本官方文档说明的，建议大家根据自己使用的版本实际查询一下对应版本的文档</p>
 </blockquote>
-<h2 id="JAVA的对象头"><a href="#JAVA的对象头" class="headerlink" title="JAVA的对象头"></a>JAVA的对象头</h2><blockquote>
-<p>在这里简单介绍下JAVA对象锁实现的机制，其实现是依靠JAVA对象头，JAVA对象头中存放着对象的哈希值、锁信息、对象的年龄以及对象的元数据等信息，对象头的长度为2字来存储</p>
-</blockquote>
-<table><br>    <thead><br>        <tr><br>            <th>锁状态</th><br>            <th>存放内容</th><br>            <th>锁标志位(2bit)</th><br>        </tr><br>    </thead><br>    <body><br>        <tr><br>            <th>无锁</th><br>            <th>对象的HashCode(25bit)+分代年龄(4bit)+是否是偏向锁(1bit)</th><br>            <th>01</th><br>        </tr><br>        <tr><br>            <th>偏向锁</th><br>            <th>线程ID(23bit)+时间标记Epoch(2bit)+分代年龄(4bit)+是否是偏向锁(1bit)</th><br>            <th>01</th><br>        </tr><br>        <tr><br>            <th>轻量锁</th><br>            <th>栈中锁记录指针(30bit)</th><br>            <th>00</th><br>        </tr><br>        <tr><br>            <th>重量锁</th><br>            <th>珍重互斥量的指针(30bit)</th><br>            <th>10</th><br>        </tr><br>        <tr><br>            <th>GC标记</th><br>            <th>空(30bit)</th><br>            <th>11</th><br>        </tr><br>    </body><br></table>
-
-<h2 id="JAVA的锁"><a href="#JAVA的锁" class="headerlink" title="JAVA的锁"></a>JAVA的锁</h2><blockquote>
-<p>每一个JAVA对象都可以作为锁，JAVA对象锁等级分为4种，由低到高分别是无锁、偏向锁、轻量锁、重量锁</p>
-</blockquote>
-<h2 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h2><p>拥有同步锁的对象在同步时只需要检查偏向线程ID和当前线程ID是否一致<br><br><strong>场景</strong>总是由同一个线程来持有这个对象锁，很少发生竞争<br><br><strong>加锁</strong>发生在第一次进入同步代码块的时候，会使用CAS操作记录下当前线程的ID，并改变锁标志位<br><br><strong>升级</strong>如果发现当前线程和偏向线程不一致，则发生了锁竞争，需要膨胀为轻量级锁<br><br><strong>解锁</strong>发生在第一次出现锁竞争的时候，线程会等待全局安全点的到来，暂停偏向线程，查看该线程目前是否已经退出了同步块来决定是释放还是升级，然后唤醒偏向线程<br></p>
-<h2 id="轻量锁"><a href="#轻量锁" class="headerlink" title="轻量锁"></a>轻量锁</h2><p>轻量锁在每次进入和退出同步代码块的时候都需要使用CAS操作来更新对象头，每次都需要加锁和释放锁<br><br><strong>场景</strong>由少量线程进行资源的争夺<br><br><strong>加锁</strong>在MarkWord里记录当前线程的指针，使用CAS操作修改锁标示为到00<br><br><strong>升级</strong>线程在多次尝试占用轻量级锁失败之后，膨胀为重量级锁，将锁释放并且等待线程唤醒，修改所标记为10，并唤醒线程，重新争夺锁<br><br><strong>解锁</strong>使用CAS操作将锁为置为无锁<br></p>
-<h2 id="重量锁"><a href="#重量锁" class="headerlink" title="重量锁"></a>重量锁</h2><p>重量级锁每次进入和退出同步代码块的时候都需要进行竞争，竞争不到的线程进入堵塞并等待唤醒<br><br><strong>场景</strong>进行锁争夺的线程非常多<br><br><strong>加锁</strong>为当前线程分配锁定记录，将对象头指向该记录<br><br><strong>解锁</strong>操作对象头到无锁，唤醒等待该锁的所有线程<br></p>
+<p>使用mvcc+读写锁实现<br></p>
+<p>InnoDB支持四个隔离级别，针对不同的隔离级别有不同的实现：</p>
+<h5 id="READ-UNCOMMITED-读未提交"><a href="#READ-UNCOMMITED-读未提交" class="headerlink" title="READ UNCOMMITED (读未提交)"></a>READ UNCOMMITED (读未提交)</h5><p>第一种情况：SELECT语句以非锁定的方式执行，但是早期版本可能使用。<br><br>第二种情况：其他情况下同READ COMMITTED。<br></p>
+<h5 id="READ-COMMITED-提交读"><a href="#READ-COMMITED-提交读" class="headerlink" title="READ COMMITED (提交读)"></a>READ COMMITED (提交读)</h5><p>第一种情况：SELECT同一事物中的一致读设置并去读新的快照。<br><br>第二种情况：SELECT带有FOR UPDATE或FOR SHARE、UPDATE或DELETE，使用记录锁（Record Locks）。<br><br>对锁处理的额外细节：<br></p>
+<ol>
+<li>对于UPDATE或DELETE语句，只会持有需要修改的行的记录锁（Record Locks），MySQL进行评估where条件后，释放掉不匹配的记录锁（Record Locks），<br>这保证了部分死锁情况发生，但是不能保证死锁不会发生。</li>
+<li>对于UPDATE语句，如果某一行已经锁定，那么会采用”半一致”策略，将最新的提交版本返回给MySQL，MySQL再评估是否符合WHERE条件，如果匹配WHERE条件，<br>则InnoDB则需要加记录锁（Record Locks），并在加锁的时候堵塞。</li>
+</ol>
+<h5 id="REPEATABLE-READ-可重复读"><a href="#REPEATABLE-READ-可重复读" class="headerlink" title="REPEATABLE READ (可重复读)"></a>REPEATABLE READ (可重复读)</h5><p>第一种情况：SELECT同一事物中的一致读将读取当前事务创建时的快照。<br><br>第二种情况：SELECT带有FOR UPDATE或FOR SHARE、UPDATE或DELETE，取决于语句使用的是唯一搜索条件的唯一索引还是范围索引；<br><br>如果使用唯一搜索条件的唯一索引，则使用记录锁（Record Locks）。<br><br>如果使用的范围索引，则使用间隙锁(gap locks) 或(next-key locks)。<br></p>
+<h5 id="SERIALIZABLE-串行化"><a href="#SERIALIZABLE-串行化" class="headerlink" title="SERIALIZABLE (串行化)"></a>SERIALIZABLE (串行化)</h5><p>类似于REPEATABLE READ级别，对SQL进行了隐式转换：<br>第一种转换：SELECT语句默认转换成了SELECT … FOR SHARE<br>第二种转换：autocommit禁用</p>
+<h3 id="持久性实现"><a href="#持久性实现" class="headerlink" title="持久性实现"></a>持久性实现</h3><p>使用Redo log实现<br></p>
+<p>重做日志（Redo Log）在修改数据之后，事务提交之前发生，保证了事务提交的时候重做日志（Redo Log）必然存在，<br>而没有进行提交的事务是不会恢复的，在数据库发生崩溃重启的时候，会根据Redo Log纠正事务不完整写入的数据</p>
+<h3 id="一致性实现"><a href="#一致性实现" class="headerlink" title="一致性实现"></a>一致性实现</h3><p>原子性+隔离性+持久性共同保障一致性</p>
 
       
     </div>
@@ -417,7 +433,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/JAVA/" rel="tag"># JAVA</a>
+            <a href="/alex.github.io/tags/MySQL/" rel="tag"># MySQL</a>
           
         </div>
       
@@ -430,8 +446,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/09/18/2018-09-01-JAVA线程池队列/" rel="next" title="JAVA线程池队列">
-                <i class="fa fa-chevron-left"></i> JAVA线程池队列
+              <a href="/alex.github.io/2019/12/09/2019-12-09-分布式事务的分类和简述/" rel="next" title="分布式事务的分类和简述">
+                <i class="fa fa-chevron-left"></i> 分布式事务的分类和简述
               </a>
             
           </div>
@@ -439,10 +455,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/alex.github.io/2018/09/18/2018-08-18-如何保证Redis缓存和数据库数据一致性/" rel="prev" title="如何保证Redis缓存和数据库数据一致性">
-                如何保证Redis缓存和数据库数据一致性 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -615,7 +627,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JAVA线程调度模式"><span class="nav-number">1.</span> <span class="nav-text">JAVA线程调度模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JAVA的对象头"><span class="nav-number">2.</span> <span class="nav-text">JAVA的对象头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JAVA的锁"><span class="nav-number">3.</span> <span class="nav-text">JAVA的锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#偏向锁"><span class="nav-number">4.</span> <span class="nav-text">偏向锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#轻量锁"><span class="nav-number">5.</span> <span class="nav-text">轻量锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重量锁"><span class="nav-number">6.</span> <span class="nav-text">重量锁</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#事务的四大特性"><span class="nav-number">1.</span> <span class="nav-text">事务的四大特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原子性实现"><span class="nav-number">2.</span> <span class="nav-text">原子性实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#隔离性实现"><span class="nav-number">3.</span> <span class="nav-text">隔离性实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#READ-UNCOMMITED-读未提交"><span class="nav-number">3.0.1.</span> <span class="nav-text">READ UNCOMMITED (读未提交)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#READ-COMMITED-提交读"><span class="nav-number">3.0.2.</span> <span class="nav-text">READ COMMITED (提交读)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#REPEATABLE-READ-可重复读"><span class="nav-number">3.0.3.</span> <span class="nav-text">REPEATABLE READ (可重复读)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#SERIALIZABLE-串行化"><span class="nav-number">3.0.4.</span> <span class="nav-text">SERIALIZABLE (串行化)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#持久性实现"><span class="nav-number">4.</span> <span class="nav-text">持久性实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一致性实现"><span class="nav-number">5.</span> <span class="nav-text">一致性实现</span></a></li></ol></div>
             
 
           </div>

@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="在面试过程中因为不了解系统的安全防护吃过很多次亏，也一直没有时间能够有时间学习，2019的元旦假期就先学习一下Spring Boot中security的使用，之后再往下深入，了解security源码，以及其他安全认证框架 ##在Spring Boot中使用security ###什么是Spring SecuritySpring Security使用Filter拦截器对请求进行拦截，用户可以通过S">
-<meta name="keywords" content="JAVA">
+  <meta name="description" content="Redo Log为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘； 重做日志（Redo Log）是在崩溃恢复期间使用的基于磁盘的数据结">
+<meta name="keywords" content="MySQL">
 <meta property="og:type" content="website">
-<meta property="og:title" content="SpringBootSecurity学习笔记">
-<meta property="og:url" content="https://alexrencn.github.io/temp/2018-12-30-SpringBootSecurity学习笔记.html">
+<meta property="og:title" content="Redo log和Undo log">
+<meta property="og:url" content="https://alexrencn.github.io/temp/2019-12-19-Redo log和Undo log.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="在面试过程中因为不了解系统的安全防护吃过很多次亏，也一直没有时间能够有时间学习，2019的元旦假期就先学习一下Spring Boot中security的使用，之后再往下深入，了解security源码，以及其他安全认证框架 ##在Spring Boot中使用security ###什么是Spring SecuritySpring Security使用Filter拦截器对请求进行拦截，用户可以通过S">
+<meta property="og:description" content="Redo Log为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘； 重做日志（Redo Log）是在崩溃恢复期间使用的基于磁盘的数据结">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-12-30T14:51:41.382Z">
+<meta property="og:updated_time" content="2019-12-20T08:27:29.022Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SpringBootSecurity学习笔记">
-<meta name="twitter:description" content="在面试过程中因为不了解系统的安全防护吃过很多次亏，也一直没有时间能够有时间学习，2019的元旦假期就先学习一下Spring Boot中security的使用，之后再往下深入，了解security源码，以及其他安全认证框架 ##在Spring Boot中使用security ###什么是Spring SecuritySpring Security使用Filter拦截器对请求进行拦截，用户可以通过S">
+<meta name="twitter:title" content="Redo log和Undo log">
+<meta name="twitter:description" content="Redo Log为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘； 重做日志（Redo Log）是在崩溃恢复期间使用的基于磁盘的数据结">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/temp/2018-12-30-SpringBootSecurity学习笔记.html"/>
+  <link rel="canonical" href="https://alexrencn.github.io/temp/2019-12-19-Redo log和Undo log.html"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>SpringBootSecurity学习笔记 | Alex</title>
+  <title>Redo log和Undo log | Alex</title>
   
 
 
@@ -298,7 +298,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/temp/2018-12-30-SpringBootSecurity学习笔记.html">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/temp/2019-12-19-Redo log和Undo log.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -315,7 +315,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">SpringBootSecurity学习笔记
+          <h1 class="post-title" itemprop="name headline">Redo log和Undo log
               
             
           </h1>
@@ -340,25 +340,9 @@
                 
               
 
-              <time title="创建时间：2019-07-16 14:36:31" itemprop="dateCreated datePublished" datetime="2019-07-16T14:36:31+08:00">2019-07-16</time>
+              <time title="创建时间：2019-12-20 16:27:29" itemprop="dateCreated datePublished" datetime="2019-12-20T16:27:29+08:00">2019-12-20</time>
             
 
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-12-30 22:51:41" itemprop="dateModified" datetime="2018-12-30T22:51:41+08:00">2018-12-30</time>
-              
             
           </span>
 
@@ -371,8 +355,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/temp/2018-12-30-SpringBootSecurity学习笔记.html#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/temp/2018-12-30-SpringBootSecurity学习笔记.html" itemprop="commentCount"></span>
+                <a href="/alex.github.io/temp/2019-12-19-Redo log和Undo log.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/temp/2019-12-19-Redo log和Undo log.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -380,7 +364,7 @@
 
           
           
-             <span id="/alex.github.io/temp/2018-12-30-SpringBootSecurity学习笔记.html" class="leancloud_visitors" data-flag-title="SpringBootSecurity学习笔记">
+             <span id="/alex.github.io/temp/2019-12-19-Redo log和Undo log.html" class="leancloud_visitors" data-flag-title="Redo log和Undo log">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -411,15 +395,69 @@
       
 
       
-        <a id="more"></a>
-<p>在面试过程中因为不了解系统的安全防护吃过很多次亏，也一直没有时间能够有时间学习，<br>2019的元旦假期就先学习一下Spring Boot中security的使用，<br>之后再往下深入，了解security源码，以及其他安全认证框架</p>
-<p>##在Spring Boot中使用security</p>
-<p>###什么是Spring Security<br>Spring Security使用Filter拦截器对请求进行拦截，<br>用户可以通过Spring Security提供的DelegatiingFilterProxy配置自己想要的拦截器，<br>Spring启动时创建SecurityContext安全上下文，在IOC容器中创建SpringSecurityFilterChain，<br>通过IOC容器获取到所有的DelegatiingFilterProxy，组成FilterChinaProxy拦截器链拦截器链，<br>Spring Security提供了大量常用的拦截功能使得该框架的使用更为简单，更易上手</p>
-<p>###开启security</p>
-<p>####在web项目中开启security<br>在启动类中使用@EnableWebSecurity，开启Spring Security功能</p>
-<p>####在非Web项目中开启security<br>在启动类中使用@EnableGlobalAuthentication，开启Spring Security功能</p>
-<p>###配置application.yml<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  mvc:</span></span><br><span class="line">    <span class="comment">#视图解析器规则</span></span><br><span class="line"><span class="attr">    view:</span></span><br><span class="line"><span class="attr">      prefix:</span> <span class="string">/WEB-INF/html</span></span><br><span class="line"><span class="attr">      suffix:</span> <span class="string">.html</span></span><br><span class="line"><span class="attr">  security:</span> </span><br><span class="line">    <span class="comment">#自定义用户及密码</span></span><br><span class="line"><span class="attr">    user:</span></span><br><span class="line"><span class="attr">      name:</span> <span class="string">admin</span></span><br><span class="line"><span class="attr">      password:</span> <span class="number">123456</span></span><br><span class="line">      <span class="comment">#权限</span></span><br><span class="line"><span class="attr">      roles:</span> </span><br><span class="line"><span class="attr">    filter:</span></span><br><span class="line">      <span class="comment">#过滤器排序</span></span><br><span class="line"><span class="attr">      order:</span> <span class="bullet">-100</span></span><br><span class="line">      <span class="comment">#安全过滤器责任链拦截的分发类型</span></span><br><span class="line"><span class="attr">      dispatcher-types:</span> <span class="string">async,error,request</span></span><br><span class="line"><span class="attr">    oauth2:</span></span><br><span class="line"><span class="attr">      client:</span></span><br><span class="line">        <span class="comment">#oauth提供者的配置</span></span><br><span class="line"><span class="attr">        provider:</span></span><br><span class="line">        <span class="comment">#aouth客户端的配置</span></span><br><span class="line"><span class="attr">        registration:</span></span><br></pre></td></tr></table></figure></p>
-<p>###</p>
+        <h2 id="Redo-Log"><a href="#Redo-Log" class="headerlink" title="Redo Log"></a>Redo Log</h2><p>为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；<br>在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；<br>在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘；</p>
+<p>重做日志（Redo Log）是在崩溃恢复期间使用的基于磁盘的数据结构，用于纠正事务不完整写入的数据。</p>
+<p>重做日志（Redo Log）在修改数据之后，事务提交之前发生，保证了事务提交的时候重做日志（Redo Log）必然存在，<br>而没有进行提交的事务是不会恢复的</p>
+<h4 id="对应配置"><a href="#对应配置" class="headerlink" title="对应配置"></a>对应配置</h4><p>修改my.cnf文件<br>innodb_log_file_size可以配置日志文件的大小<br>innodb_log_files_in_group可以配置日志文件的数量</p>
+<p>该动作需要关闭数据库并重启，当重启完毕后，InnoDB检测到innodb_log_file_size大小和当前配置不同。<br>他将编写日志检查点，关闭并删除旧的文件，按配置的大小创建新的文件，然后打开新的日志文件。</p>
+<h2 id="Undo-Logs"><a href="#Undo-Logs" class="headerlink" title="Undo Logs"></a>Undo Logs</h2><p><strong>撤消日志</strong>（Undo Logs)是与单个读写事务关联的撤消日志记录的集合。<br><strong>撤消日志</strong>（Undo Logs）记录包含有关如何撤消事务对<strong>聚簇索引记录</strong>的最新更改的信息。<br>如果另一个事务需要将原始数据视为一致读取操作的一部分，则将从<strong>撤消日志</strong>（Undo Logs）记录中检索未修改的数据。<br><strong>撤消日志</strong>（Undo Logs）存在于<strong>撤消日志段</strong>（undo log segments）中，它包含在<strong>回滚段</strong>（rollback segments）中。<br><strong>回滚段</strong>（rollback segments）位于<strong>撤销表空间</strong>（undo tablespaces）和<strong>全局临时表空间</strong>（global temporary tablespace）中。<br>在<strong>全局临时表空间</strong>（global temporary tablespace）中存在的<strong>撤消日志</strong>（Undo Logs）没有<strong>重做日志</strong>（Redo Log），<br>因为它只用于运行时的数据回滚，所以恢复这些数据没有意义，不记录对应的<strong>重做日志</strong>（Redo Log）反而降低了I/O。<br>每个<strong>撤销表空间</strong>（undo tablespaces）和<strong>全局临时表空间</strong>（global temporary tablespace）支持最多128个<strong>回滚段</strong>（rollback segments）。<br><strong>回滚段</strong>（rollback segments）支持的事务数取决于<strong>回滚段</strong>（rollback segments）中的撤消插槽数和每个事务所需的<strong>撤消日志</strong>（Undo Logs)数。<br><strong>回滚段</strong>（rollback segments）中撤消插槽的数量根据InnoDB页面大小而有所不同。</p>
+<table>
+<thead>
+<tr>
+<th>InnoDB页面大小</th>
+<th>回滚段中的撤消插槽数（InnoDB页面大小/ 16）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4096 (4KB)</td>
+<td>256</td>
+</tr>
+<tr>
+<td>8192 (8KB)</td>
+<td>512</td>
+</tr>
+<tr>
+<td>16384 (16KB)</td>
+<td>1024</td>
+</tr>
+<tr>
+<td>32768 (32KB)</td>
+<td>2048</td>
+</tr>
+<tr>
+<td>65536 (64KB)</td>
+<td>4096</td>
+</tr>
+</tbody>
+</table>
+<p>一个事务最多分配四个<strong>撤消日志</strong>（Undo Logs)，以下每种操作类型都可以分配一个：</p>
+<ol>
+<li>INSERT用户定义表上的操作</li>
+<li>UPDATE和DELETE用户定义表上的操作</li>
+<li>INSERT用户定义的临时表上的操作</li>
+<li>UPDATE和DELETE用户定义的临时表上的操作</li>
+</ol>
+<p><strong>撤消日志</strong>（Undo Logs)根据需要分配，例如，对用户自定义表和临时表上执行INSERT、UPDATE和DELETE<br>操作需要完全分配四个撤销日志，仅对用户自定义表进行INSERT操作，则只需要单个日志。</p>
+<p>分配给事务的<strong>撤消日志</strong>（Undo Logs)在其持续时间内始终与事务有关，<br>例如：为INSERT常规表上的操作分配给事务的<strong>撤消日志</strong>（Undo Logs)将用于INSERT由该事务执行的常规表上的所有操作。</p>
+<h3 id="根据Undo-Logs计算并发读写事务数"><a href="#根据Undo-Logs计算并发读写事务数" class="headerlink" title="根据Undo Logs计算并发读写事务数"></a>根据Undo Logs计算并发读写事务数</h3><ol>
+<li>如果每个事务执行一次INSERT<strong>或</strong>一次UPDATE<strong>或</strong>一次DELETE<ol>
+<li>(innodb_page_size / 16) <em> <strong>回滚段</strong>innodb_rollback_segments </em> <strong>撤销表空间</strong> undo tablespaces</li>
+</ol>
+</li>
+<li>如果每个事务执行一次INSERT<strong>和</strong>（一次UPDATE<strong>或</strong>一次DELETE）<ol>
+<li>(innodb_page_size / 16 / 2) <em> <strong>回滚段</strong>innodb_rollback_segments </em> <strong>撤销表空间</strong> undo tablespaces</li>
+</ol>
+</li>
+<li>如果每个事务执行一次INSERT临时表操作<ol>
+<li>(innodb_page_size / 16) * <strong>回滚段</strong>innodb_rollback_segments</li>
+</ol>
+</li>
+<li>如果每个事务执行一次INSERT<strong>和</strong>（一次UPDATE<strong>或</strong>一次DELETE）<ol>
+<li>(innodb_page_size / 16 / 2) * <strong>回滚段</strong>innodb_rollback_segments</li>
+</ol>
+</li>
+</ol>
 
       
     </div>
@@ -493,8 +531,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -509,7 +556,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">61</span>
+                    <span class="site-state-item-count">62</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -599,6 +646,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Redo-Log"><span class="nav-number">1.</span> <span class="nav-text">Redo Log</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对应配置"><span class="nav-number">1.0.1.</span> <span class="nav-text">对应配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Undo-Logs"><span class="nav-number">2.</span> <span class="nav-text">Undo Logs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#根据Undo-Logs计算并发读写事务数"><span class="nav-number">2.1.</span> <span class="nav-text">根据Undo Logs计算并发读写事务数</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
