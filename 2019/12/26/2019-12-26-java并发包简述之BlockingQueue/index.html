@@ -110,13 +110,13 @@
 
   <meta name="description" content="BlockingQueuejava并发包下提供的阻塞队列  BlockingQueue同时支持两个特性：1.取数据的时候如果发现队列没有数据，则等待队列变成非空；2.存数据的时候，如果发现队列已满，则等待队列有空闲空间；  对于这个问题的理解，我们可以先简单的用使用java实现生产者消费者模型时，如果队列已满，生产者就会wait在缓冲区对象上等待消费者唤醒，而如果队列为空，消费者就会wait在缓冲">
 <meta name="keywords" content="JDK">
-<meta property="og:type" content="website">
+<meta property="og:type" content="article">
 <meta property="og:title" content="java并发包简述之BlockingQueue">
-<meta property="og:url" content="https://alexrencn.github.io/temp/2019-12-19-java并发包简述之BlockingQueue.html">
+<meta property="og:url" content="https://alexrencn.github.io/2019/12/26/2019-12-26-java并发包简述之BlockingQueue/index.html">
 <meta property="og:site_name" content="Alex">
 <meta property="og:description" content="BlockingQueuejava并发包下提供的阻塞队列  BlockingQueue同时支持两个特性：1.取数据的时候如果发现队列没有数据，则等待队列变成非空；2.存数据的时候，如果发现队列已满，则等待队列有空闲空间；  对于这个问题的理解，我们可以先简单的用使用java实现生产者消费者模型时，如果队列已满，生产者就会wait在缓冲区对象上等待消费者唤醒，而如果队列为空，消费者就会wait在缓冲">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-12-19T13:45:42.369Z">
+<meta property="og:updated_time" content="2019-12-26T12:16:06.868Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="java并发包简述之BlockingQueue">
 <meta name="twitter:description" content="BlockingQueuejava并发包下提供的阻塞队列  BlockingQueue同时支持两个特性：1.取数据的时候如果发现队列没有数据，则等待队列变成非空；2.存数据的时候，如果发现队列已满，则等待队列有空闲空间；  对于这个问题的理解，我们可以先简单的用使用java实现生产者消费者模型时，如果队列已满，生产者就会wait在缓冲区对象上等待消费者唤醒，而如果队列为空，消费者就会wait在缓冲">
@@ -126,7 +126,7 @@
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/temp/2019-12-19-java并发包简述之BlockingQueue.html"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2019/12/26/2019-12-26-java并发包简述之BlockingQueue/"/>
 
 
 
@@ -245,19 +245,6 @@
   
     
 
-    
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
   
 
   
@@ -298,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/temp/2019-12-19-java并发包简述之BlockingQueue.html">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/12/26/2019-12-26-java并发包简述之BlockingQueue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -340,25 +327,9 @@
                 
               
 
-              <time title="创建时间：2019-12-20 15:49:33" itemprop="dateCreated datePublished" datetime="2019-12-20T15:49:33+08:00">2019-12-20</time>
+              <time title="创建时间：2019-12-26 20:16:06" itemprop="dateCreated datePublished" datetime="2019-12-26T20:16:06+08:00">2019-12-26</time>
             
 
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-12-19 21:45:42" itemprop="dateModified" datetime="2019-12-19T21:45:42+08:00">2019-12-19</time>
-              
             
           </span>
 
@@ -371,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/temp/2019-12-19-java并发包简述之BlockingQueue.html#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/temp/2019-12-19-java并发包简述之BlockingQueue.html" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2019/12/26/2019-12-26-java并发包简述之BlockingQueue/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/12/26/2019-12-26-java并发包简述之BlockingQueue/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -380,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/temp/2019-12-19-java并发包简述之BlockingQueue.html" class="leancloud_visitors" data-flag-title="java并发包简述之BlockingQueue">
+             <span id="/alex.github.io/2019/12/26/2019-12-26-java并发包简述之BlockingQueue/" class="leancloud_visitors" data-flag-title="java并发包简述之BlockingQueue">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -425,10 +396,61 @@
 </ol>
 <h5 id="对元素的约定"><a href="#对元素的约定" class="headerlink" title="对元素的约定"></a>对元素的约定</h5><p>BlockingQueue一般不接受null元素</p>
 <h5 id="线程安全性问题"><a href="#线程安全性问题" class="headerlink" title="线程安全性问题"></a>线程安全性问题</h5><p>BlockingQueue的具体实现是需要保证线程安全性的</p>
-<h5 id="add-、offer-和put-的区别"><a href="#add-、offer-和put-的区别" class="headerlink" title="add()、offer()和put()的区别"></a>add()、offer()和put()的区别</h5><p>add()在队列满的情况下，直接抛出异常 ；<br><br>offer()在队列满的情况下，根据方法返回值的约定返回对应的值 ；<br><br>put在()队列满的情况下，等待队列有足够的空间； <br></p>
-<h5 id="poll-、take-、peek-和remove-的区别"><a href="#poll-、take-、peek-和remove-的区别" class="headerlink" title="poll()、take()、peek()和remove()的区别"></a>poll()、take()、peek()和remove()的区别</h5><p>poll检索并删除队列里的首个元素，如果队列为空返回null；<br><br>peek检索但不删除队列里的首个元素，如果队列为空返回null；<br><br>take检索并删除队列里的首个元素，如果队列为空堵塞到队列不为空；<br><br>remove()检索并删除队列里的指定元素；</p>
-<h3 id="ArrayBlockingQueue"><a href="#ArrayBlockingQueue" class="headerlink" title="ArrayBlockingQueue"></a>ArrayBlockingQueue</h3><p>这是一个由数组实现的有界堵塞队列。对元素进行FIFO（先进先出）排序。队列的头是在队列中出现时间最长的元素。队列的尾部是在队列中出现的时间最短的元素。新元素插入队列尾部，队列检索操作获取队列头部的元素。创建后容量将无法更改。<br><br>该队列支持公平和非公平策略，底层是交给ReentrantLock公平和非公平机制实现，该队列从ReentrantLock中获取了两个Condition，用与区分写锁和读锁。<br><br>入队的时候唤醒读锁，出队的时候唤醒写锁。<br><br>由于数组的特性，ArrayBlockingQueue维护了一个读下标和写下标，在入队和出队的时候可以直接操作对应下标来获取元素。<br><br>另外额外维护了一个count，记录队列元素的数量。</p>
-<h3 id="LinkedBlockingQueue"><a href="#LinkedBlockingQueue" class="headerlink" title="LinkedBlockingQueue"></a>LinkedBlockingQueue</h3>
+<h5 id="add-、offer-和put-的区别"><a href="#add-、offer-和put-的区别" class="headerlink" title="add()、offer()和put()的区别"></a>add()、offer()和put()的区别</h5><table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>add()</td>
+<td>在队列满的情况下，直接抛出异常</td>
+</tr>
+<tr>
+<td>offer()</td>
+<td>在队列满的情况下，根据方法返回值的约定返回对应的值</td>
+</tr>
+<tr>
+<td>put()</td>
+<td>在队列满的情况下，等待队列有足够的空间</td>
+</tr>
+</tbody>
+</table>
+<h5 id="poll-、take-、peek-和remove-的区别"><a href="#poll-、take-、peek-和remove-的区别" class="headerlink" title="poll()、take()、peek()和remove()的区别"></a>poll()、take()、peek()和remove()的区别</h5><table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>poll()</td>
+<td>检索并删除队列里的首个元素，如果队列为空返回null</td>
+</tr>
+<tr>
+<td>peek()</td>
+<td>检索但不删除队列里的首个元素，如果队列为空返回null</td>
+</tr>
+<tr>
+<td>take()</td>
+<td>检索并删除队列里的首个元素，如果队列为空堵塞到队列不为空</td>
+</tr>
+<tr>
+<td>remove()</td>
+<td>检索并删除队列里的指定元素</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ArrayBlockingQueue"><a href="#ArrayBlockingQueue" class="headerlink" title="ArrayBlockingQueue"></a>ArrayBlockingQueue</h3><p>这是一个由数组实现的有界堵塞队列。对元素进行FIFO（先进先出）排序。队列的头是在队列中出现时间最长的元素。队列的尾部是在队列中出现的时间最短的元素。新元素插入队列尾部，队列检索操作获取队列头部的元素。创建后容量将无法更改。<br><br>该队列支持公平和非公平策略，底层是交给ReentrantLock公平和非公平机制实现，该队列从一个ReentrantLock中获取了两个Condition，用与区分写锁和读锁。<br><br>入队的时候唤醒读锁，出队的时候唤醒写锁。所以读写不能并发<br><br>由于数组的特性，ArrayBlockingQueue维护了一个读下标和写下标，在入队和出队的时候可以直接操作对应下标来获取元素。<br><br>另外额外维护了一个count，记录队列元素的数量。</p>
+<h3 id="LinkedBlockingQueue"><a href="#LinkedBlockingQueue" class="headerlink" title="LinkedBlockingQueue"></a>LinkedBlockingQueue</h3><p>使用链表结构实现的有界堵塞队列，对元素进行FIFO（先进先出）排序。相对于ArrayBlockingQueue来说，内部维护了两个ReentrantLock，分别维护读锁和写锁，实现了读写并发，链表的首位节点保持为null;</p>
+<h3 id="DelayQueue"><a href="#DelayQueue" class="headerlink" title="DelayQueue"></a>DelayQueue</h3><p>支持延时获取的无界阻塞队列，元素全都是支持延时获取的；元素通过实现Delayed接口，通过getDelay()方法得到剩余的延迟；<br>读写使用同一个ReentrantLock，不能同时操作读写；<br>通过内部维护的Thread变量，在每次offer()的时候置空变量；<br>在每次获取元素的时候，如果队列里没有元素，或者队列里的元素还没到延期的时间，就会指定Thread变量为当前线程并通过线程等待元素到期，在返回时同样也会把Thread置空；</p>
+<h3 id="PriorityBlockingQueue"><a href="#PriorityBlockingQueue" class="headerlink" title="PriorityBlockingQueue"></a>PriorityBlockingQueue</h3><p>支持优先级的无界阻塞队列，不允许元素为null，且元素必须要实现了Comparable接口，用来支持排序，队列的排序是从小到大的；<br>使用最小二叉堆和数组实现元素的存储；<br>读写锁由同一把ReentrantLock控制；在扩容的时候使用allocationSpinLock变量来做CAS自旋锁，避免在扩容时take函数的堵塞；</p>
+<h3 id="SynchronousQueue"><a href="#SynchronousQueue" class="headerlink" title="SynchronousQueue"></a>SynchronousQueue</h3><p>双栈双队列，本身没有任何空间，入队列操作必须等待一个出队列操作，这也就意味着本身没有可迭代的数据，以及规定了元素不允许为null；<br>这个队列特别适合需要线程切换的设计，一个线程运行的对象必须与另一个线程的对象进行信息交换，或者产生事件、发起任务（in order to hand it some information, event, or task.）<br>双队列里要么有数据，要么都是null；在双队列模式下，所有操作都可以判断到底是否存在数据并执行自己的对应操作，无需进行任何锁定；</p>
+<h4 id="Transferer"><a href="#Transferer" class="headerlink" title="Transferer"></a>Transferer</h4><p>SynchronousQueue的内部抽象类，提供了一个方法transfer()，并且有两个实现TransferStack和TransferQueue分别实现了双栈和双队列模式。</p>
+
       
     </div>
 
@@ -448,7 +470,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/" rel="tag"># </a>
+            <a href="/alex.github.io/tags/JDK/" rel="tag"># JDK</a>
           
         </div>
       
@@ -457,6 +479,22 @@
       
       
 
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2019/12/20/2019-12-20-InnoDB是如何实现事务的四大特性的/" rel="next" title="InnoDB是如何实现事务的四大特性的">
+                <i class="fa fa-chevron-left"></i> InnoDB是如何实现事务的四大特性的
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
 
       
@@ -526,7 +564,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">62</span>
+                    <span class="site-state-item-count">63</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -581,7 +619,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">20</span>
+                      
+                    
+                    <span class="site-state-item-count">21</span>
                     <span class="site-state-item-name">标签</span>
                   
                 </div>
@@ -626,7 +666,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#BlockingQueue"><span class="nav-number">1.</span> <span class="nav-text">BlockingQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#方法返回值的约定"><span class="nav-number">1.0.1.</span> <span class="nav-text">方法返回值的约定</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#对元素的约定"><span class="nav-number">1.0.2.</span> <span class="nav-text">对元素的约定</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#线程安全性问题"><span class="nav-number">1.0.3.</span> <span class="nav-text">线程安全性问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#add-、offer-和put-的区别"><span class="nav-number">1.0.4.</span> <span class="nav-text">add()、offer()和put()的区别</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#poll-、take-、peek-和remove-的区别"><span class="nav-number">1.0.5.</span> <span class="nav-text">poll()、take()、peek()和remove()的区别</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayBlockingQueue"><span class="nav-number">2.</span> <span class="nav-text">ArrayBlockingQueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LinkedBlockingQueue"><span class="nav-number">3.</span> <span class="nav-text">LinkedBlockingQueue</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#BlockingQueue"><span class="nav-number">1.</span> <span class="nav-text">BlockingQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#方法返回值的约定"><span class="nav-number">1.0.1.</span> <span class="nav-text">方法返回值的约定</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#对元素的约定"><span class="nav-number">1.0.2.</span> <span class="nav-text">对元素的约定</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#线程安全性问题"><span class="nav-number">1.0.3.</span> <span class="nav-text">线程安全性问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#add-、offer-和put-的区别"><span class="nav-number">1.0.4.</span> <span class="nav-text">add()、offer()和put()的区别</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#poll-、take-、peek-和remove-的区别"><span class="nav-number">1.0.5.</span> <span class="nav-text">poll()、take()、peek()和remove()的区别</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayBlockingQueue"><span class="nav-number">2.</span> <span class="nav-text">ArrayBlockingQueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LinkedBlockingQueue"><span class="nav-number">3.</span> <span class="nav-text">LinkedBlockingQueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DelayQueue"><span class="nav-number">4.</span> <span class="nav-text">DelayQueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PriorityBlockingQueue"><span class="nav-number">5.</span> <span class="nav-text">PriorityBlockingQueue</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SynchronousQueue"><span class="nav-number">6.</span> <span class="nav-text">SynchronousQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Transferer"><span class="nav-number">6.1.</span> <span class="nav-text">Transferer</span></a></li></ol></li></ol></div>
             
 
           </div>
