@@ -108,18 +108,18 @@
 
 
 
-  <meta name="description" content="Redo Log为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘； 重做日志（Redo Log）是在崩溃恢复期间使用的基于磁盘的数据结">
+  <meta name="description" content="Redo Log 提升性能  为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘；  事务特性之持久化  重做日志（Redo Log）是">
 <meta name="keywords" content="MySQL">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Redo log和Undo log">
 <meta property="og:url" content="https://alexrencn.github.io/temp/2019-12-19-Redo log和Undo log.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="Redo Log为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘； 重做日志（Redo Log）是在崩溃恢复期间使用的基于磁盘的数据结">
+<meta property="og:description" content="Redo Log 提升性能  为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘；  事务特性之持久化  重做日志（Redo Log）是">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-12-20T08:27:29.022Z">
+<meta property="og:updated_time" content="2019-12-27T12:37:44.825Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redo log和Undo log">
-<meta name="twitter:description" content="Redo Log为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘； 重做日志（Redo Log）是在崩溃恢复期间使用的基于磁盘的数据结">
+<meta name="twitter:description" content="Redo Log 提升性能  为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘；  事务特性之持久化  重做日志（Redo Log）是">
 
 
 
@@ -340,7 +340,7 @@
                 
               
 
-              <time title="创建时间：2019-12-20 16:27:29" itemprop="dateCreated datePublished" datetime="2019-12-20T16:27:29+08:00">2019-12-20</time>
+              <time title="创建时间：2019-12-27 20:37:44" itemprop="dateCreated datePublished" datetime="2019-12-27T20:37:44+08:00">2019-12-27</time>
             
 
             
@@ -395,12 +395,38 @@
       
 
       
-        <h2 id="Redo-Log"><a href="#Redo-Log" class="headerlink" title="Redo Log"></a>Redo Log</h2><p>为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；<br>在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；<br>在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘；</p>
-<p>重做日志（Redo Log）是在崩溃恢复期间使用的基于磁盘的数据结构，用于纠正事务不完整写入的数据。</p>
-<p>重做日志（Redo Log）在修改数据之后，事务提交之前发生，保证了事务提交的时候重做日志（Redo Log）必然存在，<br>而没有进行提交的事务是不会恢复的</p>
-<h4 id="对应配置"><a href="#对应配置" class="headerlink" title="对应配置"></a>对应配置</h4><p>修改my.cnf文件<br>innodb_log_file_size可以配置日志文件的大小<br>innodb_log_files_in_group可以配置日志文件的数量</p>
-<p>该动作需要关闭数据库并重启，当重启完毕后，InnoDB检测到innodb_log_file_size大小和当前配置不同。<br>他将编写日志检查点，关闭并删除旧的文件，按配置的大小创建新的文件，然后打开新的日志文件。</p>
-<h2 id="Undo-Logs"><a href="#Undo-Logs" class="headerlink" title="Undo Logs"></a>Undo Logs</h2><p><strong>撤消日志</strong>（Undo Logs)是与单个读写事务关联的撤消日志记录的集合。<br><strong>撤消日志</strong>（Undo Logs）记录包含有关如何撤消事务对<strong>聚簇索引记录</strong>的最新更改的信息。<br>如果另一个事务需要将原始数据视为一致读取操作的一部分，则将从<strong>撤消日志</strong>（Undo Logs）记录中检索未修改的数据。<br><strong>撤消日志</strong>（Undo Logs）存在于<strong>撤消日志段</strong>（undo log segments）中，它包含在<strong>回滚段</strong>（rollback segments）中。<br><strong>回滚段</strong>（rollback segments）位于<strong>撤销表空间</strong>（undo tablespaces）和<strong>全局临时表空间</strong>（global temporary tablespace）中。<br>在<strong>全局临时表空间</strong>（global temporary tablespace）中存在的<strong>撤消日志</strong>（Undo Logs）没有<strong>重做日志</strong>（Redo Log），<br>因为它只用于运行时的数据回滚，所以恢复这些数据没有意义，不记录对应的<strong>重做日志</strong>（Redo Log）反而降低了I/O。<br>每个<strong>撤销表空间</strong>（undo tablespaces）和<strong>全局临时表空间</strong>（global temporary tablespace）支持最多128个<strong>回滚段</strong>（rollback segments）。<br><strong>回滚段</strong>（rollback segments）支持的事务数取决于<strong>回滚段</strong>（rollback segments）中的撤消插槽数和每个事务所需的<strong>撤消日志</strong>（Undo Logs)数。<br><strong>回滚段</strong>（rollback segments）中撤消插槽的数量根据InnoDB页面大小而有所不同。</p>
+        <h2 id="Redo-Log"><a href="#Redo-Log" class="headerlink" title="Redo Log"></a>Redo Log</h2><blockquote>
+<p>提升性能</p>
+</blockquote>
+<p>为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；<br>在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；<br>在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘；</p>
+<blockquote>
+<p>事务特性之持久化</p>
+</blockquote>
+<p>重做日志（Redo Log）是在崩溃恢复期间使用的基于磁盘的数据结构，用于纠正事务不完整写入的数据。<br>当一个事务提交重做日志（Redo Log）时，它已经完成了对数据的修改，并在提交重做日志（Redo Log）之后提交事务，<br>这样保证了事务提交的时候重做日志（Redo Log）必然存在，即使MySQL发生崩溃也可以根据重做日志（Redo Log）进行恢复。</p>
+<h4 id="对应配置"><a href="#对应配置" class="headerlink" title="对应配置"></a>对应配置</h4><p>如果需要对重做日志（Redo Log）进行优化，需要进行以下步骤：</p>
+<ol>
+<li>关闭数据库</li>
+<li>修改my.cnf文件</li>
+<li>调整配置，可以选择以下配置进行修改和优化<ol>
+<li>innodb_log_file_size，指定日志文件的大小</li>
+<li>innodb_log_files_in_group，指定日志文件的数量</li>
+</ol>
+</li>
+<li>重启数据库</li>
+</ol>
+<p>当重启完毕后，InnoDB会检测到innodb_log_file_size大小和当前配置不同，<br>它将编写日志检查点，关闭并删除旧的文件，按配置的大小创建新的文件，然后打开新的日志文件。</p>
+<h2 id="Undo-Logs"><a href="#Undo-Logs" class="headerlink" title="Undo Logs"></a>Undo Logs</h2><blockquote>
+<p>简介</p>
+</blockquote>
+<p><strong>撤消日志</strong>（Undo Logs)是与单个读写事务关联的撤消日志记录的<strong>集合</strong>。<br><strong>撤消日志</strong>（Undo Logs）记录包含有关如何<strong>撤消事务</strong>对<strong>聚簇索引记录</strong>的最新更改的信息。<br>如果另一个事务需要将原始数据视为一致读取操作的一部分，则将从<strong>撤消日志</strong>（Undo Logs）记录中检索未修改的数据。</p>
+<blockquote>
+<p>结构描述</p>
+</blockquote>
+<p><strong>撤消日志</strong>（Undo Logs）存在于<strong>撤消日志段</strong>（undo log segments）中，它包含在<strong>回滚段</strong>（rollback segments）中;<br><strong>回滚段</strong>（rollback segments）位于<strong>撤销表空间</strong>（undo tablespaces）和<strong>全局临时表空间</strong>（global temporary tablespace）中;</p>
+<blockquote>
+<p>在<strong>全局临时表空间</strong>（global temporary tablespace）中存在的<strong>撤消日志</strong>（Undo Logs）没有<strong>重做日志</strong>（Redo Log），<br> 因为它只用于运行时的数据回滚，所以恢复这些数据没有意义，不记录对应的<strong>重做日志</strong>（Redo Log）反而降低了I/O。</p>
+</blockquote>
+<p>每个<strong>撤销表空间</strong>（undo tablespaces）和<strong>全局临时表空间</strong>（global temporary tablespace）支持最多128个<strong>回滚段</strong>（rollback segments）。<br><strong>回滚段</strong>（rollback segments）支持的事务数取决于<strong>回滚段</strong>（rollback segments）中的撤消插槽数和每个事务所需的<strong>撤消日志</strong>（Undo Logs)数。<br><strong>回滚段</strong>（rollback segments）中撤消插槽的数量根据InnoDB页面大小而有所不同。</p>
 <table>
 <thead>
 <tr>
@@ -440,24 +466,23 @@
 </ol>
 <p><strong>撤消日志</strong>（Undo Logs)根据需要分配，例如，对用户自定义表和临时表上执行INSERT、UPDATE和DELETE<br>操作需要完全分配四个撤销日志，仅对用户自定义表进行INSERT操作，则只需要单个日志。</p>
 <p>分配给事务的<strong>撤消日志</strong>（Undo Logs)在其持续时间内始终与事务有关，<br>例如：为INSERT常规表上的操作分配给事务的<strong>撤消日志</strong>（Undo Logs)将用于INSERT由该事务执行的常规表上的所有操作。</p>
-<h3 id="根据Undo-Logs计算并发读写事务数"><a href="#根据Undo-Logs计算并发读写事务数" class="headerlink" title="根据Undo Logs计算并发读写事务数"></a>根据Undo Logs计算并发读写事务数</h3><ol>
-<li>如果每个事务执行一次INSERT<strong>或</strong>一次UPDATE<strong>或</strong>一次DELETE<ol>
-<li>(innodb_page_size / 16) <em> <strong>回滚段</strong>innodb_rollback_segments </em> <strong>撤销表空间</strong> undo tablespaces</li>
-</ol>
-</li>
-<li>如果每个事务执行一次INSERT<strong>和</strong>（一次UPDATE<strong>或</strong>一次DELETE）<ol>
-<li>(innodb_page_size / 16 / 2) <em> <strong>回滚段</strong>innodb_rollback_segments </em> <strong>撤销表空间</strong> undo tablespaces</li>
-</ol>
-</li>
-<li>如果每个事务执行一次INSERT临时表操作<ol>
-<li>(innodb_page_size / 16) * <strong>回滚段</strong>innodb_rollback_segments</li>
-</ol>
-</li>
-<li>如果每个事务执行一次INSERT<strong>和</strong>（一次UPDATE<strong>或</strong>一次DELETE）<ol>
-<li>(innodb_page_size / 16 / 2) * <strong>回滚段</strong>innodb_rollback_segments</li>
-</ol>
-</li>
-</ol>
+<h3 id="根据Undo-Logs计算并发读写事务数"><a href="#根据Undo-Logs计算并发读写事务数" class="headerlink" title="根据Undo Logs计算并发读写事务数"></a>根据Undo Logs计算并发读写事务数</h3><p>这是一个不错的技巧，我们可以根据数据库配置来估算我们的事务大概可以支持多少并发，虽然在实际情况中运行着不同的SQL语句，导致这个数通常不是准确的。</p>
+<blockquote>
+<p>如果每个事务执行一次INSERT<strong>或</strong>一次UPDATE<strong>或</strong>一次DELETE</p>
+</blockquote>
+<p>(innodb_page_size / 16) <em> <strong>回滚段</strong>innodb_rollback_segments </em> <strong>撤销表空间</strong> undo tablespaces</p>
+<blockquote>
+<p>如果每个事务执行一次INSERT<strong>和</strong>（一次UPDATE<strong>或</strong>一次DELETE）</p>
+</blockquote>
+<p>(innodb_page_size / 16 / 2) <em> <strong>回滚段</strong>innodb_rollback_segments </em> <strong>撤销表空间</strong> undo tablespaces</p>
+<blockquote>
+<p>如果每个事务执行一次INSERT临时表操作</p>
+</blockquote>
+<p>(innodb_page_size / 16) * <strong>回滚段</strong>innodb_rollback_segments</p>
+<blockquote>
+<p>如果每个事务执行一次INSERT<strong>和</strong>（一次UPDATE<strong>或</strong>一次DELETE）</p>
+</blockquote>
+<p>(innodb_page_size / 16 / 2) * <strong>回滚段</strong>innodb_rollback_segments</p>
 
       
     </div>
@@ -556,7 +581,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">63</span>
+                    <span class="site-state-item-count">64</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -678,7 +703,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
