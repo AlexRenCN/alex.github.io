@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="ParNew收集器是多线程版本的Serial收集器，两者在配置参数，算法，甚至代码上都有很多重叠的地方，该回收器具有以下特点：  使用多线程进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对新生代，采用复制算法 可以和CMS收集器以及Serial Old（MSC）收集器结合使用 开启方式-XX:+UseParNewGC">
-<meta name="keywords" content="JVM">
-<meta property="og:type" content="article">
-<meta property="og:title" content="JVM垃圾收集器之二（ParNew收集器）">
-<meta property="og:url" content="https://alexrencn.github.io/2018/10/11/2018-10-06-JVM垃圾收集器之二-ParNew收集器/index.html">
+  <meta name="description" content="在之前提到的ExecutorService接口中，重载了三个submit方法,从中我们可以看到主要用到了三个接口，Future、Callable、和Runnable。在此将三个接口放在一起分析。 12345678public interface ExecutorService extends Executor &amp;#123;    &amp;lt;T&amp;gt; Future&amp;lt;T&amp;gt; submit(C">
+<meta name="keywords" content="JDK">
+<meta property="og:type" content="website">
+<meta property="og:title" content="java并发包简述之Callable">
+<meta property="og:url" content="https://alexrencn.github.io/temp/2020-01-10-java并发包简述之Callable.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="ParNew收集器是多线程版本的Serial收集器，两者在配置参数，算法，甚至代码上都有很多重叠的地方，该回收器具有以下特点：  使用多线程进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对新生代，采用复制算法 可以和CMS收集器以及Serial Old（MSC）收集器结合使用 开启方式-XX:+UseParNewGC">
+<meta property="og:description" content="在之前提到的ExecutorService接口中，重载了三个submit方法,从中我们可以看到主要用到了三个接口，Future、Callable、和Runnable。在此将三个接口放在一起分析。 12345678public interface ExecutorService extends Executor &amp;#123;    &amp;lt;T&amp;gt; Future&amp;lt;T&amp;gt; submit(C">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-10-11T12:35:24.863Z">
+<meta property="og:updated_time" content="2020-01-10T03:02:19.860Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JVM垃圾收集器之二（ParNew收集器）">
-<meta name="twitter:description" content="ParNew收集器是多线程版本的Serial收集器，两者在配置参数，算法，甚至代码上都有很多重叠的地方，该回收器具有以下特点：  使用多线程进行垃圾回收 进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成 针对新生代，采用复制算法 可以和CMS收集器以及Serial Old（MSC）收集器结合使用 开启方式-XX:+UseParNewGC">
+<meta name="twitter:title" content="java并发包简述之Callable">
+<meta name="twitter:description" content="在之前提到的ExecutorService接口中，重载了三个submit方法,从中我们可以看到主要用到了三个接口，Future、Callable、和Runnable。在此将三个接口放在一起分析。 12345678public interface ExecutorService extends Executor &amp;#123;    &amp;lt;T&amp;gt; Future&amp;lt;T&amp;gt; submit(C">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/10/11/2018-10-06-JVM垃圾收集器之二-ParNew收集器/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/temp/2020-01-10-java并发包简述之Callable.html"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>JVM垃圾收集器之二（ParNew收集器） | Alex</title>
+  <title>java并发包简述之Callable | Alex</title>
   
 
 
@@ -245,6 +245,19 @@
   
     
 
+    
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
+
   
 
   
@@ -285,7 +298,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/10/11/2018-10-06-JVM垃圾收集器之二-ParNew收集器/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/temp/2020-01-10-java并发包简述之Callable.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +315,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">JVM垃圾收集器之二（ParNew收集器）
+          <h1 class="post-title" itemprop="name headline">java并发包简述之Callable
               
             
           </h1>
@@ -327,7 +340,7 @@
                 
               
 
-              <time title="创建时间：2018-10-11 20:35:24" itemprop="dateCreated datePublished" datetime="2018-10-11T20:35:24+08:00">2018-10-11</time>
+              <time title="创建时间：2020-01-10 11:02:19" itemprop="dateCreated datePublished" datetime="2020-01-10T11:02:19+08:00">2020-01-10</time>
             
 
             
@@ -342,8 +355,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/10/11/2018-10-06-JVM垃圾收集器之二-ParNew收集器/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/10/11/2018-10-06-JVM垃圾收集器之二-ParNew收集器/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/temp/2020-01-10-java并发包简述之Callable.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/temp/2020-01-10-java并发包简述之Callable.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +364,7 @@
 
           
           
-             <span id="/alex.github.io/2018/10/11/2018-10-06-JVM垃圾收集器之二-ParNew收集器/" class="leancloud_visitors" data-flag-title="JVM垃圾收集器之二（ParNew收集器）">
+             <span id="/alex.github.io/temp/2020-01-10-java并发包简述之Callable.html" class="leancloud_visitors" data-flag-title="java并发包简述之Callable">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -382,15 +395,11 @@
       
 
       
-        <a id="more"></a>
-<p>ParNew收集器是多线程版本的Serial收集器，两者在配置参数，算法，甚至代码上都有很多重叠的地方，该回收器具有以下特点：</p>
-<ol>
-<li>使用多线程进行垃圾回收</li>
-<li>进行垃圾收集的时候，其他工作线程必须暂停，直到他收集完成</li>
-<li>针对新生代，采用复制算法</li>
-<li>可以和CMS收集器以及Serial Old（MSC）收集器结合使用</li>
-<li>开启方式-XX:+UseParNewGC</li>
-</ol>
+        <p>在之前提到的ExecutorService接口中，重载了三个submit方法,从中我们可以看到主要用到了三个接口，<br>Future、Callable、和Runnable。在此将三个接口放在一起分析。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ExecutorService</span> <span class="keyword">extends</span> <span class="title">Executor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &lt;T&gt; <span class="function">Future&lt;T&gt; <span class="title">submit</span><span class="params">(Callable&lt;T&gt; task)</span></span>;</span><br><span class="line"></span><br><span class="line">    &lt;T&gt; <span class="function">Future&lt;T&gt; <span class="title">submit</span><span class="params">(Runnable task, T result)</span></span>;</span><br><span class="line"></span><br><span class="line">    Future&lt;?&gt; submit(Runnable task);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Runnable接口"><a href="#Runnable接口" class="headerlink" title="Runnable接口"></a>Runnable接口</h3><p>当使用Runnable接口实现一个线程的时候，在启动线程的时候运行实现的run()方法逻辑</p>
+<h3 id="Future接口"><a href="#Future接口" class="headerlink" title="Future接口"></a>Future接口</h3><p>作为异步计算的结果，提供了获取、取消的接口，一旦异步任务处理完成是无法取消的</p>
+<h3 id="Callable接口"><a href="#Callable接口" class="headerlink" title="Callable接口"></a>Callable接口</h3><p>一个具有返回值或者引发异常的任务接口，call()方法</p>
 
       
     </div>
@@ -411,7 +420,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/JVM/" rel="tag"># JVM</a>
+            <a href="/alex.github.io/" rel="tag"># </a>
           
         </div>
       
@@ -420,26 +429,6 @@
       
       
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/alex.github.io/2018/10/10/2018-10-10-ELK搭建以及项目整合记录/" rel="next" title="ELK搭建以及项目整合记录">
-                <i class="fa fa-chevron-left"></i> ELK搭建以及项目整合记录
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/alex.github.io/2018/10/11/2018-10-08-JVM垃圾收集器之三-Parallel Scavenge并行回收收集器/" rel="prev" title="JVM垃圾收集器之三（Parallel Scavenge（并行回收）收集器）">
-                JVM垃圾收集器之三（Parallel Scavenge（并行回收）收集器） <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
       
 
       
@@ -484,8 +473,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -592,6 +590,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Runnable接口"><span class="nav-number">1.</span> <span class="nav-text">Runnable接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Future接口"><span class="nav-number">2.</span> <span class="nav-text">Future接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Callable接口"><span class="nav-number">3.</span> <span class="nav-text">Callable接口</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

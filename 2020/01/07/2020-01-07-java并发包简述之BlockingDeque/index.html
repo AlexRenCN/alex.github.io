@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/alex.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/alex.github.io/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/alex.github.io/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/alex.github.io/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/alex.github.io/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/alex.github.io/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/alex.github.io/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="BlockingDequejava并发包下提供的双端阻塞队列  BlockingDeque同时支持两个特性：1.取数据的时候如果发现队列没有数据，则等待双端队列变成非空；2.存数据的时候，如果发现队列已满，则等待双端队列有空闲空间；  BlockingQueue和BlockingDeque差异BlockingQueue是单向的堵塞队列，而BlockingDeque是双端堵塞队列。在Blocking">
+<meta name="keywords" content="JDK">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java并发包简述之BlockingDeque">
+<meta property="og:url" content="https://alexrencn.github.io/2020/01/07/2020-01-07-java并发包简述之BlockingDeque/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="BlockingDequejava并发包下提供的双端阻塞队列  BlockingDeque同时支持两个特性：1.取数据的时候如果发现队列没有数据，则等待双端队列变成非空；2.存数据的时候，如果发现队列已满，则等待双端队列有空闲空间；  BlockingQueue和BlockingDeque差异BlockingQueue是单向的堵塞队列，而BlockingDeque是双端堵塞队列。在Blocking">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-01-07T13:18:39.063Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java并发包简述之BlockingDeque">
+<meta name="twitter:description" content="BlockingDequejava并发包下提供的双端阻塞队列  BlockingDeque同时支持两个特性：1.取数据的时候如果发现队列没有数据，则等待双端队列变成非空；2.存数据的时候，如果发现队列已满，则等待双端队列有空闲空间；  BlockingQueue和BlockingDeque差异BlockingQueue是单向的堵塞队列，而BlockingDeque是双端堵塞队列。在Blocking">
+
+
+
+
+
+
+  <link rel="canonical" href="https://alexrencn.github.io/2020/01/07/2020-01-07-java并发包简述之BlockingDeque/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>java并发包简述之BlockingDeque | Alex</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/alex.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alex</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">可达鸭眉头一紧，发现编程并不简单</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/alex.github.io/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/alex.github.io/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2020/01/07/2020-01-07-java并发包简述之BlockingDeque/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java并发包简述之BlockingDeque
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-01-07 21:18:39" itemprop="dateCreated datePublished" datetime="2020-01-07T21:18:39+08:00">2020-01-07</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2020/01/07/2020-01-07-java并发包简述之BlockingDeque/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2020/01/07/2020-01-07-java并发包简述之BlockingDeque/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2020/01/07/2020-01-07-java并发包简述之BlockingDeque/" class="leancloud_visitors" data-flag-title="java并发包简述之BlockingDeque">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="BlockingDeque"><a href="#BlockingDeque" class="headerlink" title="BlockingDeque"></a>BlockingDeque</h3><p>java并发包下提供的双端阻塞队列</p>
+<blockquote>
+<p>BlockingDeque同时支持两个特性：<br><br>1.取数据的时候如果发现队列没有数据，则<strong>等待</strong>双端队列变成非空；<br><br>2.存数据的时候，如果发现队列已满，则<strong>等待</strong>双端队列有空闲空间；<br></p>
+</blockquote>
+<h4 id="BlockingQueue和BlockingDeque差异"><a href="#BlockingQueue和BlockingDeque差异" class="headerlink" title="BlockingQueue和BlockingDeque差异"></a>BlockingQueue和BlockingDeque差异</h4><p>BlockingQueue是单向的堵塞队列，而BlockingDeque是双端堵塞队列。<br><br>在BlockingQueue的实现中也有一个双栈/双队列的实现SynchronousQueue，<br>BlockingDeque实际上是支持单个队列双端操作，区分好这两个区别就好。</p>
+<h4 id="BlockingQueue和BlockingDeque相同处"><a href="#BlockingQueue和BlockingDeque相同处" class="headerlink" title="BlockingQueue和BlockingDeque相同处"></a>BlockingQueue和BlockingDeque相同处</h4><p>如果想自定义实现BlockingDeque，可以直接使用一个BlockingQueue的实现作为类变量，<br>并直接通过操作类变量的API来自定义实现。<br><br>这是因为，BlockingQueue和BlockingDeque之间的部分API含义是完全相同的，<br>下面是部分等价API的说明</p>
+<p>插入</p>
+<table>
+<thead>
+<tr>
+<th>BlockingQueue 方法</th>
+<th>等效BlockingDeque方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>add(e)</td>
+<td>addLast(e)</td>
+</tr>
+<tr>
+<td>offer(e)</td>
+<td>offerLast(e)</td>
+</tr>
+<tr>
+<td>put(e)</td>
+<td>putLast(e)</td>
+</tr>
+<tr>
+<td>offer(e, time, unit)</td>
+<td>offerLast(e, time, unit)</td>
+</tr>
+</tbody>
+</table>
+<p>删除</p>
+<table>
+<thead>
+<tr>
+<th>BlockingQueue 方法</th>
+<th>等效BlockingDeque方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>remove()</td>
+<td>removeFirst()</td>
+</tr>
+<tr>
+<td>poll()</td>
+<td>pollFirst()</td>
+</tr>
+<tr>
+<td>take()</td>
+<td>takeFirst()</td>
+</tr>
+<tr>
+<td>poll(time, unit)</td>
+<td>pollFirst(time, unit)</td>
+</tr>
+</tbody>
+</table>
+<p>检查元素</p>
+<table>
+<thead>
+<tr>
+<th>BlockingQueue 方法</th>
+<th>等效BlockingDeque方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>element()</td>
+<td>getFirst()</td>
+</tr>
+<tr>
+<td>peek()</td>
+<td>peekFirst()</td>
+</tr>
+</tbody>
+</table>
+<h3 id="BlockingDeque实现的约定"><a href="#BlockingDeque实现的约定" class="headerlink" title="BlockingDeque实现的约定"></a>BlockingDeque实现的约定</h3><p>如果要实现BlockingDeque，在处理无法即使处理的操作时（如立刻想获取数据但是队列里没有数据），<br>可以选择以下四种方式:</p>
+<ol>
+<li>抛出异常；</li>
+<li>返回特殊值（null或者false,取决于调用的方法）；</li>
+<li>无限制堵塞，直到操作成功或失败；</li>
+<li>堵塞指定时间，超时放弃操作；</li>
+</ol>
+<h4 id="方法实现的约定"><a href="#方法实现的约定" class="headerlink" title="方法实现的约定"></a>方法实现的约定</h4><h5 id="针对链表头的操作"><a href="#针对链表头的操作" class="headerlink" title="针对链表头的操作"></a>针对链表头的操作</h5><p>插入</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>约定返回</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>addFirst(e)</td>
+<td>引发异常</td>
+</tr>
+<tr>
+<td>offerFirst(e)</td>
+<td>返回特殊值</td>
+</tr>
+<tr>
+<td>putFirst(e)</td>
+<td>无限制堵塞</td>
+</tr>
+<tr>
+<td>offerFirst(e, time, unit)</td>
+<td>堵塞指定时间</td>
+</tr>
+</tbody>
+</table>
+<p>删除</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>约定返回</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>removeFirst()</td>
+<td>引发异常</td>
+</tr>
+<tr>
+<td>pollFirst()</td>
+<td>返回特殊值</td>
+</tr>
+<tr>
+<td>takeFirst()</td>
+<td>无限制堵塞</td>
+</tr>
+<tr>
+<td>pollFirst(time, unit)</td>
+<td>堵塞指定时间</td>
+</tr>
+</tbody>
+</table>
+<p>检查元素</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>约定返回</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getFirst()</td>
+<td>引发异常</td>
+</tr>
+<tr>
+<td>peekFirst()</td>
+<td>返回特殊值</td>
+</tr>
+<tr>
+<td>无对应方法</td>
+<td>无限制堵塞</td>
+</tr>
+<tr>
+<td>无对应方法</td>
+<td>堵塞指定时间</td>
+</tr>
+</tbody>
+</table>
+<h5 id="针对链表尾的操作"><a href="#针对链表尾的操作" class="headerlink" title="针对链表尾的操作"></a>针对链表尾的操作</h5><p>插入</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>约定返回</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>addLast(e)</td>
+<td>引发异常</td>
+</tr>
+<tr>
+<td>offerLast(e)</td>
+<td>返回特殊值</td>
+</tr>
+<tr>
+<td>putLast(e)</td>
+<td>无限制堵塞</td>
+</tr>
+<tr>
+<td>offerLast(e, time, unit)</td>
+<td>堵塞指定时间</td>
+</tr>
+</tbody>
+</table>
+<p>删除</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>约定返回</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>removeLast()</td>
+<td>引发异常</td>
+</tr>
+<tr>
+<td>pollLast()</td>
+<td>返回特殊值</td>
+</tr>
+<tr>
+<td>takeLast()</td>
+<td>无限制堵塞</td>
+</tr>
+<tr>
+<td>pollLast(time, unit)</td>
+<td>堵塞指定时间</td>
+</tr>
+</tbody>
+</table>
+<p>检查元素</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>约定返回</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>getLast()</td>
+<td>引发异常</td>
+</tr>
+<tr>
+<td>peekLast()</td>
+<td>返回特殊值</td>
+</tr>
+<tr>
+<td>无对应方法</td>
+<td>无限制堵塞</td>
+</tr>
+<tr>
+<td>无对应方法</td>
+<td>堵塞指定时间</td>
+</tr>
+</tbody>
+</table>
+<h4 id="部分方法描述"><a href="#部分方法描述" class="headerlink" title="部分方法描述"></a>部分方法描述</h4><ol>
+<li>element:检索但不删除此双端队列代表的队列的头</li>
+<li>push:在不违反容量限制的情况下立即进行操作，则将一个元素推入此双端队列的头部，如果当前没有可用空间，则抛出异常。</li>
+<li>removeFirstOccurrence(Object o):移除队列中相匹配的第一个元素</li>
+<li>removeLastOccurrence(Object o):移除队列中相匹配的最后一个元素</li>
+</ol>
+<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><h4 id="LinkedBlockingDeque"><a href="#LinkedBlockingDeque" class="headerlink" title="LinkedBlockingDeque"></a>LinkedBlockingDeque</h4><p>让人感动的想哭的是，这个接口目前只有一个实现，从命名我们可推断，这是一个使用链表作为数据结构的实现，<br>默认是无界的(容量默认大小Integer.MAX_VALUE)，也可以在构造器里指定为有界的链表。</p>
+<h5 id="Node"><a href="#Node" class="headerlink" title="Node"></a>Node</h5><p>链表节点的实现非常简单，Node的代码如下，链表节点prev为自己意味着本身是头节点，<br>链表节点next为自己意味着本身是尾节点。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The item, or null if this node has been removed.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    E item;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * One of:</span></span><br><span class="line"><span class="comment">     * - the real predecessor Node</span></span><br><span class="line"><span class="comment">     * - this Node, meaning the predecessor is tail</span></span><br><span class="line"><span class="comment">     * - null, meaning there is no predecessor</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Node&lt;E&gt; prev;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * One of:</span></span><br><span class="line"><span class="comment">     * - the real successor Node</span></span><br><span class="line"><span class="comment">     * - this Node, meaning the successor is head</span></span><br><span class="line"><span class="comment">     * - null, meaning there is no successor</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Node&lt;E&gt; next;</span><br><span class="line"></span><br><span class="line">    Node(E x) &#123;</span><br><span class="line">        item = x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="Lock实现"><a href="#Lock实现" class="headerlink" title="Lock实现"></a>Lock实现</h5><p>LinkedBlockingDeque只持有一把ReentrantLock锁，并从中获取两个Condition作为空队列和满队列的<br>判定条件，</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/alex.github.io/tags/JDK/" rel="tag"># JDK</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2020/01/01/2020-01-01-java8闭包/" rel="next" title="java8闭包">
+                <i class="fa fa-chevron-left"></i> java8闭包
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/alex.github.io/2020/01/13/2020-01-13-java并发包简述之Executor/" rel="prev" title="java并发包简述之Executor">
+                java并发包简述之Executor <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Alex Ren</p>
+              <p class="site-description motion-element" itemprop="description">JAVA之路</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/alex.github.io/archives/">
+                
+                    <span class="site-state-item-count">66</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/AlexRenCN" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#BlockingDeque"><span class="nav-number">1.</span> <span class="nav-text">BlockingDeque</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#BlockingQueue和BlockingDeque差异"><span class="nav-number">1.1.</span> <span class="nav-text">BlockingQueue和BlockingDeque差异</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BlockingQueue和BlockingDeque相同处"><span class="nav-number">1.2.</span> <span class="nav-text">BlockingQueue和BlockingDeque相同处</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BlockingDeque实现的约定"><span class="nav-number">2.</span> <span class="nav-text">BlockingDeque实现的约定</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#方法实现的约定"><span class="nav-number">2.1.</span> <span class="nav-text">方法实现的约定</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#针对链表头的操作"><span class="nav-number">2.1.1.</span> <span class="nav-text">针对链表头的操作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#针对链表尾的操作"><span class="nav-number">2.1.2.</span> <span class="nav-text">针对链表尾的操作</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#部分方法描述"><span class="nav-number">2.2.</span> <span class="nav-text">部分方法描述</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具体实现"><span class="nav-number">3.</span> <span class="nav-text">具体实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LinkedBlockingDeque"><span class="nav-number">3.1.</span> <span class="nav-text">LinkedBlockingDeque</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Node"><span class="nav-number">3.1.1.</span> <span class="nav-text">Node</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Lock实现"><span class="nav-number">3.1.2.</span> <span class="nav-text">Lock实现</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex Ren</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@<%= theme.mermaid.version %>/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/alex.github.io/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/alex.github.io/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/alex.github.io/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'VooWzCTKIYsM5LgzWVUF6cuL-gzGzoHsz',
+        appKey: 'mjrOD1ERYDgolUpulB6JU9pQ',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: true
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
