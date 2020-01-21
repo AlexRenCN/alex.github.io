@@ -110,13 +110,13 @@
 
   <meta name="description" content="Redo Log 提升性能  为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘；  事务特性之持久化  重做日志（Redo Log）是">
 <meta name="keywords" content="MySQL">
-<meta property="og:type" content="website">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Redo log和Undo log">
-<meta property="og:url" content="https://alexrencn.github.io/temp/2019-12-19-Redo log和Undo log.html">
+<meta property="og:url" content="https://alexrencn.github.io/2020/01/21/2020-01-21-Redo log和Undo log/index.html">
 <meta property="og:site_name" content="Alex">
 <meta property="og:description" content="Redo Log 提升性能  为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘；  事务特性之持久化  重做日志（Redo Log）是">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-12-27T12:37:44.825Z">
+<meta property="og:updated_time" content="2020-01-21T10:50:15.524Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redo log和Undo log">
 <meta name="twitter:description" content="Redo Log 提升性能  为了提高数据库的性能，InnoDB使用缓冲池(Buffer Pool)，实现了磁盘和流的映射，提高了读写效率；在读取数据的时候会优先在缓冲池(Buffer Pool)里读取，如果没有对应数据就从磁盘获取并添加到缓冲池(Buffer Pool)；在写入数据的时候会写入缓冲池(Buffer Pool)，定期同步到磁盘；  事务特性之持久化  重做日志（Redo Log）是">
@@ -126,7 +126,7 @@
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/temp/2019-12-19-Redo log和Undo log.html"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2020/01/21/2020-01-21-Redo log和Undo log/"/>
 
 
 
@@ -245,19 +245,6 @@
   
     
 
-    
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
   
 
   
@@ -298,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/temp/2019-12-19-Redo log和Undo log.html">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2020/01/21/2020-01-21-Redo log和Undo log/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -340,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2019-12-27 20:37:44" itemprop="dateCreated datePublished" datetime="2019-12-27T20:37:44+08:00">2019-12-27</time>
+              <time title="创建时间：2020-01-21 18:50:15" itemprop="dateCreated datePublished" datetime="2020-01-21T18:50:15+08:00">2020-01-21</time>
             
 
             
@@ -355,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/temp/2019-12-19-Redo log和Undo log.html#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/temp/2019-12-19-Redo log和Undo log.html" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2020/01/21/2020-01-21-Redo log和Undo log/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2020/01/21/2020-01-21-Redo log和Undo log/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -364,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/temp/2019-12-19-Redo log和Undo log.html" class="leancloud_visitors" data-flag-title="Redo log和Undo log">
+             <span id="/alex.github.io/2020/01/21/2020-01-21-Redo log和Undo log/" class="leancloud_visitors" data-flag-title="Redo log和Undo log">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -503,7 +490,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/" rel="tag"># </a>
+            <a href="/alex.github.io/tags/MySQL/" rel="tag"># MySQL</a>
           
         </div>
       
@@ -512,6 +499,22 @@
       
       
 
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2020/01/13/2020-01-13-java并发包简述之Executor/" rel="next" title="java并发包简述之Executor">
+                <i class="fa fa-chevron-left"></i> java并发包简述之Executor
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
 
       
@@ -581,7 +584,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">66</span>
+                    <span class="site-state-item-count">67</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
