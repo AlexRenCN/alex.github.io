@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/alex.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/alex.github.io/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/alex.github.io/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/alex.github.io/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/alex.github.io/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/alex.github.io/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/alex.github.io/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="前言本文以维基百科的定义为基础，做了一些改动，增加了场景描述。 Paxos算法是莱斯利·兰伯特（英语：Leslie Lamport，LaTeX中的“La”）于1990年提出的一种基于消息传递且具有高度容错特性的共识（consensus）算法。  扩展：注意共识算法和一致性算法是不同的，线性一致性(Linearizability)，或称原子一致性或严格一致性指的是程序在执行的历史中在存在可线性化点P">
+<meta name="keywords" content="分布式">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Paxos算法">
+<meta property="og:url" content="https://alexrencn.github.io/temp/2020-01-10-Paxos算法.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="前言本文以维基百科的定义为基础，做了一些改动，增加了场景描述。 Paxos算法是莱斯利·兰伯特（英语：Leslie Lamport，LaTeX中的“La”）于1990年提出的一种基于消息传递且具有高度容错特性的共识（consensus）算法。  扩展：注意共识算法和一致性算法是不同的，线性一致性(Linearizability)，或称原子一致性或严格一致性指的是程序在执行的历史中在存在可线性化点P">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-02-09T07:47:14.111Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Paxos算法">
+<meta name="twitter:description" content="前言本文以维基百科的定义为基础，做了一些改动，增加了场景描述。 Paxos算法是莱斯利·兰伯特（英语：Leslie Lamport，LaTeX中的“La”）于1990年提出的一种基于消息传递且具有高度容错特性的共识（consensus）算法。  扩展：注意共识算法和一致性算法是不同的，线性一致性(Linearizability)，或称原子一致性或严格一致性指的是程序在执行的历史中在存在可线性化点P">
+
+
+
+
+
+
+  <link rel="canonical" href="https://alexrencn.github.io/temp/2020-01-10-Paxos算法.html"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Paxos算法 | Alex</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/alex.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alex</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">可达鸭眉头一紧，发现编程并不简单</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/alex.github.io/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/alex.github.io/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+    
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/temp/2020-01-10-Paxos算法.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Paxos算法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-02-09 15:47:14" itemprop="dateCreated datePublished" datetime="2020-02-09T15:47:14+08:00">2020-02-09</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/temp/2020-01-10-Paxos算法.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/temp/2020-01-10-Paxos算法.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/temp/2020-01-10-Paxos算法.html" class="leancloud_visitors" data-flag-title="Paxos算法">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文以维基百科的定义为基础，做了一些改动，增加了场景描述。</p>
+<p>Paxos算法是莱斯利·兰伯特（英语：Leslie Lamport，LaTeX中的“La”）于1990年提出的一种基于消息传递且具有高度容错特性的<strong>共识（consensus）算法</strong>。</p>
+<blockquote>
+<p>扩展：注意共识算法和一致性算法是不同的，线性一致性(Linearizability)，或称原子一致性或严格一致性指的是程序在执行的历史中在存在可线性化点P的执行模型，<br>这意味着一个操作将在程序的调用和返回之间的某个点P起作用。这里“起作用”的意思是被系统中并发运行的所有其他线程所感知。</p>
+</blockquote>
+<h4 id="词典"><a href="#词典" class="headerlink" title="词典"></a>词典</h4><p>参与角色</p>
+<ol>
+<li>提议者（proposers）</li>
+<li>接受者（acceptors）</li>
+<li>学习者（learners，允许身兼数职）</li>
+</ol>
+<p>动作</p>
+<ol>
+<li><strong>提案</strong>（proposal）:由一个<strong>提议者</strong>发起，包括<strong>提案编号</strong>和<strong>提案value</strong></li>
+<li><strong>接受提案</strong>（accept）:<strong>接受者</strong>收到<strong>提案</strong>之后可以批准提案</li>
+<li><strong>批准</strong>（chosen）:<strong>多数派</strong>（majority）<strong>接受者**</strong>接受提案**（accept），则提案获得批准</li>
+<li><strong>决议</strong>（value）:被<strong>批准</strong>的<strong>提案value</strong></li>
+</ol>
+<h3 id="正常流程"><a href="#正常流程" class="headerlink" title="正常流程"></a>正常流程</h3><p>通过正常流程学习Paxos算法，首先提出基础算法，之后会提出潜在问题，进行进一步完善</p>
+<h4 id="基础协议"><a href="#基础协议" class="headerlink" title="基础协议"></a>基础协议</h4><ol>
+<li><strong>决议</strong>只有在被<strong>提议者</strong>提出后才能被<strong>批准</strong>（未经<strong>批准</strong>的<strong>决议</strong>称为’<strong>提案</strong>‘）；</li>
+<li>在一次Paxos算法的执行实例中，只<strong>批准</strong>一个<strong>决议</strong>；</li>
+<li><strong>学习者</strong>只能获得被<strong>批准</strong>的<strong>决议</strong>。</li>
+</ol>
+<h4 id="完善协议"><a href="#完善协议" class="headerlink" title="完善协议"></a>完善协议</h4><p>为了满足基础协议的目标2，<strong>只批准一个决议</strong>，增加约束P1:<strong>接受者</strong>必须对第一次收到的提案进行<strong>接受提案</strong>处理，<br>这个约束并不能使得目标2可以完成，因为存在一个场景，即有偶数个<strong>接受者</strong>，其中一半<strong>接受提案</strong>A，另一边<strong>接受提案</strong>B。</p>
+<p>仔细阅读目标2，只要<strong>提案value</strong>是相同的，就可以<strong>批准</strong>。为了避免无法区分两个<strong>提案value</strong>相同的<strong>提案</strong>，<br>在同一次Paxos算法的执行实例中通过了两者，增加约束P2:一旦一个具有value v的提案被<strong>批准</strong>，那么之后<strong>批准</strong>的提案必须具有value v。<br>发生场景是，提议A和提议B的<strong>提案value</strong>都是v，同一个<strong>接受者</strong>如果接受了提案A，也就可以接受提案B,因为他们的<strong>提案value</strong>相同，<br>此时需要提案携带顺序关系，比如分配协议编号，根据编号大小确定提议顺序，区分两次<strong>提案</strong>。</p>
+<blockquote>
+<p>通过P1和P2约束，我们完成了对目标2的保证。</p>
+</blockquote>
+<p>P2约束是保证两个<strong>提案</strong>会被分配到两次<strong>批准</strong>过程中，我们可以对P2约束再进行一次增强，在<strong>接受提案</strong>方面进行控制。<br>因为如果第一个<strong>提案</strong>被<strong>批准</strong>，则<strong>多数派</strong>（majority）<strong>接受者</strong>已经接受了<strong>决议</strong>，<br>增加约束P2a:一旦一个具有value v的<strong>提案</strong>被<strong>批准</strong>，那么之后任何<strong>接受者</strong>再次<strong>接受提案</strong>必须具有value v。</p>
+<p>如果一个<strong>提议者</strong>和<strong>接受者</strong>在休眠过程中，系统执行了一次或多次<strong>批准</strong>，当他们被唤醒之后，参与到新一轮的Paxos算法的执行实例中，<br>此时<strong>提议者</strong>无法按照束P2a要求，携带上次的<strong>决议</strong>，而<strong>接受者</strong>在新一轮的Paxos算法的执行实例里，按照约束P1需要接收第一个<strong>提案</strong>，<br>按照照束P2a需要拒绝无法携带上次<strong>决议</strong>内容的<strong>提案</strong>，此时产生矛盾，针对P2a进行增强，<br>增加约束P2b:一旦一个具有value v 的<strong>提案</strong>被<strong>批准</strong>，那么以后任何<strong>提议者</strong>提出的<strong>提案</strong>必须具有value v。<br>P2b是对P2a更强的约束，在提出<strong>提案</strong>阶段就需要携带value v了。</p>
+<p>那么如何让一个经历过休眠的<strong>提议者</strong>能够携带value v呢，<br>增加约束P2c:如果一个编号为n的<strong>提案</strong>具有value v，那么存在一个多数派，要么他们中所有人都没有<strong>接受提案</strong>编号小于n<br>的任何<strong>提案</strong>，要么他们已经<strong>接受提案</strong>的所有编号小于n的<strong>提案</strong>中编号最大的那个<strong>提案</strong>具有value v。<br>这里需要理解的是，一个<strong>提案</strong>被<strong>批准</strong>，是通过一个<strong>多数派</strong>来<strong>接受提案</strong>从而完成的，这里记录为编号n对应多数派c，<br>接收的是value v，而任意两个多数派之间必定会有至少一个公共成员，因为两个多数派都超过了半数嘛，在这个约束下，<br>只要<strong>提议者</strong>和一个多数派进行沟通获取上一次<strong>批准</strong>的<strong>提案</strong>，就可以找到P2b约束中要求的value v。</p>
+<p>如果一个<strong>接受者</strong>没有进行过任何<strong>批准</strong>，<strong>提议者</strong>发起编号为n的<strong>提案</strong>，但是在投票之前又接收了（n-1）编号的<strong>提案</strong>，<br>如果（n-1）编号和n编号的<strong>提案value</strong>不同，则违反了约束P2c。<br>增加约束P1a:当且仅当<strong>接受者</strong>没有回应过编号大于n的<strong>提案</strong>时，可以<strong>接受提案</strong>编号为n的<strong>提案</strong>。<br>这样在并发情况下<strong>接受提案</strong>的时候，可以保证没有回应过编号大于当前编号的<strong>提案</strong>。</p>
+<h4 id="约束总结"><a href="#约束总结" class="headerlink" title="约束总结"></a>约束总结</h4><p>最后完整记录下约束，来检查一下自己是否理解了约束目的吧：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">P1：一个 acceptor 必须接受（accept）第一次收到的提案。</span><br><span class="line">P2：一旦一个具有 value v 的提案被批准（chosen），那么之后批准（chosen）的提案必须具有 value v。</span><br><span class="line">P2a：一旦一个具有 value v 的提案被批准（chosen），那么之后任何 acceptor 再次接受（accept）的提案必须具有 value v。</span><br><span class="line">P2b：一旦一个具有 value v 的提案被批准（chosen），那么以后任何 proposer 提出的提案必须具有 value v。</span><br><span class="line">P2c：如果一个编号为 n 的提案具有 value v，那么存在一个多数派，要么他们中所有人都没有接受（accept）编号小于 n </span><br><span class="line">的任何提案，要么他们已经接受（accept）的所有编号小于 n 的提案中编号最大的那个提案具有 value v。</span><br></pre></td></tr></table></figure></p>
+<h4 id="正常流程总结"><a href="#正常流程总结" class="headerlink" title="正常流程总结"></a>正常流程总结</h4><ol>
+<li>提案<ol>
+<li>提议者指定提案编号n和提案value，发送给一个接受者多数派</li>
+<li>接受者收到提案后，如果编号n大于所有已经回复的提案编号（代表已经接受提案），将上次接受的提案内容回复给提议者，并承诺不再接受编号n以下的提案</li>
+</ol>
+</li>
+<li>批准<ol>
+<li>当一个提议者接收到多数接受者接受提案的响应时，进入批准阶段，提议者向接受提案的接受者发送请求，根据编号n和P2c约束的value v，如果没有接受的value则可以自定义</li>
+<li>如果接受者不违反对其他提议者的承诺，则接受提议</li>
+</ol>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/alex.github.io/" rel="tag"># </a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Alex Ren</p>
+              <p class="site-description motion-element" itemprop="description">JAVA之路</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/alex.github.io/archives/">
+                
+                    <span class="site-state-item-count">69</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/AlexRenCN" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#词典"><span class="nav-number">1.1.</span> <span class="nav-text">词典</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正常流程"><span class="nav-number">2.</span> <span class="nav-text">正常流程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基础协议"><span class="nav-number">2.1.</span> <span class="nav-text">基础协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#完善协议"><span class="nav-number">2.2.</span> <span class="nav-text">完善协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#约束总结"><span class="nav-number">2.3.</span> <span class="nav-text">约束总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#正常流程总结"><span class="nav-number">2.4.</span> <span class="nav-text">正常流程总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex Ren</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@<%= theme.mermaid.version %>/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/alex.github.io/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/alex.github.io/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/alex.github.io/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'VooWzCTKIYsM5LgzWVUF6cuL-gzGzoHsz',
+        appKey: 'mjrOD1ERYDgolUpulB6JU9pQ',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: true
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
