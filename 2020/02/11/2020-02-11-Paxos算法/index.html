@@ -110,13 +110,13 @@
 
   <meta name="description" content="前言本文以维基百科的定义为基础，做了一些改动，增加了场景描述。 Paxos算法是莱斯利·兰伯特（英语：Leslie Lamport，LaTeX中的“La”）于1990年提出的一种基于消息传递且具有高度容错特性的共识（consensus）算法。  扩展：注意共识算法和一致性算法是不同的，线性一致性(Linearizability)，或称原子一致性或严格一致性指的是程序在执行的历史中在存在可线性化点P">
 <meta name="keywords" content="分布式">
-<meta property="og:type" content="website">
+<meta property="og:type" content="article">
 <meta property="og:title" content="Paxos算法">
-<meta property="og:url" content="https://alexrencn.github.io/temp/2020-01-10-Paxos算法.html">
+<meta property="og:url" content="https://alexrencn.github.io/2020/02/11/2020-02-11-Paxos算法/index.html">
 <meta property="og:site_name" content="Alex">
 <meta property="og:description" content="前言本文以维基百科的定义为基础，做了一些改动，增加了场景描述。 Paxos算法是莱斯利·兰伯特（英语：Leslie Lamport，LaTeX中的“La”）于1990年提出的一种基于消息传递且具有高度容错特性的共识（consensus）算法。  扩展：注意共识算法和一致性算法是不同的，线性一致性(Linearizability)，或称原子一致性或严格一致性指的是程序在执行的历史中在存在可线性化点P">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-02-09T07:47:14.111Z">
+<meta property="og:updated_time" content="2020-02-11T04:15:20.795Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Paxos算法">
 <meta name="twitter:description" content="前言本文以维基百科的定义为基础，做了一些改动，增加了场景描述。 Paxos算法是莱斯利·兰伯特（英语：Leslie Lamport，LaTeX中的“La”）于1990年提出的一种基于消息传递且具有高度容错特性的共识（consensus）算法。  扩展：注意共识算法和一致性算法是不同的，线性一致性(Linearizability)，或称原子一致性或严格一致性指的是程序在执行的历史中在存在可线性化点P">
@@ -126,7 +126,7 @@
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/temp/2020-01-10-Paxos算法.html"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2020/02/11/2020-02-11-Paxos算法/"/>
 
 
 
@@ -245,19 +245,6 @@
   
     
 
-    
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
   
 
   
@@ -298,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/temp/2020-01-10-Paxos算法.html">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2020/02/11/2020-02-11-Paxos算法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -340,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2020-02-09 15:47:14" itemprop="dateCreated datePublished" datetime="2020-02-09T15:47:14+08:00">2020-02-09</time>
+              <time title="创建时间：2020-02-11 12:15:20" itemprop="dateCreated datePublished" datetime="2020-02-11T12:15:20+08:00">2020-02-11</time>
             
 
             
@@ -355,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/temp/2020-01-10-Paxos算法.html#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/temp/2020-01-10-Paxos算法.html" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2020/02/11/2020-02-11-Paxos算法/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2020/02/11/2020-02-11-Paxos算法/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -364,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/temp/2020-01-10-Paxos算法.html" class="leancloud_visitors" data-flag-title="Paxos算法">
+             <span id="/alex.github.io/2020/02/11/2020-02-11-Paxos算法/" class="leancloud_visitors" data-flag-title="Paxos算法">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -461,7 +448,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/" rel="tag"># </a>
+            <a href="/alex.github.io/tags/分布式/" rel="tag"># 分布式</a>
           
         </div>
       
@@ -470,6 +457,22 @@
       
       
 
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2020/02/03/2020-02-03-java项目CPU占比异常排查/" rel="next" title="java项目CPU占比异常排查">
+                <i class="fa fa-chevron-left"></i> java项目CPU占比异常排查
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
 
       
@@ -539,7 +542,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">69</span>
+                    <span class="site-state-item-count">70</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
