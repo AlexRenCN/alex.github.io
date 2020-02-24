@@ -112,11 +112,11 @@
 <meta name="keywords" content="缓存">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用Redis可能会出现的系统异常及解决方案">
-<meta property="og:url" content="https://alexrencn.github.io/2018/09/18/2018-08-18-使用Redis可能会出现的系统异常及解决方案/index.html">
+<meta property="og:url" content="https://alexrencn.github.io/2020/02/24/2018-08-18-使用Redis可能会出现的系统异常及解决方案/index.html">
 <meta property="og:site_name" content="Alex">
 <meta property="og:description" content="在设计和使用缓存的时候，我们必须要考虑到缓存系统的可用性，避免因使用缓存出现的问题，本文涉及到的内容是在整个架构体系正常运行的情况下可能会出现的致命问题，适合使用缓存做具体业务的开发人员进行查看  缓存击穿 如果我们对于某一个热点数据进行了缓存，在缓存失效的一瞬间有大量的请求进来，这个时候所有的请求都会被系统推到数据库，瞬间的请求完全可以把数据库压垮  根据缓存击穿的发生条件，频繁、失效和**">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-18T14:59:21.579Z">
+<meta property="og:updated_time" content="2020-02-24T07:12:42.968Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用Redis可能会出现的系统异常及解决方案">
 <meta name="twitter:description" content="在设计和使用缓存的时候，我们必须要考虑到缓存系统的可用性，避免因使用缓存出现的问题，本文涉及到的内容是在整个架构体系正常运行的情况下可能会出现的致命问题，适合使用缓存做具体业务的开发人员进行查看  缓存击穿 如果我们对于某一个热点数据进行了缓存，在缓存失效的一瞬间有大量的请求进来，这个时候所有的请求都会被系统推到数据库，瞬间的请求完全可以把数据库压垮  根据缓存击穿的发生条件，频繁、失效和**">
@@ -126,7 +126,7 @@
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/09/18/2018-08-18-使用Redis可能会出现的系统异常及解决方案/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/2020/02/24/2018-08-18-使用Redis可能会出现的系统异常及解决方案/"/>
 
 
 
@@ -285,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/18/2018-08-18-使用Redis可能会出现的系统异常及解决方案/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2020/02/24/2018-08-18-使用Redis可能会出现的系统异常及解决方案/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-09-18 22:59:21" itemprop="dateCreated datePublished" datetime="2018-09-18T22:59:21+08:00">2018-09-18</time>
+              <time title="创建时间：2020-02-24 15:12:42" itemprop="dateCreated datePublished" datetime="2020-02-24T15:12:42+08:00">2020-02-24</time>
             
 
             
@@ -342,8 +342,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/09/18/2018-08-18-使用Redis可能会出现的系统异常及解决方案/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/18/2018-08-18-使用Redis可能会出现的系统异常及解决方案/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/2020/02/24/2018-08-18-使用Redis可能会出现的系统异常及解决方案/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2020/02/24/2018-08-18-使用Redis可能会出现的系统异常及解决方案/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +351,7 @@
 
           
           
-             <span id="/alex.github.io/2018/09/18/2018-08-18-使用Redis可能会出现的系统异常及解决方案/" class="leancloud_visitors" data-flag-title="使用Redis可能会出现的系统异常及解决方案">
+             <span id="/alex.github.io/2020/02/24/2018-08-18-使用Redis可能会出现的系统异常及解决方案/" class="leancloud_visitors" data-flag-title="使用Redis可能会出现的系统异常及解决方案">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -392,7 +392,7 @@
 <p>根据缓存击穿的发生条件，<strong>频繁</strong>、<strong>失效</strong>和**大量请求共同造成了这个问题，而可以产生缓存击穿的数据必然是极大的热点数据，我们不可能把访问频繁的问题通过任何方式处理掉，只需要考虑剩下两个问题即可</p>
 <ul>
 <li>使用互斥量，如果缓存未能命中，不是直接去访问数据库，而是先去争夺一个锁资源，通过Redis的SetNX或者Memcached的Add操作，都可以保证有一个唯一的请求可以争夺到锁，争夺到锁的线程就可以去访问数据库并且更新缓存，而其他线程没有得到该锁，就应该继续尝试获取缓存内容，做一个自旋锁，这个自旋锁会在其他线程更新缓存失败或者完成数据缓存之后结束，虽然占用了无用的CPU但是实际上自旋的时间很短</li>
-<li>提前更新，还是使用互斥量去争夺更新缓存的锁，不过更新的时间不再是失效时，而是在失效之前，通过在缓存中存储一个预计时效的时间，来判断是否需要更新缓存，而且可以灵活的根据实际场景选择没有得到更新锁的线程是自旋等待还是直接取当前缓存</li>
+<li>提前更新，还是使用互斥量去争夺更新缓存的锁，不过更新ConcurrentHashMap的时间不再是失效时，而是在失效之前，通过在缓存中存储一个预计时效的时间，来判断是否需要更新缓存，而且可以灵活的根据实际场景选择没有得到更新锁的线程是自旋等待还是直接取当前缓存</li>
 <li>修改过期时间，如果业务要求并不严格而且缓存更新实在是屈指可数，我们可以不设定Redis的过期，而是由一个定时任务去定时更新缓存内容，这样可以减少上述因为缓存更新造成的CPU空跑现象和频繁校验，不过一定需要确定，在更新缓存的定时任务挂掉的情况下，业务功能是可以接受缓存不更新的<h2 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h2><blockquote>
 <p>如果有不怀好意的人员针对某个接口进行攻击，不断的查询一个不可能存在的数据，这个时候我们即使使用了缓存，也不会在缓存里完成任何一次命中，这个请求就会到数据访问层进行数据库交互并查询出空结果集，或者发生异常，如果到数据库的查询过多，很可能会使数据库崩溃</p>
 </blockquote>
@@ -457,8 +457,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/alex.github.io/2018/09/18/2018-08-18-常用JVM参数清单/" rel="next" title="">
-                <i class="fa fa-chevron-left"></i> 
+              <a href="/alex.github.io/2020/02/11/2020-02-11-Paxos算法/" rel="next" title="Paxos算法">
+                <i class="fa fa-chevron-left"></i> Paxos算法
               </a>
             
           </div>
@@ -467,8 +467,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/alex.github.io/2018/09/18/2018-08-20-微服务架构设计及解答/" rel="prev" title="微服务架构设计及解答">
-                微服务架构设计及解答 <i class="fa fa-chevron-right"></i>
+              <a href="/alex.github.io/2020/02/24/2020-02-17-ZAB算法/" rel="prev" title="ZAB算法">
+                ZAB算法 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -542,7 +542,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">70</span>
+                    <span class="site-state-item-count">72</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

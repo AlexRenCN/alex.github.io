@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/alex.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/alex.github.io/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/alex.github.io/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/alex.github.io/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/alex.github.io/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/alex.github.io/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/alex.github.io/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="java的类加载机制主要分为三种，双亲委派模型、全盘负责机制以及缓存机制。 双亲委派模型类加载器类使用委托模型来搜索类和资源。类加载器的每个实例都有一个关联的父类加载器。当请求查找类或资源时，类加载器实例将在试图查找类或资源本身之前，将对类或资源的搜索委托给其父类加载器。虚拟机的内置类加载器称为“引导类加载器(bootstrap class loader)”，它本身没有父类，但可以作为类加载器实例">
+<meta name="keywords" content="JDK">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java类加载机制">
+<meta property="og:url" content="https://alexrencn.github.io/2020/02/24/2020-02-24-JAVA类加载机制/index.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="java的类加载机制主要分为三种，双亲委派模型、全盘负责机制以及缓存机制。 双亲委派模型类加载器类使用委托模型来搜索类和资源。类加载器的每个实例都有一个关联的父类加载器。当请求查找类或资源时，类加载器实例将在试图查找类或资源本身之前，将对类或资源的搜索委托给其父类加载器。虚拟机的内置类加载器称为“引导类加载器(bootstrap class loader)”，它本身没有父类，但可以作为类加载器实例">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-02-24T12:50:00.692Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java类加载机制">
+<meta name="twitter:description" content="java的类加载机制主要分为三种，双亲委派模型、全盘负责机制以及缓存机制。 双亲委派模型类加载器类使用委托模型来搜索类和资源。类加载器的每个实例都有一个关联的父类加载器。当请求查找类或资源时，类加载器实例将在试图查找类或资源本身之前，将对类或资源的搜索委托给其父类加载器。虚拟机的内置类加载器称为“引导类加载器(bootstrap class loader)”，它本身没有父类，但可以作为类加载器实例">
+
+
+
+
+
+
+  <link rel="canonical" href="https://alexrencn.github.io/2020/02/24/2020-02-24-JAVA类加载机制/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>java类加载机制 | Alex</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/alex.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alex</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">可达鸭眉头一紧，发现编程并不简单</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/alex.github.io/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/alex.github.io/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2020/02/24/2020-02-24-JAVA类加载机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java类加载机制
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-02-24 20:50:00" itemprop="dateCreated datePublished" datetime="2020-02-24T20:50:00+08:00">2020-02-24</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/2020/02/24/2020-02-24-JAVA类加载机制/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2020/02/24/2020-02-24-JAVA类加载机制/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/2020/02/24/2020-02-24-JAVA类加载机制/" class="leancloud_visitors" data-flag-title="java类加载机制">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>java的类加载机制主要分为三种，双亲委派模型、全盘负责机制以及缓存机制。</p>
+<h3 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h3><p>类加载器类使用委托模型来搜索类和资源。类加载器的每个实例都有一个关联的父类加载器。当请求查找类或资源时，<br>类加载器实例将在试图查找类或资源本身之前，将对类或资源的搜索委托给其父类加载器。虚拟机的内置类加载器称为“引导类加载器(bootstrap class loader)”，<br>它本身没有父类，但可以作为类加载器实例的父类。</p>
+<h4 id="双亲委派模型的结构"><a href="#双亲委派模型的结构" class="headerlink" title="双亲委派模型的结构"></a>双亲委派模型的结构</h4><p>根据虚拟机定义的规范，自定义了三层类加载器，用户可以在此基础上继续扩展:</p>
+<ol>
+<li>引导类加载器(bootstrap class loader),负责加载&lt;JAVA_HOME&gt;/lib目录下的核心类，该加载器由C++语言实现。</li>
+<li>扩展类加载器（extensions class loader）,负责加载&lt;JAVA_HOME&gt;/etc目录下的扩展类。</li>
+<li>系统类加载器（system class loader）,根据java项目再启动时指定的-classpath选项或者java.class.path系统属性加载指定目录，主要用于加载用户自定义的类。</li>
+<li>自定义加载器（user class loader）,无默认实现，用户实现的目的一般是为了打破双亲委派模型，按照自己的意愿加载指定的类。</li>
+</ol>
+<h4 id="使用双亲委派模型的好处"><a href="#使用双亲委派模型的好处" class="headerlink" title="使用双亲委派模型的好处"></a>使用双亲委派模型的好处</h4><p>避免了类的重复加载，可以从父类加载器中获取已经加载成功的类<br>保证了核心类安全，引导类加载器或者扩展类加载器只会在指定的目录下搜寻，避免了用户自定义相同类造成的加载冲突</p>
+<h4 id="破坏双亲委派模型场景及意义"><a href="#破坏双亲委派模型场景及意义" class="headerlink" title="破坏双亲委派模型场景及意义"></a>破坏双亲委派模型场景及意义</h4><p>双亲委派模型的模式固定，无法满足扩展需求，下面描述几个常用的打破场景：</p>
+<h5 id="JDBC"><a href="#JDBC" class="headerlink" title="JDBC"></a>JDBC</h5><p>使用不同的数据源，需要不同的驱动类进行匹配，这是一个横向扩展的过程，在<strong>java.sql.DriverManager</strong>类中，有一个<strong>getConnection</strong><br>方法，用来辅助创建数据库连接，下面是具体的带么分析。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  由public getConnection（）重载方法调用的辅助方法。</span></span><br><span class="line"><span class="comment">//  Worker method called by the public getConnection() methods.</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Connection <span class="title">getConnection</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">    String url, java.util.Properties info, Class&lt;?&gt; caller)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 当callerCl为空时，我们应该检查应用程序的（它正在间接调用这个类）classloader，</span></span><br><span class="line"><span class="comment">    * 以便可以从这里加载rt.jar之外的JDBC驱动程序类。</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * When callerCl is null, we should check the application's</span></span><br><span class="line"><span class="comment">     * (which is invoking this class indirectly)</span></span><br><span class="line"><span class="comment">     * classloader, so that the JDBC driver class outside rt.jar</span></span><br><span class="line"><span class="comment">     * can be loaded from here.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    ClassLoader callerCL = caller != <span class="keyword">null</span> ? caller.getClassLoader() : <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">synchronized</span>(DriverManager.class) &#123;</span><br><span class="line">        <span class="comment">// 同步加载正确的类加载器。</span></span><br><span class="line">        <span class="comment">// synchronize loading of the correct classloader.</span></span><br><span class="line">        <span class="keyword">if</span> (callerCL == <span class="keyword">null</span>) &#123;</span><br><span class="line">            callerCL = Thread.currentThread().getContextClassLoader();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(url == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> SQLException(<span class="string">"The url cannot be null"</span>, <span class="string">"08001"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    println(<span class="string">"DriverManager.getConnection(\""</span> + url + <span class="string">"\")"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历已经加载过的registeredDrivers，尝试建立连接。</span></span><br><span class="line">    <span class="comment">// 请记住引发的第一个异常，以便我们可以重新引发它。</span></span><br><span class="line">    <span class="comment">// Walk through the loaded registeredDrivers attempting to make a connection.</span></span><br><span class="line">    <span class="comment">// Remember the first exception that gets raised so we can reraise it.</span></span><br><span class="line">    SQLException reason = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//循环处理所有已经注册的驱动</span></span><br><span class="line">    <span class="keyword">for</span>(DriverInfo aDriver : registeredDrivers) &#123;</span><br><span class="line">        <span class="comment">// 尝试加载类，如果调用方没有加载驱动程序的权限，则跳过。</span></span><br><span class="line">        <span class="comment">// If the caller does not have permission to load the driver then</span></span><br><span class="line">        <span class="comment">// skip it.</span></span><br><span class="line">        <span class="keyword">if</span>(isDriverAllowed(aDriver.driver, callerCL)) &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                println(<span class="string">"    trying "</span> + aDriver.driver.getClass().getName());</span><br><span class="line">                <span class="comment">//尝试连接，成功后返回</span></span><br><span class="line">                Connection con = aDriver.driver.connect(url, info);</span><br><span class="line">                <span class="keyword">if</span> (con != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// Success!</span></span><br><span class="line">                    println(<span class="string">"getConnection returning "</span> + aDriver.driver.getClass().getName());</span><br><span class="line">                    <span class="keyword">return</span> (con);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (SQLException ex) &#123;</span><br><span class="line">                <span class="comment">//连接失败，只记录第一个异常</span></span><br><span class="line">                <span class="keyword">if</span> (reason == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    reason = ex;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            println(<span class="string">"    skipping: "</span> + aDriver.getClass().getName());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 抛出第一个异常</span></span><br><span class="line">    <span class="comment">// if we got here nobody could connect.</span></span><br><span class="line">    <span class="keyword">if</span> (reason != <span class="keyword">null</span>)    &#123;</span><br><span class="line">        println(<span class="string">"getConnection failed: "</span> + reason);</span><br><span class="line">        <span class="keyword">throw</span> reason;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//没有注册过的驱动</span></span><br><span class="line">    println(<span class="string">"getConnection: no suitable driver found for "</span>+ url);</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> SQLException(<span class="string">"No suitable driver found for "</span>+ url, <span class="string">"08001"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们只需要注意synchronized修饰的部分，已经得知DriverManager类是rt.jar中的类，属于bootstrap class loader的加载范围。<br>但是如果拿不到ClassLoader，则使用当前线程上下文中的ClassLoader,替换成了system class loader，完成了破坏。</p>
+<h5 id="Tomcat"><a href="#Tomcat" class="headerlink" title="Tomcat"></a>Tomcat</h5><p>一个tomcat下可以挂载多个war包，假设war包A和B引用了同一个jar包不同的版本，此时需要进行隔离，否则无法区分。</p>
+<pre class="mermaid">
+graph TD
+A(引导类加载器(bootstrap class loader)) --> B(扩展类加载器（extensions class loader）)
+    B --> C(系统类加载器（system class loader）)
+    C --> C1(Common类加载器（common class loader）)
+    C1 --> D(Catalina类加载器（catalina class loader）)
+    C1 --> E(Share类加载器（share class loader）)
+    E --> F(WebApp类加载器（webApp class loader）)
+    E --> G(Jsp类加载器（jasper class loader）)</pre>
+
+<p>介绍下新出现的几个加载器:</p>
+<ol>
+<li>Common类加载器:负责加载tomcat路径下common目录里的类，提供给tomcat和所有实例使用。</li>
+<li>Catalina类加载器:负责加载tomcat路径下server目录里的类，提供给tomcat使用。</li>
+<li>Share类加载器:负责加载tomcat路径下shared目录里的类，提供给所有实例使用。</li>
+<li>WebApp类加载器:负责加载tomcat路径下某个WebApp的类，提供给当前实例使用。</li>
+<li>Jsp类加载器:负责加载tomcat路径下某个WebApp的类，提供给当前实例使用，在检测到Jsp文件发生变化时进行替换，实现热加载。</li>
+</ol>
+<p>tomcat的加载流程已经被打乱，但是对于任何应用来说，保证核心类的安全都是必须存在的，tomcat通过以下流程保证了这一点:</p>
+<ol>
+<li>查询缓存</li>
+<li>使用系统类加载器进行加载，保证核心类不被篡改</li>
+<li>使用WebApp类加载器类进行加载</li>
+<li>交给父类加载</li>
+</ol>
+<h3 id="全盘负责机制"><a href="#全盘负责机制" class="headerlink" title="全盘负责机制"></a>全盘负责机制</h3><p>当一个ClassLoader加载了一个类时，这个类所有的引用和依赖（体现在方法区里的符号引用）都要由这个ClassLoader进行加载，<br>这里是为了确定是由哪个类加载器开始加载，确定好加载器之后依然按照双亲委派模型进行查找，两者并不冲突。</p>
+<h3 id="缓存机制"><a href="#缓存机制" class="headerlink" title="缓存机制"></a>缓存机制</h3><p>当一个ClassLoader加载了一个类之后，需要对这个类进行缓存。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The classes loaded by this class loader. The only purpose of this table</span></span><br><span class="line"><span class="comment">// is to keep the classes from being GC'ed until the loader is GC'ed.</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Vector&lt;Class&lt;?&gt;&gt; classes = <span class="keyword">new</span> Vector&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Invoked by the VM to record every loaded class with this loader.</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addClass</span><span class="params">(Class&lt;?&gt; c)</span> </span>&#123;</span><br><span class="line">    classes.addElement(c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/alex.github.io/tags/JDK/" rel="tag"># JDK</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/alex.github.io/2020/02/24/2020-02-17-ZAB算法/" rel="next" title="ZAB算法">
+                <i class="fa fa-chevron-left"></i> ZAB算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Alex Ren</p>
+              <p class="site-description motion-element" itemprop="description">JAVA之路</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/alex.github.io/archives/">
+                
+                    <span class="site-state-item-count">72</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/AlexRenCN" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#双亲委派模型"><span class="nav-number">1.</span> <span class="nav-text">双亲委派模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#双亲委派模型的结构"><span class="nav-number">1.1.</span> <span class="nav-text">双亲委派模型的结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用双亲委派模型的好处"><span class="nav-number">1.2.</span> <span class="nav-text">使用双亲委派模型的好处</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#破坏双亲委派模型场景及意义"><span class="nav-number">1.3.</span> <span class="nav-text">破坏双亲委派模型场景及意义</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#JDBC"><span class="nav-number">1.3.1.</span> <span class="nav-text">JDBC</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Tomcat"><span class="nav-number">1.3.2.</span> <span class="nav-text">Tomcat</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#全盘负责机制"><span class="nav-number">2.</span> <span class="nav-text">全盘负责机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存机制"><span class="nav-number">3.</span> <span class="nav-text">缓存机制</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex Ren</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@<%= theme.mermaid.version %>/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/alex.github.io/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/alex.github.io/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/alex.github.io/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'VooWzCTKIYsM5LgzWVUF6cuL-gzGzoHsz',
+        appKey: 'mjrOD1ERYDgolUpulB6JU9pQ',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: true
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
