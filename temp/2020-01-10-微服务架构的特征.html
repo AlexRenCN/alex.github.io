@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/alex.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/alex.github.io/css/main.css?v=6.4.1" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/alex.github.io/images/apple-touch-icon-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/alex.github.io/images/favicon-32x32-next.png?v=6.4.1">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/alex.github.io/images/favicon-16x16-next.png?v=6.4.1">
+
+
+  <link rel="mask-icon" href="/alex.github.io/images/logo.svg?v=6.4.1" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/alex.github.io/',
+    scheme: 'Muse',
+    version: '6.4.1',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="本文来自思特沃克官网的大佬分享  微服务架构样式是一种将单一架构项目拆解成一组服务的方法，每个服务运行在独立的线程中并通过轻量级机制进行通信（通常是HTTP）。服务一般根据业务进行划分，并可以由自动部署机制进行全自动部署，对这些服务的集中管理很少，可以使用不同的变成语言和不用的数据存储。 我们什么时候应该使用微服务微服务带来的好处 强大的模块边界：微服务加强了模块化的结构,这对于大型团队而言尤其">
+<meta name="keywords" content="JDK">
+<meta property="og:type" content="website">
+<meta property="og:title" content="微服务架构的特征">
+<meta property="og:url" content="https://alexrencn.github.io/temp/2020-01-10-微服务架构的特征.html">
+<meta property="og:site_name" content="Alex">
+<meta property="og:description" content="本文来自思特沃克官网的大佬分享  微服务架构样式是一种将单一架构项目拆解成一组服务的方法，每个服务运行在独立的线程中并通过轻量级机制进行通信（通常是HTTP）。服务一般根据业务进行划分，并可以由自动部署机制进行全自动部署，对这些服务的集中管理很少，可以使用不同的变成语言和不用的数据存储。 我们什么时候应该使用微服务微服务带来的好处 强大的模块边界：微服务加强了模块化的结构,这对于大型团队而言尤其">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-02T08:19:44.396Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微服务架构的特征">
+<meta name="twitter:description" content="本文来自思特沃克官网的大佬分享  微服务架构样式是一种将单一架构项目拆解成一组服务的方法，每个服务运行在独立的线程中并通过轻量级机制进行通信（通常是HTTP）。服务一般根据业务进行划分，并可以由自动部署机制进行全自动部署，对这些服务的集中管理很少，可以使用不同的变成语言和不用的数据存储。 我们什么时候应该使用微服务微服务带来的好处 强大的模块边界：微服务加强了模块化的结构,这对于大型团队而言尤其">
+
+
+
+
+
+
+  <link rel="canonical" href="https://alexrencn.github.io/temp/2020-01-10-微服务架构的特征.html"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>微服务架构的特征 | Alex</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/alex.github.io/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Alex</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">可达鸭眉头一紧，发现编程并不简单</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/alex.github.io/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/alex.github.io/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+    
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/temp/2020-01-10-微服务架构的特征.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Alex Ren">
+      <meta itemprop="description" content="JAVA之路">
+      <meta itemprop="image" content="/alex.github.io/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alex">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">微服务架构的特征
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-03-02 16:19:44" itemprop="dateCreated datePublished" datetime="2020-03-02T16:19:44+08:00">2020-03-02</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/alex.github.io/temp/2020-01-10-微服务架构的特征.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/temp/2020-01-10-微服务架构的特征.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/alex.github.io/temp/2020-01-10-微服务架构的特征.html" class="leancloud_visitors" data-flag-title="微服务架构的特征">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数：</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本文来自思特沃克官网的大佬分享</p>
+</blockquote>
+<p>微服务架构样式是一种将单一架构项目拆解成一组服务的方法，每个服务运行在独立的线程中并通过轻量级机制进行通信（通常是HTTP）。<br>服务一般根据业务进行划分，并可以由自动部署机制进行全自动部署，对这些服务的集中管理很少，可以使用不同的变成语言和不用的数据存储。</p>
+<h3 id="我们什么时候应该使用微服务"><a href="#我们什么时候应该使用微服务" class="headerlink" title="我们什么时候应该使用微服务"></a>我们什么时候应该使用微服务</h3><h4 id="微服务带来的好处"><a href="#微服务带来的好处" class="headerlink" title="微服务带来的好处"></a>微服务带来的好处</h4><ul>
+<li>强大的模块边界：微服务加强了模块化的结构,这对于大型团队而言尤其重要</li>
+<li>独立部署：简单服务更容易部署，并且由于他们是自治的，所以因此出错时不太可能导致系统故障</li>
+<li>技术多样性：使用微服务时，您可以使用多种编程语言，技术框架和数据存储技术</li>
+</ul>
+<h4 id="使用微服务的代价"><a href="#使用微服务的代价" class="headerlink" title="使用微服务的代价"></a>使用微服务的代价</h4><ul>
+<li>分布式：分布式系统更难编程，因为远程调用速度很慢并且总是有失败的风险。</li>
+<li>最终一致性：对于分布式系统而言，保持强一致性非常困难，这意味着每个人都必须管理最终一致性。</li>
+<li>运维复杂性：您需要一个成熟的运维团队来管理大量服务，这些服务会定期重新部署。</li>
+</ul>
+<h4 id="微服务的先决条件"><a href="#微服务的先决条件" class="headerlink" title="微服务的先决条件"></a>微服务的先决条件</h4><h5 id="服务器快速配置"><a href="#服务器快速配置" class="headerlink" title="服务器快速配置"></a>服务器快速配置</h5><p>应该能够在几个小时内配置启动服务器，这对于云服务来说很合适，如果没有使用云服务，则应该使用自动化配置</p>
+<h5 id="基本监控"><a href="#基本监控" class="headerlink" title="基本监控"></a>基本监控</h5><p>许多松耦合的服务再生产环境进行协作，因此事情肯定会以测试环境难以检测到的方式出错，<br>因此至关重要的是建立一个监控机制以快速发现问题，此处的基准是检测技术问题（技术错误，服务可用性等），<br>但也有必要监视业务问题（例如检测订单下降）</p>
+<h5 id="快速的应用部署"><a href="#快速的应用部署" class="headerlink" title="快速的应用部署"></a>快速的应用部署</h5><p>要管理许多服务，您需要能够快速部署他们，在测试环境和生产环境</p>
+<h3 id="微服务架构的共同特征"><a href="#微服务架构的共同特征" class="headerlink" title="微服务架构的共同特征"></a>微服务架构的共同特征</h3><p>虽然目前微服务并没有一个统一的定义、边界或者是方法论，但是还是有部分共性可以抽象出来</p>
+<h4 id="通过服务进行组件化"><a href="#通过服务进行组件化" class="headerlink" title="通过服务进行组件化"></a>通过服务进行组件化</h4><p>在讨论组间时，我们会遇到难以定义组件的定义。我们的定义是，组件是独立可替换和升级的软件单元。</p>
+<p>微服务架构将使用库，但是他们将自己的软件组成组件的方式主要是分解成服务，我们将库的定义为连接到程序并使用内存中函数调用进行调用的组件，<br>而服务则是进程外组件，他们通过某种机制（例如Web服务请求或远程过程调用）。</p>
+<p>使用服务作为组件（而不是库）的主要原因是服务时刻独立部署的，如果您的应用程序在单次部署时包含多个库，<br>则对任何单个组件的更改都将导致必须重新部署整个应用服务。但是，如果该应用程序拆解成多个服务，<br>则可以预期多个应用程序的更改仅要求重新部署该服务，这不是绝对的，某些更改可能更改服务接口，<br>从而导致某种程度的协调，但是好的微服务架构的目的是通过服务契约的内聚性服务边界和演化机制来最小化他们。</p>
+<p>将服务用作组件的另一个结果是更明确的组件接口。大多数语言都没有定义明确的发布接口的良好机制。<br>通常，唯一的文档和纪律可以防止客户端破坏组件的封装，<br>从而导致组件之间的耦合过于紧密。服务通过使用显式的远程调用机制使避免这种情况变得更加容易。</p>
+<p>使用这样的服务确实有缺点。远程调用比进程内调用消耗更昂贵，因此远程API需要更粗粒度，<br>这通常更难使用。如果您需要更改组件之间的职责分配，那么当您跨越流程边界时，这种行为转移就很难做到。</p>
+<p>初看起来，我们可以观察到服务映射到运行时进程，但这仅仅是初看起来。<br>服务可能包含将始终一起开发和部署的多个流程，例如仅由该服务使用的应用程序流程和数据库。</p>
+<h4 id="围绕业务能力进行组织划分"><a href="#围绕业务能力进行组织划分" class="headerlink" title="围绕业务能力进行组织划分"></a>围绕业务能力进行组织划分</h4><p>当希望将大型应用程序拆分为多个部分时，管理层通常将重点放在技术层，从而出现UI团队，服务器端逻辑团队和数据库团队。<br>当团队按这些路线分开时，即使简单的更改也可能导致跨团队项目需要时间和预算批准。<br>精明的团队会围绕此问题进行优化，并减少两种弊端中的较小者-只需将逻辑强加到他们可以访问的任何应用程序中即可。<br>换句话说，逻辑无处不在。这是康威定律发挥作用的一个例子。</p>
+<p>微服务划分方法不同，也可以分为围绕业务能力组织的服务 。<br>此类服务采用该业务领域的软件的广泛实现，包括用户界面，持久性存储和任何外部协作。<br>因此，团队是跨职能的，包括开发所需的全部技能：用户体验，数据库和项目管理。</p>
+<h4 id="产品不是项目"><a href="#产品不是项目" class="headerlink" title="产品不是项目"></a>产品不是项目</h4><p>我们看到的大多数应用程序开发工作都使用项目模型：目的是交付某些软件，然后将其视为已完成。<br>完成后，将软件移交给维护组织，并解散构建该软件的项目团队。</p>
+<p>微服务的支持者倾向于避免这种模式，而是倾向于团队应该在产品的整个生命周期内拥有产品的想法。其中开发团队对生产中的软件负全部责任。<br>这使开发人员可以日常接触其软件在生产中的行为方式，并增加与用户的联系，因为他们必须承担至少一些支持负担。</p>
+<h4 id="智能端点和哑管道"><a href="#智能端点和哑管道" class="headerlink" title="智能端点和哑管道"></a>智能端点和哑管道</h4><p>在不同流程之间建立通信结构时，我们已经看到了许多产品和方法，这些产品和方法强调在通信机制本身中投入大量投入。<br>一个很好的例子是企业服务总线（ESB），其中ESB产品通常包括用于消息路由，编排，转换和应用业务规则的复杂工具。</p>
+<p>最常用的两种协议是带有资源API的HTTP请求响应和轻量级消息传递，常用的第二种方法是通过轻量级消息总线进行消息传递。</p>
+<h4 id="分散治理"><a href="#分散治理" class="headerlink" title="分散治理"></a>分散治理</h4><p>集中治理的后果之一是倾向于在单一技术平台上实现标准化。我们更喜欢使用正确的工具来完成工作，而整体式应用程序可以在一定程度上利用不同的语言。<br>将整体组件拆分为服务时，我们在构建每个组件时都可以选择。</p>
+<h4 id="分散数据管理"><a href="#分散数据管理" class="headerlink" title="分散数据管理"></a>分散数据管理</h4><p>数据管理的分散化以多种不同的方式呈现。从最抽象的角度讲，这意味着系统的概念模型将有所不同。<br>在大型企业中进行集成时，这是一个常见问题，客户的销售视图将与支持视图不同。在销售视图中被称为客户的某些内容可能根本不会出现在支持视图中。<br>那些具有相同属性的属性可能具有不同的语义，并且（更差的情况下）公共属性具有不同的语义。</p>
+<p>此问题在应用程序之间很常见，但也可能在应用程序内发生，特别是当该应用程序划分为单独的组件时。关于这一点的一种有用的思考方法是有界上下文的域驱动设计概念 。<br>DDD将一个复杂的域划分为多个有界上下文，并映射出它们之间的关系。此过程对于单片和微服务体系结构都是有用的，<br>但是服务和上下文边界之间存在自然的联系，这有助于弄清这一点，并且正如我们在业务功能部分所描述的那样，这加强了分离。</p>
+<p>除了分散有关概念模型的决策外，微服务还分散了数据存储决策。整体应用程序倾向于使用单个逻辑数据库来存储持久性数据，<br>而企业通常更喜欢跨多个应用程序使用单个数据库-这些决定中的许多决定是由供应商围绕许可的商业模型决定的。<br>微服务更喜欢让每个服务管理自己的数据库，或者是同一数据库技术的不同实例，或者是完全不同的数据库系统。</p>
+<h4 id="基础设施自动化"><a href="#基础设施自动化" class="headerlink" title="基础设施自动化"></a>基础设施自动化</h4><p>基础设施自动化技术在过去几年中发生了巨大的发展，尤其是云技术和AWS的发展降低了构建，部署和运行微服务的操作复杂性。</p>
+<p>由微服务构建的许多产品或系统，都是由具有持续交付及其先驱持续集成经验的团队构建的。以这种方式构建软件的团队广泛使用了基础架构自动化技术。如下所示的构建管道中对此进行了说明。</p>
+<h4 id="失败设计"><a href="#失败设计" class="headerlink" title="失败设计"></a>失败设计</h4><p>使用服务作为组件的结果是，需要对应用程序进行设计，以便它们可以容忍服务故障。由于供应商不可用，任何服务呼叫都可能失败，客户必须尽可能优雅地响应此请求。<br>与单机设计相比，这是一个缺点，因为它引入了额外的处理复杂性。结果是微服务团队不断反思服务故障如何影响用户体验。</p>
+<p>由于服务随时可能发生故障，因此能够快速检测到故障并在可能的情况下自动恢复服务非常重要。微服务应用程序非常重视应用程序的实时监控<br>，同时检查架构元素（数据库每秒收到多少请求）和业务相关指标（例如每分钟收到多少订单）。语义监视可以为发生错误的情况提供预警系统，从而触发开发团队进行跟进和调查。</p>
+<h4 id="进化设计"><a href="#进化设计" class="headerlink" title="进化设计"></a>进化设计</h4><p>微服务从业人员通常来自进化设计的背景，并将服务分解视为进一步的工具，使应用程序开发人员能够控制应用程序中的更改而不会减慢更改速度。<br>变更控制不一定意味着减少变更-使用正确的态度和工具，您可以频繁，快速且控制良好地进行软件变更。</p>
+<p>每当您尝试将软件系统分解为组件时，您都会面临如何划分各个部分的决定-我们决定对应用程序进行分割的原则是什么？<br>组件的关键属性是独立替换和可升级性的概念 -这意味着我们寻找可以想象重写组件而不影响其协作者的观点。实际上，许多微服务组通过明确期望许多服务将被废弃而不是长期发展而将其进一步发展。</p>
+<p>这种对可替换性的强调是模块化设计的更通用原理的特例，即通过变化模式来驱动模块化。如果您发现自己反复将两个服务一起更改，则表明它们应该合并。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/alex.github.io/" rel="tag"># </a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Alex Ren</p>
+              <p class="site-description motion-element" itemprop="description">JAVA之路</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/alex.github.io/archives/">
+                
+                    <span class="site-state-item-count">73</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/AlexRenCN" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#我们什么时候应该使用微服务"><span class="nav-number">1.</span> <span class="nav-text">我们什么时候应该使用微服务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#微服务带来的好处"><span class="nav-number">1.1.</span> <span class="nav-text">微服务带来的好处</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用微服务的代价"><span class="nav-number">1.2.</span> <span class="nav-text">使用微服务的代价</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#微服务的先决条件"><span class="nav-number">1.3.</span> <span class="nav-text">微服务的先决条件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#服务器快速配置"><span class="nav-number">1.3.1.</span> <span class="nav-text">服务器快速配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#基本监控"><span class="nav-number">1.3.2.</span> <span class="nav-text">基本监控</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#快速的应用部署"><span class="nav-number">1.3.3.</span> <span class="nav-text">快速的应用部署</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微服务架构的共同特征"><span class="nav-number">2.</span> <span class="nav-text">微服务架构的共同特征</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通过服务进行组件化"><span class="nav-number">2.1.</span> <span class="nav-text">通过服务进行组件化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#围绕业务能力进行组织划分"><span class="nav-number">2.2.</span> <span class="nav-text">围绕业务能力进行组织划分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#产品不是项目"><span class="nav-number">2.3.</span> <span class="nav-text">产品不是项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#智能端点和哑管道"><span class="nav-number">2.4.</span> <span class="nav-text">智能端点和哑管道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分散治理"><span class="nav-number">2.5.</span> <span class="nav-text">分散治理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分散数据管理"><span class="nav-number">2.6.</span> <span class="nav-text">分散数据管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基础设施自动化"><span class="nav-number">2.7.</span> <span class="nav-text">基础设施自动化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#失败设计"><span class="nav-number">2.8.</span> <span class="nav-text">失败设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#进化设计"><span class="nav-number">2.9.</span> <span class="nav-text">进化设计</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alex Ren</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.1</div>
+
+
+
+
+
+  <script src='https://unpkg.com/mermaid@<%= theme.mermaid.version %>/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'forest'});
+    }
+  </script>
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/alex.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/utils.js?v=6.4.1"></script>
+
+  <script type="text/javascript" src="/alex.github.io/js/src/motion.js?v=6.4.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/alex.github.io/js/src/scrollspy.js?v=6.4.1"></script>
+<script type="text/javascript" src="/alex.github.io/js/src/post-details.js?v=6.4.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/alex.github.io/js/src/bootstrap.js?v=6.4.1"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  
+  
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'VooWzCTKIYsM5LgzWVUF6cuL-gzGzoHsz',
+        appKey: 'mjrOD1ERYDgolUpulB6JU9pQ',
+        placeholder: 'Just go go',
+        avatar:'mm',
+        meta:guest,
+        pageSize:'10' || 10,
+        visitor: true
+    });
+  </script>
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
