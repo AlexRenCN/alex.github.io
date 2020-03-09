@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="大部分的索引存在的意义在于更多的筛除非目标数据，更快的定位所需的数据行，而覆盖索引主要的目的不是加快查询的速度，而是偏向于去除读取数据行的时间，而将需要的列放在索引的叶子节点中，命中后直接返回，哈希索引，空间索引，全文索引无法作为覆盖索引 优势： 由于数据的部分重复，索引文件基本上会比数据文件的条数要少，减少了数据访问 索引文件的存储是按照顺序进行，在进行范围查询的时候命中的页更少 例如MyIS">
-<meta name="keywords" content="MySQL,索引">
-<meta property="og:type" content="article">
-<meta property="og:title" content="MySQL覆盖索引">
-<meta property="og:url" content="https://alexrencn.github.io/2018/09/27/2018-09-27-MySQL覆盖索引/index.html">
+  <meta name="description" content="来自百度百科的定义脑裂-计算机术语，英文称为“Split-Brain”。 脑裂是因为cluster集群分裂导致的，cluster集群中节点因为处理器忙或者其他原因暂时停止响应时，其他节点可能误认为该节点“已死”，从而夺取共享磁盘（即资源）的访问权，此时极有可能假死节点重新对共享文件系统产生读写操作,从而导致共享磁盘文件系统损坏。 分析脑裂出现在高可用（HA）集群中，如果集群中的服务属于无状态的，那">
+<meta name="keywords" content="分布式">
+<meta property="og:type" content="website">
+<meta property="og:title" content="脑裂">
+<meta property="og:url" content="https://alexrencn.github.io/temp/2020-01-10-脑裂.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="大部分的索引存在的意义在于更多的筛除非目标数据，更快的定位所需的数据行，而覆盖索引主要的目的不是加快查询的速度，而是偏向于去除读取数据行的时间，而将需要的列放在索引的叶子节点中，命中后直接返回，哈希索引，空间索引，全文索引无法作为覆盖索引 优势： 由于数据的部分重复，索引文件基本上会比数据文件的条数要少，减少了数据访问 索引文件的存储是按照顺序进行，在进行范围查询的时候命中的页更少 例如MyIS">
+<meta property="og:description" content="来自百度百科的定义脑裂-计算机术语，英文称为“Split-Brain”。 脑裂是因为cluster集群分裂导致的，cluster集群中节点因为处理器忙或者其他原因暂时停止响应时，其他节点可能误认为该节点“已死”，从而夺取共享磁盘（即资源）的访问权，此时极有可能假死节点重新对共享文件系统产生读写操作,从而导致共享磁盘文件系统损坏。 分析脑裂出现在高可用（HA）集群中，如果集群中的服务属于无状态的，那">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-27T14:45:22.886Z">
+<meta property="og:updated_time" content="2020-03-09T06:57:05.363Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MySQL覆盖索引">
-<meta name="twitter:description" content="大部分的索引存在的意义在于更多的筛除非目标数据，更快的定位所需的数据行，而覆盖索引主要的目的不是加快查询的速度，而是偏向于去除读取数据行的时间，而将需要的列放在索引的叶子节点中，命中后直接返回，哈希索引，空间索引，全文索引无法作为覆盖索引 优势： 由于数据的部分重复，索引文件基本上会比数据文件的条数要少，减少了数据访问 索引文件的存储是按照顺序进行，在进行范围查询的时候命中的页更少 例如MyIS">
+<meta name="twitter:title" content="脑裂">
+<meta name="twitter:description" content="来自百度百科的定义脑裂-计算机术语，英文称为“Split-Brain”。 脑裂是因为cluster集群分裂导致的，cluster集群中节点因为处理器忙或者其他原因暂时停止响应时，其他节点可能误认为该节点“已死”，从而夺取共享磁盘（即资源）的访问权，此时极有可能假死节点重新对共享文件系统产生读写操作,从而导致共享磁盘文件系统损坏。 分析脑裂出现在高可用（HA）集群中，如果集群中的服务属于无状态的，那">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2018/09/27/2018-09-27-MySQL覆盖索引/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/temp/2020-01-10-脑裂.html"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>MySQL覆盖索引 | Alex</title>
+  <title>脑裂 | Alex</title>
   
 
 
@@ -245,6 +245,19 @@
   
     
 
+    
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
+
   
 
   
@@ -285,7 +298,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2018/09/27/2018-09-27-MySQL覆盖索引/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/temp/2020-01-10-脑裂.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +315,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">MySQL覆盖索引
+          <h1 class="post-title" itemprop="name headline">脑裂
               
             
           </h1>
@@ -327,7 +340,7 @@
                 
               
 
-              <time title="创建时间：2018-09-27 22:45:22" itemprop="dateCreated datePublished" datetime="2018-09-27T22:45:22+08:00">2018-09-27</time>
+              <time title="创建时间：2020-03-09 14:57:05" itemprop="dateCreated datePublished" datetime="2020-03-09T14:57:05+08:00">2020-03-09</time>
             
 
             
@@ -342,8 +355,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2018/09/27/2018-09-27-MySQL覆盖索引/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2018/09/27/2018-09-27-MySQL覆盖索引/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/temp/2020-01-10-脑裂.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/temp/2020-01-10-脑裂.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +364,7 @@
 
           
           
-             <span id="/alex.github.io/2018/09/27/2018-09-27-MySQL覆盖索引/" class="leancloud_visitors" data-flag-title="MySQL覆盖索引">
+             <span id="/alex.github.io/temp/2020-01-10-脑裂.html" class="leancloud_visitors" data-flag-title="脑裂">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -382,14 +395,25 @@
       
 
       
-        <a id="more"></a>
-<p>大部分的索引存在的意义在于更多的筛除非目标数据，更快的定位所需的数据行，而覆盖索引主要的目的不是加快查询的速度，而是偏向于去除读取数据行的时间，而将需要的列放在索引的叶子节点中，命中后直接返回，哈希索引，空间索引，全文索引无法作为覆盖索引</p>
-<h4 id="优势："><a href="#优势：" class="headerlink" title="优势："></a>优势：</h4><ol>
-<li>由于数据的部分重复，索引文件基本上会比数据文件的条数要少，减少了数据访问</li>
-<li>索引文件的存储是按照顺序进行，在进行范围查询的时候命中的页更少</li>
-<li>例如MyISAM引擎，索引数据的缓存是在MySQL的内存中进行，而数据文件的缓存是由操作系统执行，覆盖索引避免了一次数据调用</li>
-<li>在InnoDB引擎中，主键或者默认第一个非空列会定义为聚簇索引，二级索引保存的是数据文件的主键值，通过二级索引访问数据还需要定位数据行，覆盖索引可以避免二次查询</li>
+        <h4 id="来自百度百科的定义"><a href="#来自百度百科的定义" class="headerlink" title="来自百度百科的定义"></a>来自百度百科的定义</h4><p>脑裂-计算机术语，英文称为“Split-Brain”。</p>
+<p>脑裂是因为cluster集群分裂导致的，cluster集群中节点因为处理器忙或者其他原因暂时停止响应时，<br>其他节点可能误认为该节点“已死”，从而夺取共享磁盘（即资源）的访问权，此时极有可能假死节点重新对共享文件系统产生读写操作,从而导致共享磁盘文件系统损坏。</p>
+<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><p>脑裂出现在高可用（HA）集群中，如果集群中的服务属于无状态的，那么则无需关注此问题，但是在某些集群中为了保证数据的一致性，<br>使用了不同的主从策略（比如Zookeeper的leader节点、ElasticSearch里的master节点、Redis里的master节点），假设作为集群的主节点挂掉或者挂起，<br>而后出现了多个节点被重新选举为主节点的情况下，那么这里面的数据绝大部分情况下不会一致。而在真实的场景中不会出现这写问题，<br>那么这个问题是如何解决的呢？</p>
+<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>为了解决脑裂的问题，一般可以从两个方面进行入手</p>
+<ol>
+<li>添加冗余的心跳检测，采用双心跳检测，减少脑裂的产生</li>
+<li>仲裁，使用仲裁服务或者资源锁，避免多个节点进入临界区</li>
 </ol>
+<h5 id="redis脑裂问题"><a href="#redis脑裂问题" class="headerlink" title="redis脑裂问题"></a>redis脑裂问题</h5><p>假设redis集群部署采用了master1、slave1、slave2、slave3的一主三从节点个数，并且使用哨兵模式进行部署，<br>客户端采用client1，client2进行了水平部署，如果master1与slave1、slave2、slave3以及哨兵节点的网络连接断开，<br>但是master1与client1，client2之间的通信没有发生异常；</p>
+<p>在这种情况下，一方面哨兵节点会认为master1不可用，并且从slave1、slave2、slave3中选取新的master，<br>假设slave1被选举成功并且记为master2，则新的集群变为master2、slave2、slave3。<br>另一方面client1可以访问到master1，假设此时client1访问到master1，client2访问到master2；</p>
+<p>此时master1和master2之间的内存数据并不会同步，client1和client2如果针对相同的redis key进行分布式锁操作，则有可能会全部获取到锁。</p>
+<p>redis并不能解决脑裂问题。</p>
+<h5 id="Zookeeper脑裂问题"><a href="#Zookeeper脑裂问题" class="headerlink" title="Zookeeper脑裂问题"></a>Zookeeper脑裂问题</h5><p>如果在A、B双机房中部署了Zookeeper，每个机房3个实例，共6个，正常情况下，两个机房会作为一个集群对外提供服务，但是如果AB机房之间的通信出现故障，<br>假设原本的leader在A1节点，此时B机房中的B1、B2、B3会发现连接不到leader，并进行选举，假如选举B1为leader。此时问题出现在两个地方，<br>一个AB机房之间的通讯虽然断了，但是客户端还是可以访问到任何一个机房，在通讯恢复之前会出现数据不一致的情况，<br>另外，当通讯恢复正常，两个集群可以感知到对方。</p>
+<p>为了解决这个问题，Zookeeper做了一个很简单的解决方案，那就是不提供服务，为什么会这么说呢，相信大家还记得Zookeeper选举leader的一个重要条件：<br>过半机制，只有半数以上的节点投票给某个服务，才能选举为leader节点，而在这种情况下，即使B机房进行了选举，在唱票阶段，B1节点至多获得3票，<br>无法满足过半机制，也就是&gt;3=false。</p>
+<h5 id="ElasticSearch脑裂问题"><a href="#ElasticSearch脑裂问题" class="headerlink" title="ElasticSearch脑裂问题"></a>ElasticSearch脑裂问题</h5><p>ES节点的脑裂问题和zk问题基本一致，由于ES可以使用2个节点作为集群，所以针对ES描述双节点的情景，假设部署了ES的节点N1，N2。<br>在启动时N1选为master节点而N2节点成为slave节点。如果N1和N2之间的通讯断掉，那么N1和N2都会认为对方出现故障，N1不变而N2选举自己为master，此时客户端可以访问到不同的节点，造成数据不一致的问题。</p>
+<p>ES对于这个问题有两种解决方案：</p>
+<p>一种是指定discovery.zen.minimum_master_nodes配置，这个参数相当于zk的最小票数，只不过不是自动计算的，我们可以配置成2，<br>这样在2个节点的情况下，N2不会自我选举成master。</p>
+<p>另一种是指定discovery.zen.ping.timeout配置，这个配置用于决定网络超时的时间，默认值为3秒，通过延长这个时间可以减少因为网络问题带来的误测，<br>从而减少脑裂出现的概率。</p>
+<p>在2节点以上的情况下，并没有什么特殊的问题，但是要注意，ES也无法保证解决脑裂问题，所以也存在着数据不一致的极端情况。</p>
 
       
     </div>
@@ -410,9 +434,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/MySQL/" rel="tag"># MySQL</a>
-          
-            <a href="/alex.github.io/tags/索引/" rel="tag"># 索引</a>
+            <a href="/alex.github.io/" rel="tag"># </a>
           
         </div>
       
@@ -421,26 +443,6 @@
       
       
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/alex.github.io/2018/09/27/2018-09-27-MySQL前缀索引/" rel="next" title="MySQL前缀索引">
-                <i class="fa fa-chevron-left"></i> MySQL前缀索引
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/alex.github.io/2018/09/29/2018-09-29-TOMCAT结构分析/" rel="prev" title="TOMCAT结构分析">
-                TOMCAT结构分析 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
       
 
       
@@ -612,7 +614,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#优势："><span class="nav-number">1.</span> <span class="nav-text">优势：</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#来自百度百科的定义"><span class="nav-number">1.</span> <span class="nav-text">来自百度百科的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案"><span class="nav-number">3.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#redis脑裂问题"><span class="nav-number">3.1.</span> <span class="nav-text">redis脑裂问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Zookeeper脑裂问题"><span class="nav-number">3.2.</span> <span class="nav-text">Zookeeper脑裂问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ElasticSearch脑裂问题"><span class="nav-number">3.3.</span> <span class="nav-text">ElasticSearch脑裂问题</span></a></li></ol></li></ol></div>
             
 
           </div>
