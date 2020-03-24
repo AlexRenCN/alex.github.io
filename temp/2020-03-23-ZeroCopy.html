@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="近几天看到了一篇面试被虐文，被文中的题目狠狠虐了一遍，感觉到自己的底层知识和基础知识是多么的薄弱，这几天准备填一填文中的一些坑，今天是第一个部分，原题是redis的hash是如何实现的？很奇怪吧，这个题目从来没有想过，但是想想一下，这和Java中HashMap结构和源码问题一样，对结构的了解确实能带来很大的提升，并不只是一个造火箭的题目。下面好好描述下了解的步骤  Redis里的对象类型送分题，">
-<meta name="keywords" content="缓存">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Redis的Hash是如何实现的">
-<meta property="og:url" content="https://alexrencn.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/index.html">
+  <meta name="description" content="BIO的缓冲区使用情况在java语言中，每次进行标准IO操作的时候，我们会针对流（Buffer）进行操作，针对不同类型的操作，常用的流分为输入流和输出流两大类型，通过read及write等操作进行字节的读写，我们以读操作为例，解析BIO在操作系统层次所做的事情。 用户空间12345678910111213public class Demo&amp;#123;    public void readFile">
+<meta name="keywords" content="linux">
+<meta property="og:type" content="website">
+<meta property="og:title" content="ZeroCopy">
+<meta property="og:url" content="https://alexrencn.github.io/temp/2020-03-23-ZeroCopy.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="近几天看到了一篇面试被虐文，被文中的题目狠狠虐了一遍，感觉到自己的底层知识和基础知识是多么的薄弱，这几天准备填一填文中的一些坑，今天是第一个部分，原题是redis的hash是如何实现的？很奇怪吧，这个题目从来没有想过，但是想想一下，这和Java中HashMap结构和源码问题一样，对结构的了解确实能带来很大的提升，并不只是一个造火箭的题目。下面好好描述下了解的步骤  Redis里的对象类型送分题，">
+<meta property="og:description" content="BIO的缓冲区使用情况在java语言中，每次进行标准IO操作的时候，我们会针对流（Buffer）进行操作，针对不同类型的操作，常用的流分为输入流和输出流两大类型，通过read及write等操作进行字节的读写，我们以读操作为例，解析BIO在操作系统层次所做的事情。 用户空间12345678910111213public class Demo&amp;#123;    public void readFile">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-26T07:31:34.017Z">
+<meta property="og:updated_time" content="2020-03-23T14:32:38.757Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Redis的Hash是如何实现的">
-<meta name="twitter:description" content="近几天看到了一篇面试被虐文，被文中的题目狠狠虐了一遍，感觉到自己的底层知识和基础知识是多么的薄弱，这几天准备填一填文中的一些坑，今天是第一个部分，原题是redis的hash是如何实现的？很奇怪吧，这个题目从来没有想过，但是想想一下，这和Java中HashMap结构和源码问题一样，对结构的了解确实能带来很大的提升，并不只是一个造火箭的题目。下面好好描述下了解的步骤  Redis里的对象类型送分题，">
+<meta name="twitter:title" content="ZeroCopy">
+<meta name="twitter:description" content="BIO的缓冲区使用情况在java语言中，每次进行标准IO操作的时候，我们会针对流（Buffer）进行操作，针对不同类型的操作，常用的流分为输入流和输出流两大类型，通过read及write等操作进行字节的读写，我们以读操作为例，解析BIO在操作系统层次所做的事情。 用户空间12345678910111213public class Demo&amp;#123;    public void readFile">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/"/>
+  <link rel="canonical" href="https://alexrencn.github.io/temp/2020-03-23-ZeroCopy.html"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>Redis的Hash是如何实现的 | Alex</title>
+  <title>ZeroCopy | Alex</title>
   
 
 
@@ -245,6 +245,19 @@
   
     
 
+    
+    
+      
+      
+    
+      
+      
+    
+    
+
+  
+
+
   
 
   
@@ -285,7 +298,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/temp/2020-03-23-ZeroCopy.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -302,7 +315,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Redis的Hash是如何实现的
+          <h1 class="post-title" itemprop="name headline">ZeroCopy
               
             
           </h1>
@@ -327,7 +340,7 @@
                 
               
 
-              <time title="创建时间：2019-06-26 15:31:34" itemprop="dateCreated datePublished" datetime="2019-06-26T15:31:34+08:00">2019-06-26</time>
+              <time title="创建时间：2020-03-23 22:32:38" itemprop="dateCreated datePublished" datetime="2020-03-23T22:32:38+08:00">2020-03-23</time>
             
 
             
@@ -342,8 +355,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/" itemprop="commentCount"></span>
+                <a href="/alex.github.io/temp/2020-03-23-ZeroCopy.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/temp/2020-03-23-ZeroCopy.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -351,7 +364,7 @@
 
           
           
-             <span id="/alex.github.io/2019/06/26/2019-06-25-Redis的Hash是如何实现的/" class="leancloud_visitors" data-flag-title="Redis的Hash是如何实现的">
+             <span id="/alex.github.io/temp/2020-03-23-ZeroCopy.html" class="leancloud_visitors" data-flag-title="ZeroCopy">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -382,52 +395,23 @@
       
 
       
-        <blockquote>
-<p>近几天看到了一篇面试被虐文，被文中的题目狠狠虐了一遍，感觉到自己的底层知识和基础知识是多么的薄弱，这几天准备填一填文中的一些坑，今天是第一个部分，原题是redis的hash是如何实现的？<br>很奇怪吧，这个题目从来没有想过，但是想想一下，这和Java中HashMap结构和源码问题一样，对结构的了解确实能带来很大的提升，并不只是一个造火箭的题目。下面好好描述下了解的步骤</p>
-</blockquote>
-<h4 id="Redis里的对象类型"><a href="#Redis里的对象类型" class="headerlink" title="Redis里的对象类型"></a>Redis里的对象类型</h4><p>送分题，redis5种数据结构？String、set、zSet、list、hash?<br><br><br>如果你这么回答了，那么你可能会得到一个回答：先回家等消息吧~我们有消息会通知你的。<br><br><br>开个玩笑，不过为什么我会这么说呢？redis的新版本中为我们带来了全新的数据类型，你可以没用到过，但是不可以不知道的。<br><br><br> 目前版本描述redis data type的有六个文件<code>t_hash.c</code>、<code>t_list.c</code>、<code>t_set.c</code>、<code>t_string.c</code>、<code>t_zset.c</code>、<code>t_stream.c</code></p>
+        <h3 id="BIO的缓冲区使用情况"><a href="#BIO的缓冲区使用情况" class="headerlink" title="BIO的缓冲区使用情况"></a>BIO的缓冲区使用情况</h3><p>在java语言中，每次进行标准IO操作的时候，我们会针对流（Buffer）进行操作，<br>针对不同类型的操作，常用的流分为输入流和输出流两大类型，通过read及write等操作进行字节的读写，<br>我们以读操作为例，解析BIO在操作系统层次所做的事情。</p>
+<h4 id="用户空间"><a href="#用户空间" class="headerlink" title="用户空间"></a>用户空间</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">readFile</span><span class="params">(String path)</span></span>&#123;</span><br><span class="line">        <span class="comment">//在用户空间开辟缓冲区</span></span><br><span class="line">        InputStream inputStream = <span class="keyword">new</span> FileInputStream(<span class="keyword">new</span> File(path));</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">//从内核空间缓冲区读取数据到用户控件缓冲区</span></span><br><span class="line">        <span class="keyword">while</span> ((i = inputStream.read()) != -<span class="number">1</span>) &#123;</span><br><span class="line">            System.out.print((<span class="keyword">char</span>) i + <span class="string">""</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//释放用户空间的缓冲区</span></span><br><span class="line">        inputStream.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面这个操作就是普通的读取操作，他发生在我们的应用进程内，所属的空间在linux系统中属于用户空间。</p>
+<h4 id="内核空间"><a href="#内核空间" class="headerlink" title="内核空间"></a>内核空间</h4><p>而真正的文件读取还是通过内核空间完成的，他所经历的步骤是：</p>
+<p><code>硬盘-&gt;磁盘控制器-&gt;DMA-&gt;内核空间缓存区</code></p>
+<h3 id="java和ZeroCopy"><a href="#java和ZeroCopy" class="headerlink" title="java和ZeroCopy"></a>java和ZeroCopy</h3><h4 id="MappedByteBuffer"><a href="#MappedByteBuffer" class="headerlink" title="MappedByteBuffer"></a>MappedByteBuffer</h4><p>在linux和其他操作系统中，我们可以使用虚拟内存的方式，进行物理内存映射，举个简单的例子：<br><del>我花40000块买了一块比特币BTC，相当于我用虚拟的BTC映射了我的40000块，然后比特币暴跌到18000</del>。</p>
+<p>刚才那个例子请忽略，在linux中，支持一个或多个虚拟内存地址映射到一个物理内存地址，用一个容易理解的方式来举例：<br>我们的应用A在用户空间申请了虚拟内存地址0~9，内核空间申请了虚拟内存地址a-j，0和a同时指向物理内存j而A到9同时指向物理内存J。<br>此时我们用户写了10个bit位，操作0到9虚拟内存，实际上操作了AJ并写入了AAAAAAAAAA，此时从内核空间进行操作的时候，无需进行缓冲区的复制。<br>因为内核空间的内存地址a到j本身是虚拟地址，实际地址已经进行了操作。</p>
+<h4 id="DirectByteBuffer"><a href="#DirectByteBuffer" class="headerlink" title="DirectByteBuffer"></a>DirectByteBuffer</h4><p>这是MappedByteBuffer的子类，提供了随机读写IO能力，本质上也是使用的内存映射。</p>
+<h4 id="FileChannel"><a href="#FileChannel" class="headerlink" title="FileChannel"></a>FileChannel</h4><p>FileChannelImpl这个实现类中有几个参数代表了他所使用的方式，具体如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileChannelImpl</span> <span class="keyword">extends</span> <span class="title">FileChannel</span> </span>&#123;</span><br><span class="line">    <span class="comment">//是否支持linux的sendfile()方法</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> transferSupported = <span class="keyword">true</span>;</span><br><span class="line">    <span class="comment">//是否支持linux的sendfile()方法，并且基于管道（pipe）操作文件描述符（fd）</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> pipeSupported = <span class="keyword">true</span>;</span><br><span class="line">    <span class="comment">//是否支持linux的sendfile()方法，并且基于文件（file）操作文件描述符（fd）</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>sendfile函数是linux用来简化通道之间数据拷贝的系统，具体的优化如下：</p>
 <ol>
-<li>hash-哈希结构</li>
-<li>list-链表结构</li>
-<li>set-无需列表</li>
-<li>string-SDS字符串</li>
-<li>zset-有序列表</li>
-<li>stream-流</li>
+<li>应用程序在用户空间调用sendfile，完成从用户态切换到内核态</li>
+<li>内核空间使用DMA控制器将磁盘数据复制到读缓冲区</li>
+<li>在内核空间完成读缓冲区到socket缓冲区的数据复制</li>
+<li>通过网卡将socket缓冲区完成发送</li>
+<li>用户从内核态切换到用户态，完成sendfile的调用</li>
 </ol>
-<h4 id="Redis里的数据结构"><a href="#Redis里的数据结构" class="headerlink" title="Redis里的数据结构"></a>Redis里的数据结构</h4><blockquote>
-<p>在<code>server.h</code>文件里描述了所有的数据结构</p>
-</blockquote>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Objects encoding. Some kind of objects like Strings and Hashes can be</span></span><br><span class="line"><span class="comment"> * internally represented in multiple ways. The 'encoding' field of the object</span></span><br><span class="line"><span class="comment"> * is set to one of this fields for this object. */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_RAW 0     <span class="comment">/* Raw representation 原始数据类型，SDS字符串 */</span> </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_INT 1     <span class="comment">/* Encoded as integer 整型 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_HT 2      <span class="comment">/* Encoded as hash table 哈希类型 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_ZIPMAP 3  <span class="comment">/* Encoded as zipmap 废弃类型，转为使用ZIPLIST */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_LINKEDLIST 4 <span class="comment">/* No longer used: old list encoding. 废弃类型，转为使用QUICKLIST */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_ZIPLIST 5 <span class="comment">/* Encoded as ziplist 压缩列表 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_INTSET 6  <span class="comment">/* Encoded as intset 整数集合 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_SKIPLIST 7  <span class="comment">/* Encoded as skiplist 跳表 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_EMBSTR 8  <span class="comment">/* Embedded sds string encoding 分配较小的字符串，EMBSTR字符串 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_QUICKLIST 9 <span class="comment">/* Encoded as linked list of ziplists 压缩列表组成的双向链表 */</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> OBJ_ENCODING_STREAM 10 <span class="comment">/* Encoded as a radix tree of listpacks 消息队列 */</span></span></span><br></pre></td></tr></table></figure>
-<h4 id="对象类型和数据结构的对应关系"><a href="#对象类型和数据结构的对应关系" class="headerlink" title="对象类型和数据结构的对应关系"></a>对象类型和数据结构的对应关系</h4><blockquote>
-<p>在<code>server.h</code>文件里描述了所有的创建关系，散列在各个方法中，这里整理出了一份，并不代表每一种都会用到，每种对象会在不同的情况下选择不同的数据结构，比如String类型在44字符一下会采用EMBSTR方式，以用来节省内存（随版本有变化）。</p>
-</blockquote>
-<ul>
-<li>OBJ_STRING</li>
-</ul>
-<p>OBJ_ENCODING_RAW、OBJ_ENCODING_INT、OBJ_ENCODING_EMBSTR_SIZE_LIMIT</p>
-<ul>
-<li>OBJ_LIST</li>
-</ul>
-<p>OBJ_ENCODING_LINKEDLIST、OBJ_ENCODING_QUICKLIST、OBJ_ENCODING_ZIPLIST</p>
-<ul>
-<li>OBJ_SET</li>
-</ul>
-<p>OBJ_ENCODING_HT、OBJ_ENCODING_INTSET</p>
-<ul>
-<li>OBJ_HASH</li>
-</ul>
-<p>OBJ_ENCODING_ZIPLIST、OBJ_ENCODING_HT</p>
-<ul>
-<li>OBJ_ZSET</li>
-</ul>
-<p>OBJ_ENCODING_SKIPLIST、OBJ_ENCODING_ZIPLIST</p>
-<ul>
-<li>OBJ_STREAM</li>
-</ul>
-<p>OBJ_ENCODING_STREAM</p>
-<h4 id="ZIPLIST和HT"><a href="#ZIPLIST和HT" class="headerlink" title="ZIPLIST和HT"></a>ZIPLIST和HT</h4><p>回到原题上，我们已经知道了OBJ_HASH由OBJ_ENCODING_ZIPLIST和OBJ_ENCODING_HT方式实现，<br>那这两种数据结构有什么异同呢？<br>OBJ_ENCODING_HT可以用一个dict来表示，可以用hashMap的思想去看，也就是我们常用的字符串，<br>而OBJ_ENCODING_ZIPLIST则使用了一个压缩列表来放置键值对，数据获取的时候先寻找键所在的位置，<br>然后用ziplistNext在下个节点里获取值。<br>redis目前默认创建hash结构的时候使用的是ZIPLIST编码类型，这种类型有什么优点呢？</p>
-<p>顾名思义这种类型需要的空间更少，毕竟一个HASH类型组成，至少需要一个dict，<br>两个dictht。一个dictEntry指针数组和N个dictEntry。</p>
-<p>而如果列表中的键值对过多，或者单个键或者值长度过长，就会转换为OBJ_ENCODING_HT方式，<br>当我了解到这些的时候，还能认为redis操作非常简单么？值得反思。</p>
 
       
     </div>
@@ -448,7 +432,7 @@
       
         <div class="post-tags">
           
-            <a href="/alex.github.io/tags/缓存/" rel="tag"># 缓存</a>
+            <a href="/alex.github.io/" rel="tag"># </a>
           
         </div>
       
@@ -457,26 +441,6 @@
       
       
 
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/alex.github.io/2019/06/26/2019-06-26-Redis的Hash结构和Rehash/" rel="next" title="Redis的Hash结构和Rehash">
-                <i class="fa fa-chevron-left"></i> Redis的Hash结构和Rehash
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/alex.github.io/2019/07/09/2019-07-09-MySQl的varchar是以什么做单位的/" rel="prev" title="MySQl的varchar是以什么做单位的">
-                MySQl的varchar是以什么做单位的 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
       
 
       
@@ -648,7 +612,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis里的对象类型"><span class="nav-number">1.</span> <span class="nav-text">Redis里的对象类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis里的数据结构"><span class="nav-number">2.</span> <span class="nav-text">Redis里的数据结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#对象类型和数据结构的对应关系"><span class="nav-number">3.</span> <span class="nav-text">对象类型和数据结构的对应关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ZIPLIST和HT"><span class="nav-number">4.</span> <span class="nav-text">ZIPLIST和HT</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#BIO的缓冲区使用情况"><span class="nav-number">1.</span> <span class="nav-text">BIO的缓冲区使用情况</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#用户空间"><span class="nav-number">1.1.</span> <span class="nav-text">用户空间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内核空间"><span class="nav-number">1.2.</span> <span class="nav-text">内核空间</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java和ZeroCopy"><span class="nav-number">2.</span> <span class="nav-text">java和ZeroCopy</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MappedByteBuffer"><span class="nav-number">2.1.</span> <span class="nav-text">MappedByteBuffer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DirectByteBuffer"><span class="nav-number">2.2.</span> <span class="nav-text">DirectByteBuffer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FileChannel"><span class="nav-number">2.3.</span> <span class="nav-text">FileChannel</span></a></li></ol></li></ol></div>
             
 
           </div>

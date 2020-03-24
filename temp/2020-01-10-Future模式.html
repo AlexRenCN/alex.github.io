@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="来自百度百科的定义脑裂-计算机术语，英文称为“Split-Brain”。 脑裂是因为cluster集群分裂导致的，cluster集群中节点因为处理器忙或者其他原因暂时停止响应时，其他节点可能误认为该节点“已死”，从而夺取共享磁盘（即资源）的访问权，此时极有可能假死节点重新对共享文件系统产生读写操作,从而导致共享磁盘文件系统损坏。 分析脑裂出现在高可用（HA）集群中，如果集群中的服务属于无状态的，那">
-<meta name="keywords" content="分布式">
+  <meta name="description" content="Future模式参与角色 Client:发起请求的角色，向Host发起请求并且无堵塞的方式拿到VirtualData Host:请求的接受者，从Client接受请求并返回VirtualData，而且创建异步线程进行请求的处理 VirtualData:虚拟结果，包含Future和RealData RealData:请求的实际处理结果 Future:请求，可以进行函数运行和设置RealData  ja">
+<meta name="keywords" content="Dubbo">
 <meta property="og:type" content="website">
-<meta property="og:title" content="脑裂">
-<meta property="og:url" content="https://alexrencn.github.io/temp/2020-01-10-脑裂.html">
+<meta property="og:title" content="Future模式">
+<meta property="og:url" content="https://alexrencn.github.io/temp/2020-01-10-Future模式.html">
 <meta property="og:site_name" content="Alex">
-<meta property="og:description" content="来自百度百科的定义脑裂-计算机术语，英文称为“Split-Brain”。 脑裂是因为cluster集群分裂导致的，cluster集群中节点因为处理器忙或者其他原因暂时停止响应时，其他节点可能误认为该节点“已死”，从而夺取共享磁盘（即资源）的访问权，此时极有可能假死节点重新对共享文件系统产生读写操作,从而导致共享磁盘文件系统损坏。 分析脑裂出现在高可用（HA）集群中，如果集群中的服务属于无状态的，那">
+<meta property="og:description" content="Future模式参与角色 Client:发起请求的角色，向Host发起请求并且无堵塞的方式拿到VirtualData Host:请求的接受者，从Client接受请求并返回VirtualData，而且创建异步线程进行请求的处理 VirtualData:虚拟结果，包含Future和RealData RealData:请求的实际处理结果 Future:请求，可以进行函数运行和设置RealData  ja">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-03-09T06:57:05.363Z">
+<meta property="og:updated_time" content="2020-03-16T04:33:44.108Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="脑裂">
-<meta name="twitter:description" content="来自百度百科的定义脑裂-计算机术语，英文称为“Split-Brain”。 脑裂是因为cluster集群分裂导致的，cluster集群中节点因为处理器忙或者其他原因暂时停止响应时，其他节点可能误认为该节点“已死”，从而夺取共享磁盘（即资源）的访问权，此时极有可能假死节点重新对共享文件系统产生读写操作,从而导致共享磁盘文件系统损坏。 分析脑裂出现在高可用（HA）集群中，如果集群中的服务属于无状态的，那">
+<meta name="twitter:title" content="Future模式">
+<meta name="twitter:description" content="Future模式参与角色 Client:发起请求的角色，向Host发起请求并且无堵塞的方式拿到VirtualData Host:请求的接受者，从Client接受请求并返回VirtualData，而且创建异步线程进行请求的处理 VirtualData:虚拟结果，包含Future和RealData RealData:请求的实际处理结果 Future:请求，可以进行函数运行和设置RealData  ja">
 
 
 
 
 
 
-  <link rel="canonical" href="https://alexrencn.github.io/temp/2020-01-10-脑裂.html"/>
+  <link rel="canonical" href="https://alexrencn.github.io/temp/2020-01-10-Future模式.html"/>
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>脑裂 | Alex</title>
+  <title>Future模式 | Alex</title>
   
 
 
@@ -298,7 +298,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/temp/2020-01-10-脑裂.html">
+    <link itemprop="mainEntityOfPage" href="https://alexrencn.github.io/alex.github.io/temp/2020-01-10-Future模式.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Alex Ren">
@@ -315,7 +315,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">脑裂
+          <h1 class="post-title" itemprop="name headline">Future模式
               
             
           </h1>
@@ -340,7 +340,7 @@
                 
               
 
-              <time title="创建时间：2020-03-09 14:57:05" itemprop="dateCreated datePublished" datetime="2020-03-09T14:57:05+08:00">2020-03-09</time>
+              <time title="创建时间：2020-03-16 12:33:44" itemprop="dateCreated datePublished" datetime="2020-03-16T12:33:44+08:00">2020-03-16</time>
             
 
             
@@ -355,8 +355,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/alex.github.io/temp/2020-01-10-脑裂.html#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/temp/2020-01-10-脑裂.html" itemprop="commentCount"></span>
+                <a href="/alex.github.io/temp/2020-01-10-Future模式.html#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count valine-comment-count" data-xid="/alex.github.io/temp/2020-01-10-Future模式.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -364,7 +364,7 @@
 
           
           
-             <span id="/alex.github.io/temp/2020-01-10-脑裂.html" class="leancloud_visitors" data-flag-title="脑裂">
+             <span id="/alex.github.io/temp/2020-01-10-Future模式.html" class="leancloud_visitors" data-flag-title="Future模式">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -395,25 +395,27 @@
       
 
       
-        <h4 id="来自百度百科的定义"><a href="#来自百度百科的定义" class="headerlink" title="来自百度百科的定义"></a>来自百度百科的定义</h4><p>脑裂-计算机术语，英文称为“Split-Brain”。</p>
-<p>脑裂是因为cluster集群分裂导致的，cluster集群中节点因为处理器忙或者其他原因暂时停止响应时，<br>其他节点可能误认为该节点“已死”，从而夺取共享磁盘（即资源）的访问权，此时极有可能假死节点重新对共享文件系统产生读写操作,从而导致共享磁盘文件系统损坏。</p>
-<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><p>脑裂出现在高可用（HA）集群中，如果集群中的服务属于无状态的，那么则无需关注此问题，但是在某些集群中为了保证数据的一致性，<br>使用了不同的主从策略（比如Zookeeper的leader节点、ElasticSearch里的master节点、Redis里的master节点），假设作为集群的主节点挂掉或者挂起，<br>而后出现了多个节点被重新选举为主节点的情况下，那么这里面的数据绝大部分情况下不会一致。而在真实的场景中不会出现这写问题，<br>那么这个问题是如何解决的呢？</p>
-<h4 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h4><p>为了解决脑裂的问题，一般可以从两个方面进行入手</p>
-<ol>
-<li>添加冗余的心跳检测，采用双心跳检测，减少脑裂的产生</li>
-<li>仲裁，使用仲裁服务或者资源锁，避免多个节点进入临界区</li>
+        <h3 id="Future模式"><a href="#Future模式" class="headerlink" title="Future模式"></a>Future模式</h3><h4 id="参与角色"><a href="#参与角色" class="headerlink" title="参与角色"></a>参与角色</h4><ul>
+<li>Client:发起请求的角色，向Host发起请求并且无堵塞的方式拿到VirtualData</li>
+<li>Host:请求的接受者，从Client接受请求并返回VirtualData，而且创建异步线程进行请求的处理</li>
+<li>VirtualData:虚拟结果，包含Future和RealData</li>
+<li>RealData:请求的实际处理结果</li>
+<li>Future:请求，可以进行函数运行和设置RealData</li>
+</ul>
+<h3 id="java-Future"><a href="#java-Future" class="headerlink" title="java Future"></a>java Future</h3><p>jdk为我们提供了一套Future模式的实现，用于进行异步任务调用，其核心的接口主要有下面几个：</p>
+<h4 id="i-Future"><a href="#i-Future" class="headerlink" title="(i)Future"></a>(i)Future</h4><p>核心接口，Future接口包含一个方法f，在调用方法f的时候，会造成一定时间的耗时，我们在调用f的同时，可以先去做其他事情，<br>然后将f的结果获取并进行后续操作，这样就会提升整段代码效率。</p>
+<p>这个借口提供了获取结果和判断任务状态的能力</p>
+<h4 id="i-RunnableFuture"><a href="#i-RunnableFuture" class="headerlink" title="(i)RunnableFuture"></a>(i)RunnableFuture</h4><p>继承了Future和Runnable，使Future里的方法f可以通过run方法进行异步操作</p>
+<p>####（c）FutureTask</p>
+<p>实现类，提供了来启动和取消函数调用、查询函数调用是否完成以及获取函数调用结果。</p>
+<h4 id="使用方式"><a href="#使用方式" class="headerlink" title="使用方式"></a>使用方式</h4><ol>
+<li><p>将实现Callable的类，通过submit()方法提交到线程池上，然后通过Future类型进行返回值的获取异步任务，最后通过get()方法获取结果。</p>
+</li>
+<li><p>将实现Callable的类，通过构造函数创建一个线程并通过start()方法开启线程，最后通过get()方法获取结果。</p>
+</li>
 </ol>
-<h5 id="redis脑裂问题"><a href="#redis脑裂问题" class="headerlink" title="redis脑裂问题"></a>redis脑裂问题</h5><p>假设redis集群部署采用了master1、slave1、slave2、slave3的一主三从节点个数，并且使用哨兵模式进行部署，<br>客户端采用client1，client2进行了水平部署，如果master1与slave1、slave2、slave3以及哨兵节点的网络连接断开，<br>但是master1与client1，client2之间的通信没有发生异常；</p>
-<p>在这种情况下，一方面哨兵节点会认为master1不可用，并且从slave1、slave2、slave3中选取新的master，<br>假设slave1被选举成功并且记为master2，则新的集群变为master2、slave2、slave3。<br>另一方面client1可以访问到master1，假设此时client1访问到master1，client2访问到master2；</p>
-<p>此时master1和master2之间的内存数据并不会同步，client1和client2如果针对相同的redis key进行分布式锁操作，则有可能会全部获取到锁。</p>
-<p>redis并不能解决脑裂问题。</p>
-<h5 id="Zookeeper脑裂问题"><a href="#Zookeeper脑裂问题" class="headerlink" title="Zookeeper脑裂问题"></a>Zookeeper脑裂问题</h5><p>如果在A、B双机房中部署了Zookeeper，每个机房3个实例，共6个，正常情况下，两个机房会作为一个集群对外提供服务，但是如果AB机房之间的通信出现故障，<br>假设原本的leader在A1节点，此时B机房中的B1、B2、B3会发现连接不到leader，并进行选举，假如选举B1为leader。此时问题出现在两个地方，<br>一个AB机房之间的通讯虽然断了，但是客户端还是可以访问到任何一个机房，在通讯恢复之前会出现数据不一致的情况，<br>另外，当通讯恢复正常，两个集群可以感知到对方。</p>
-<p>为了解决这个问题，Zookeeper做了一个很简单的解决方案，那就是不提供服务，为什么会这么说呢，相信大家还记得Zookeeper选举leader的一个重要条件：<br>过半机制，只有半数以上的节点投票给某个服务，才能选举为leader节点，而在这种情况下，即使B机房进行了选举，在唱票阶段，B1节点至多获得3票，<br>无法满足过半机制，也就是&gt;3=false。</p>
-<h5 id="ElasticSearch脑裂问题"><a href="#ElasticSearch脑裂问题" class="headerlink" title="ElasticSearch脑裂问题"></a>ElasticSearch脑裂问题</h5><p>ES节点的脑裂问题和zk问题基本一致，由于ES可以使用2个节点作为集群，所以针对ES描述双节点的情景，假设部署了ES的节点N1，N2。<br>在启动时N1选为master节点而N2节点成为slave节点。如果N1和N2之间的通讯断掉，那么N1和N2都会认为对方出现故障，N1不变而N2选举自己为master，此时客户端可以访问到不同的节点，造成数据不一致的问题。</p>
-<p>ES对于这个问题有两种解决方案：</p>
-<p>一种是指定discovery.zen.minimum_master_nodes配置，这个参数相当于zk的最小票数，只不过不是自动计算的，我们可以配置成2，<br>这样在2个节点的情况下，N2不会自我选举成master。</p>
-<p>另一种是指定discovery.zen.ping.timeout配置，这个配置用于决定网络超时的时间，默认值为3秒，通过延长这个时间可以减少因为网络问题带来的误测，<br>从而减少脑裂出现的概率。</p>
-<p>在2节点以上的情况下，并没有什么特殊的问题，但是要注意，ES也无法保证解决脑裂问题，所以也存在着数据不一致的极端情况。</p>
+<h3 id="netty-Future"><a href="#netty-Future" class="headerlink" title="netty Future"></a>netty Future</h3><p>jdk的Future模式实现存在着一个性能问题，那就是任务的提交时不堵塞的，但是通过get()方法获取结果是堵塞的，<br>而对于netty来说，如果通过get()方法实现则会造成同步堵塞，这和netty的设计是相悖的。</p>
+<h4 id="ChannelFuture"><a href="#ChannelFuture" class="headerlink" title="ChannelFuture"></a>ChannelFuture</h4><p>ChannelFuture实现了Future接口，是netty处理异步IO结果的类，通过增加了监听器功能，并通过监听器来通知事件就绪。</p>
 
       
     </div>
@@ -512,7 +514,7 @@
                 
                   <a href="/alex.github.io/archives/">
                 
-                    <span class="site-state-item-count">74</span>
+                    <span class="site-state-item-count">76</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -614,7 +616,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#来自百度百科的定义"><span class="nav-number">1.</span> <span class="nav-text">来自百度百科的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案"><span class="nav-number">3.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#redis脑裂问题"><span class="nav-number">3.1.</span> <span class="nav-text">redis脑裂问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Zookeeper脑裂问题"><span class="nav-number">3.2.</span> <span class="nav-text">Zookeeper脑裂问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ElasticSearch脑裂问题"><span class="nav-number">3.3.</span> <span class="nav-text">ElasticSearch脑裂问题</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Future模式"><span class="nav-number">1.</span> <span class="nav-text">Future模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#参与角色"><span class="nav-number">1.1.</span> <span class="nav-text">参与角色</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java-Future"><span class="nav-number">2.</span> <span class="nav-text">java Future</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#i-Future"><span class="nav-number">2.1.</span> <span class="nav-text">(i)Future</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#i-RunnableFuture"><span class="nav-number">2.2.</span> <span class="nav-text">(i)RunnableFuture</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用方式"><span class="nav-number">2.3.</span> <span class="nav-text">使用方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#netty-Future"><span class="nav-number">3.</span> <span class="nav-text">netty Future</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ChannelFuture"><span class="nav-number">3.1.</span> <span class="nav-text">ChannelFuture</span></a></li></ol></li></ol></div>
             
 
           </div>
